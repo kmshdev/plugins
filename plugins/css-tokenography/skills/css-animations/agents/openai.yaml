@@ -1,0 +1,4 @@
+interface:
+  display_name: "Css Animations"
+  short_description: "Apply current Css Animations guidance"
+  default_prompt: "Use $css-animations to implement and review this task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Css Functions"
+  short_description: "Apply current Css Functions guidance"
+  default_prompt: "Use $css-functions to implement and review this task."

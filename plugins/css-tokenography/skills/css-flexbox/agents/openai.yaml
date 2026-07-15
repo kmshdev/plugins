@@ -1,0 +1,4 @@
+interface:
+  display_name: "Css Flexbox"
+  short_description: "Apply current Css Flexbox guidance"
+  default_prompt: "Use $css-flexbox to implement and review this task."

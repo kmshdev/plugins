@@ -1,0 +1,20 @@
+[
+  {"skill":"css-gradients","url":"https://design.dev/guides/css-gradients/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-transforms","url":"https://design.dev/guides/css-transforms/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-transitions","url":"https://design.dev/guides/css-transitions/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-grid","url":"https://design.dev/guides/css-grid/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-selectors","url":"https://design.dev/guides/css-selectors/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-flexbox","url":"https://design.dev/guides/flexbox/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-centering","url":"https://design.dev/guides/css-centering/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-functions","url":"https://design.dev/guides/css-functions/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-variables","url":"https://design.dev/guides/css-variables/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-animations","url":"https://design.dev/guides/css-animations/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-cascade-layers","url":"https://design.dev/guides/css-cascade-layers/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-scroll-driven-animations","url":"https://design.dev/guides/scroll-timeline/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-media-queries","url":"https://design.dev/guides/media-queries/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-container-queries","url":"https://design.dev/guides/css-container-queries/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"css-dark-mode","url":"https://design.dev/guides/dark-mode-css/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"web-typography","url":"https://design.dev/guides/typography-web-design/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"web-performance-optimization","url":"https://design.dev/guides/web-performance-optimization/","retrieved":"2026-07-16","status":"implemented"},
+  {"skill":"windsurf-rules","url":"https://design.dev/guides/windsurf-rules/","retrieved":"2026-07-16","status":"implemented"}
+]

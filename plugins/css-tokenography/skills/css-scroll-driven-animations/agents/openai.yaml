@@ -1,0 +1,4 @@
+interface:
+  display_name: "Css Scroll Driven Animations"
+  short_description: "Apply current Css Scroll Driven Animations guidance"
+  default_prompt: "Use $css-scroll-driven-animations to implement and review this task."
