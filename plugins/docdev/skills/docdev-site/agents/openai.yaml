@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docdev Site"
+  short_description: "Render validated MDX docs with Astro"
+  default_prompt: "Use $docdev-site to scaffold an Astro site for my validated MDX documentation."

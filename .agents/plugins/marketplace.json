@@ -1,0 +1,20 @@
+{
+  "name": "kmshdev",
+  "interface": {
+    "displayName": "kmshdev Plugins"
+  },
+  "plugins": [
+    {
+      "name": "docdev",
+      "source": {
+        "source": "local",
+        "path": "./plugins/docdev"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

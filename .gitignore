@@ -1,0 +1,13 @@
+!.agents/
+!.agents/plugins/
+!.agents/plugins/marketplace.json
+
+.DS_Store
+__pycache__/
+*.py[cod]
+
+node_modules/
+.astro/
+dist/
+
+*.log

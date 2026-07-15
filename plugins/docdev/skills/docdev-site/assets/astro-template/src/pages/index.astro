@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import DocLayout from "../layouts/DocLayout.astro";
+
+const docs = (await getCollection("docs"))
+  .filter(({ data }) => data.status !== "deprecated")
+  .sort((left, right) => left.data.title.localeCompare(right.data.title));
+---
+
+<DocLayout title="Documentation" summary="Evidence-backed engineering documentation.">
+  <section class="document-grid" aria-label="Documents">
+    {docs.map(({ data }) => (
+      <a class="document-card" href={`${import.meta.env.BASE_URL}docs/${data.slug}/`}>
+        <span>{data.type}</span>
+        <h2>{data.title}</h2>
+        <p>{data.summary}</p>
+      </a>
+    ))}
+  </section>
+</DocLayout>

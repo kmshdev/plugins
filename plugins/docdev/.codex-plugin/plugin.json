@@ -1,0 +1,34 @@
+{
+  "name": "docdev",
+  "version": "0.1.0",
+  "description": "Create evidence-backed engineering documentation in MDX and optionally render it as a static Astro site.",
+  "author": {
+    "name": "kmshdev",
+    "url": "https://github.com/kmshdev"
+  },
+  "homepage": "https://github.com/kmshdev/plugins/tree/main/plugins/docdev",
+  "repository": "https://github.com/kmshdev/plugins",
+  "license": "MIT",
+  "keywords": [
+    "architecture",
+    "astro",
+    "developer-documentation",
+    "mdx",
+    "planning"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Docdev",
+    "shortDescription": "Author and render evidence-backed MDX docs.",
+    "longDescription": "Docdev creates development, planning, architecture, and library documentation from repository evidence, then optionally renders validated MDX through a static Astro site.",
+    "developerName": "kmshdev",
+    "category": "Developer Tools",
+    "capabilities": ["Write"],
+    "websiteURL": "https://github.com/kmshdev/plugins/tree/main/plugins/docdev",
+    "defaultPrompt": [
+      "Create architecture documentation from this repository.",
+      "Draft an executable implementation plan in MDX.",
+      "Render my validated MDX docs with Astro."
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  type?: string;
+  status?: string;
+}
+
+const { title, summary, type, status } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={summary} />
+    <title>{title} · Docdev</title>
+    <link rel="stylesheet" href={import.meta.env.BASE_URL + "styles/global.css"} />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <a href={import.meta.env.BASE_URL}>Docdev</a>
+      <span>Engineering documentation</span>
+    </header>
+    <main id="content" class="page-shell">
+      <header class="document-header">
+        {type && status && <p class="eyebrow">{type} · {status}</p>}
+        <h1>{title}</h1>
+        <p class="summary">{summary}</p>
+      </header>
+      <article class="prose">
+        <slot />
+      </article>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docdev Author"
+  short_description: "Create evidence-backed MDX engineering docs"
+  default_prompt: "Use $docdev-author to create an evidence-backed architecture document in MDX."
