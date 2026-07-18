@@ -111,7 +111,16 @@ def _nth_selector_arguments(tokens: list[Token], pseudo_name: str) -> tuple[Sele
             of_index = index
             break
     anb_tokens = tokens if of_index is None else tokens[:of_index]
-    anb = "".join(token.value for token in anb_tokens if token.kind != "COMMENT").strip()
+    anb_parts: list[str] = []
+    previous: Token | None = None
+    for token in anb_tokens:
+        if token.kind == "COMMENT":
+            continue
+        if previous is not None and token.start > previous.end:
+            anb_parts.append(" ")
+        anb_parts.append(token.value)
+        previous = token
+    anb = "".join(anb_parts).strip()
     if not re.fullmatch(
         r"(?:odd|even|[+-]?\d+|[+-]?(?:\d+)?n(?:\s*[+-]\s*\d+)?)",
         anb,
