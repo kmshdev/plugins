@@ -97,42 +97,33 @@ def cubic_bezier(data: dict[str, Any]) -> dict[str, Any]:
     return {"css": css, "control_points": values}
 
 
-def split_selector_list(value: str) -> list[str]:
-    parts, depth, start = [], 0, 0
-    for index, character in enumerate(value):
-        if character == "(": depth += 1
-        elif character == ")": depth -= 1
-        elif character == "," and depth == 0:
-            parts.append(value[start:index])
-            start = index + 1
-    parts.append(value[start:])
-    return parts
-
-
-def specificity_tuple(selector: str) -> tuple[int, int, int]:
-    selector = re.sub(r":where\((?:[^()]|\([^()]*\))*\)", "", selector)
-    bonus = [0, 0, 0]
-    functional = re.compile(r":(?:is|not|has)\(([^()]*)\)")
-    while True:
-        match = functional.search(selector)
-        if not match: break
-        options = [specificity_tuple(part.strip()) for part in split_selector_list(match.group(1))]
-        chosen = max(options, default=(0, 0, 0))
-        bonus = [bonus[index] + chosen[index] for index in range(3)]
-        selector = selector[:match.start()] + selector[match.end():]
-    ids = len(re.findall(r"#[\w-]+", selector))
-    classes = len(re.findall(r"\.[\w-]+|\[[^\]]+\]|:(?!:)[\w-]+", selector))
-    stripped = re.sub(r"#[\w-]+|\.[\w-]+|\[[^\]]+\]|::?[\w-]+(?:\([^)]*\))?", " ", selector)
-    types = len(re.findall(r"(?<![-\w])(?:[a-zA-Z][\w-]*|\*)", stripped)) - stripped.count("*")
-    return ids + bonus[0], classes + bonus[1], max(0, types) + bonus[2]
-
-
 def specificity(data: dict[str, Any]) -> dict[str, Any]:
     selector = data.get("selector")
     if not isinstance(selector, str) or not selector.strip():
         raise ToolInputError("selector must be a non-empty string")
-    score = specificity_tuple(selector)
-    return {"selector": selector, "specificity": list(score), "display": "-".join(str(part) for part in score)}
+    try:
+        from specificity_calculator import calculate_selector_list
+    except ImportError as error:
+        raise ToolInputError(
+            "Run the canonical css-selectors/scripts/specificity_calculator.py CLI"
+        ) from error
+    results = calculate_selector_list(selector)
+    members = [
+        {
+            "selector": result.selector,
+            "specificity": result.specificity.as_list(),
+            "span": {"start": result.start, "end": result.end},
+            "notes": list(result.notes),
+        }
+        for result in results
+    ]
+    score = members[0]["specificity"]
+    return {
+        "selector": selector,
+        "specificity": score,
+        "display": "-".join(str(part) for part in score),
+        "selectors": members,
+    }
 
 
 def nth_child(data: dict[str, Any]) -> dict[str, Any]:

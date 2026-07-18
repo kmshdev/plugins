@@ -33,7 +33,7 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | PX to REM Converter | Typography | web-typography | deterministic | procedural | conversion contract task required |
 | Code Screenshot Generator | Utilities | web-performance-optimization | browser-dependent | procedural | pinned renderer task required |
 | ASCII Code Generator | Utilities | css-functions | asset-dependent | procedural | source glyph task required |
-| CSS Specificity Calculator | Utilities | css-selectors | deterministic | procedural | Selectors Level 4 parser task required |
+| CSS Specificity Calculator | Utilities | css-selectors | deterministic | implemented-core | `specificity_calculator.py` (per-member Selectors Level 4 tuples, spans, and notes) |
 | nth-child Selector Generator | Utilities | css-selectors | deterministic | procedural | selector contract task required |
 | Browser Feature Detection | Utilities | css-media-queries | browser-dependent | procedural | target-browser probe task required |
 | Image Optimizer | Utilities | web-performance-optimization | codec-dependent | procedural | pinned codec task required |

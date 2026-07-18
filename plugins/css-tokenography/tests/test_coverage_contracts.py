@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TOOL_COVERAGE = ROOT / "references" / "tool-coverage.json"
 GRID_URL = "https://design.dev/tools/grid-area-mapper/"
 CONTRAST_URL = "https://design.dev/tools/color-contrast-checker/"
+SPECIFICITY_URL = "https://design.dev/tools/specificity-calculator/"
 PROCEDURAL_URL = "https://design.dev/tools/gradient-mixer/"
 
 
@@ -79,6 +80,7 @@ class CoverageContractTests(unittest.TestCase):
                 "https://design.dev/tools/color-contrast-checker/",
                 "https://design.dev/tools/grid-area-mapper/",
                 "https://design.dev/tools/subgrid-visualizer/",
+                "https://design.dev/tools/specificity-calculator/",
             ],
         )
         for row in rows:
@@ -115,6 +117,20 @@ class CoverageContractTests(unittest.TestCase):
                 "wcag_3": "https://www.w3.org/TR/wcag-3.0/",
             },
         )
+
+    def test_specificity_coverage_names_level_four_executable_evidence(self) -> None:
+        row = next(item for item in load_tool_rows() if item["url"] == SPECIFICITY_URL)
+
+        self.assertEqual(row["status"], "implemented-core")
+        self.assertEqual(
+            row["implementation_artifact"],
+            "skills/css-selectors/scripts/specificity_calculator.py",
+        )
+        self.assertEqual(row["validation_fixture"], "tests/fixtures/specificity-level-4.json")
+        self.assertEqual(row["coverage_gap"], None)
+        self.assertIn("per-member specificity tuples", row["outputs"])
+        self.assertIn("half-open source spans", row["outputs"])
+        self.assertIn("Selectors Level 4 standards notes", row["outputs"])
 
     def test_non_procedural_rows_name_object_fixtures_and_explicit_commands(self) -> None:
         for row in non_procedural_rows():
