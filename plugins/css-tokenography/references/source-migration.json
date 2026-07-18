@@ -25,7 +25,7 @@
     {"section":"responsive strategy","action":"split","destination":"css-media-queries and css-container-queries"},
     {"section":"animation guidelines","action":"rewrite","destination":"css-transitions and css-animations"},
     {"section":"accessibility checklist","action":"split","destination":"topic-specific skills"},
-    {"section":"catch-all trigger","action":"retire","destination":"replaced by 18 independently triggerable skills"}
+    {"section":"catch-all trigger","action":"retire","destination":"replaced by 17 independently triggerable skills"}
   ]},
   {"source":"css-layout","sections":[
     {"section":"workflow and decision tree","action":"split","destination":"css-grid, css-flexbox, css-centering"},

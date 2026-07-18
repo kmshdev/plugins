@@ -6,7 +6,7 @@ The section-level preserve/rewrite/split/retire record is machine-readable in `s
 |---|---|---|---|
 | css-animate | split | css-transitions, css-animations, css-scroll-driven-animations | View Transitions remains only a cross-reference because no requested guide owns it |
 | css-debug | rewrite | css-selectors, css-grid, css-variables, web-performance-optimization | competing catch-all trigger |
-| css-expert | retire-router | all 18 guide skills | broad “any CSS task” trigger |
+| css-expert | retire-router | all 17 guide skills | broad “any CSS task” trigger |
 | css-layout | split | css-grid, css-flexbox, css-centering, css-container-queries | broad layout trigger |
 | css-refactor | rewrite as workflows | cascade, selectors, variables, media queries, typography | compatibility shims and stale blanket migrations |
 | css-responsive | split | css-media-queries, css-container-queries, web-typography, web performance | viewport-only assumptions |

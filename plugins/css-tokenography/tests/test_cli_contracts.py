@@ -102,7 +102,7 @@ class CoverageValidationTests(unittest.TestCase):
         result = run_cli(self.script, "--plugin", str(ROOT), "--format", "json")
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
-        self.assertEqual(payload["guides"], 18)
+        self.assertEqual(payload["guides"], 17)
         self.assertEqual(payload["tools"], 33)
         self.assertEqual(payload["errors"], [])
 
@@ -148,22 +148,6 @@ class ToolModelTests(unittest.TestCase):
         result = run_cli("skills/css-transitions/scripts/design_tool.py", "--tool", "cubic-bezier-studio", "--format", "json", stdin=payload)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("x1", result.stderr)
-
-
-class WindsurfRuleTests(unittest.TestCase):
-    script = "skills/windsurf-rules/scripts/validate_rule.py"
-
-    def test_valid_glob_rule_reports_scope_and_trigger(self) -> None:
-        result = run_cli(self.script, "--input", str(FIXTURES / "windsurf-glob.md"), "--format", "json")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        payload = json.loads(result.stdout)
-        self.assertEqual(payload["trigger"], "glob")
-        self.assertEqual(payload["globs"], "**/*.test.ts")
-
-    def test_glob_rule_requires_globs(self) -> None:
-        result = run_cli(self.script, "--input", str(FIXTURES / "windsurf-invalid.md"), "--format", "json")
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("globs", result.stderr)
 
 
 if __name__ == "__main__":

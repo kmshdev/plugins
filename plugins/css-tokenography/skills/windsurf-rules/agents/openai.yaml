@@ -1,4 +1,0 @@
-interface:
-  display_name: "Windsurf Rules"
-  short_description: "Apply current Windsurf Rules guidance"
-  default_prompt: "Use $windsurf-rules to implement and review this task."

@@ -76,7 +76,7 @@ Current plugin gap: opaque strings pass through with almost no grammar validatio
 
 ## Coverage-gate finding
 
-The current suite passes 19 tests and the inventory validator reports 18 guides, 33 tools, and 7 migrated source skills. Those checks establish internal inventory consistency only.
+The current suite passes 21 tests and the inventory validator reports 17 guides, 33 tools, and 7 migrated source skills. Those checks establish internal inventory consistency only.
 
 `validate_coverage.py` currently verifies that a referenced test file exists. It does not prove that:
 

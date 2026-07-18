@@ -28,8 +28,8 @@ def validate(plugin: Path) -> dict[str, Any]:
     sources = load_json(references / "source-inventory.json")
     migration = load_json(references / "source-migration.json")
 
-    if not isinstance(guides, list) or len(guides) != 18:
-        errors.append("guide-coverage.json must contain exactly 18 guide entries")
+    if not isinstance(guides, list) or len(guides) != 17:
+        errors.append("guide-coverage.json must contain exactly 17 guide entries")
         guides = guides if isinstance(guides, list) else []
     guide_skills = [entry.get("skill") for entry in guides if isinstance(entry, dict)]
     guide_urls = [entry.get("url") for entry in guides if isinstance(entry, dict)]

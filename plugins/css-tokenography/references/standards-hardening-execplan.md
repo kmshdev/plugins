@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Preserve the 18 independently triggerable guide skills and the complete live design.dev tool inventory.
+- Preserve the 17 independently triggerable guide skills and the complete live design.dev tool inventory.
 - Prefer W3C/CSSWG normative behavior over design.dev wording while retaining topic coverage.
 - Keep runtime CLIs deterministic, network-free, dependency-free, and explicit about browser-dependent results.
 - Do not copy APCA code into the MIT plugin or claim WCAG 3 compliance; record APCA as an intentional exclusion unless licensing and integration requirements are separately approved.
@@ -76,7 +76,7 @@ Set the current specificity, z-index, transform, filter, backdrop-filter, liquid
 
 Run: `python3 plugins/css-tokenography/scripts/validate_coverage.py --plugin plugins/css-tokenography --format json`
 
-Expected: exit 0 with 18 guides, 33 tools, 7 sources, unique evidence for every still-implemented tool, and explicit reasons for downgraded rows.
+Expected: exit 0 with 17 guides, 33 tools, 7 sources, unique evidence for every still-implemented tool, and explicit reasons for downgraded rows.
 
 - [ ] **Step 5: Commit**
 
@@ -521,9 +521,9 @@ python3 plugins/css-tokenography/scripts/validate_coverage.py \
   --plugin plugins/css-tokenography --format json
 ```
 
-Expected: all tests pass; the coverage report has 18 guides, 33 tools, 7 sources, zero errors, unique evidence, valid statuses, and no unused tracked fixtures.
+Expected: all tests pass; the coverage report has 17 guides, 33 tools, 7 sources, zero errors, unique evidence, valid statuses, and no unused tracked fixtures.
 
-- [ ] **Step 3: Run all 18 skill validators**
+- [ ] **Step 3: Run all 17 skill validators**
 
 ```bash
 for skill in plugins/css-tokenography/skills/*; do
@@ -554,7 +554,7 @@ Expected: Codex reports a successful add/update from the `kmshdev` marketplace. 
 
 - [ ] **Step 6: Smoke-test installed discovery and representative CLIs**
 
-Verify one prompt/CLI each for WCAG contrast, specificity, stacking contexts, transforms, filters, grid areas, subgrid, performance budgets, typography, and Windsurf rules. Record lab/browser-dependent gaps separately.
+Verify one prompt/CLI each for WCAG contrast, specificity, stacking contexts, transforms, filters, grid areas, subgrid, performance budgets, and typography. Record lab/browser-dependent gaps separately.
 
 - [ ] **Step 7: Add CI and commit**
 

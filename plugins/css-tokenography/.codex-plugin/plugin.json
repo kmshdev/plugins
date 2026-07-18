@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "CSS Tokenography",
     "shortDescription": "CSS guides, audits, tokens, and tool CLIs.",
-    "longDescription": "CSS Tokenography provides independently triggerable CSS, typography, performance, and Windsurf rule skills backed by current standards and deterministic developer-tool scripts.",
+    "longDescription": "CSS Tokenography provides CSS, typography, and performance skills for Codex, backed by current standards and deterministic developer-tool scripts.",
     "developerName": "Local developer",
     "category": "Productivity",
     "capabilities": [
