@@ -80,6 +80,7 @@ class CoverageContractTests(unittest.TestCase):
                 "https://design.dev/tools/color-contrast-checker/",
                 "https://design.dev/tools/grid-area-mapper/",
                 "https://design.dev/tools/subgrid-visualizer/",
+                "https://design.dev/tools/z-index-visualizer/",
                 "https://design.dev/tools/specificity-calculator/",
             ],
         )

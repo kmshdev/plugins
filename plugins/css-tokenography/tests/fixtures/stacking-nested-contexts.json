@@ -1,0 +1,8 @@
+{
+  "elements": [
+    {"id": "root", "parent": null, "order": 0, "is_root": true, "style": {}},
+    {"id": "panel", "parent": "root", "order": 1, "style": {"position": "relative", "z_index": 1}},
+    {"id": "modal", "parent": "panel", "order": 2, "style": {"position": "fixed", "z_index": 9999}},
+    {"id": "overlay", "parent": "root", "order": 3, "style": {"position": "fixed", "z_index": 2}}
+  ]
+}

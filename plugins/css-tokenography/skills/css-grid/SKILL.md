@@ -22,4 +22,8 @@ Run `python3 scripts/grid_area_mapper.py --input layout.json --format json`. Sup
 
 Run `python3 scripts/subgrid_visualizer.py --input subgrid.json --format json`. Supply parent track counts/gap and item line spans with `subgrid_columns`, `subgrid_rows`, and optional nested `children`. The CLI validates boundaries and exposes inherited tracks and gaps.
 
-Use `design_tool.py --tool z-index-visualizer` only as a declaration model; diagnose stacking contexts separately. Primary references: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout and https://design.dev/guides/css-grid/.
+## Z-index visualizer
+
+Run `python3 scripts/z_index_visualizer.py --input elements.json --format json`. Supply a DOM-like tree as explicit element IDs, parent IDs, unique document-order integers, computed-style subsets, and explicit layout, top-layer, and retained-animation facts. The model reports context triggers, nested atomic contexts, local negative/auto-zero/positive/top-layer paint phases, and separate absolute/fixed containing blocks.
+
+The CLI accepts only pre-collected facts. It does not parse HTML or stylesheets and cannot replace browser collection or visual verification. Primary references: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout and https://design.dev/guides/css-grid/.

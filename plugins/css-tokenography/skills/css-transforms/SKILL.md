@@ -14,6 +14,8 @@ description: Compose, implement, or review CSS 2D and 3D transforms, transform o
 5. Verify focus indicators, pointer targets, overflow, stacking contexts, and reduced-motion behavior.
 6. Measure rendering before adding layer-promotion hints.
 
+When diagnosing overlap, use the CSS Grid skill's `z_index_visualizer.py` with computed facts. Transform, individual translate/rotate/scale, perspective, and filter effects can create stacking contexts, but opacity and isolation do not establish fixed-position containing blocks. Always keep those trigger registries separate.
+
 ## Deterministic model
 
 Run `python3 scripts/design_tool.py --tool css-transform-playground --format json`. Input accepts ordered component fields such as `translate_x`, `rotate`, `scale`, `perspective`, and `origin`. Related semantic models cover backdrop filters, shadows, clip paths, filters, liquid-glass styling, and neumorphism; treat their visual result as browser-dependent.

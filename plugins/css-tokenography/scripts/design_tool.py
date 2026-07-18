@@ -236,7 +236,6 @@ SIMPLE_TOOLS: dict[str, tuple[str, list[str]]] = {
     "metallic-effect-generator": ("background", ["value"]),
     "neumorphism": ("box-shadow", ["value"]),
     "text-shadow-generator": ("text-shadow", ["value"]),
-    "z-index-visualizer": ("z-index", ["value"]),
 }
 
 
@@ -255,6 +254,16 @@ def simple_tool(tool: str, data: dict[str, Any]) -> dict[str, Any]:
     return {"css": "\n".join(declarations), "declarations": declarations}
 
 
+def stacking_contexts(data: dict[str, Any]) -> dict[str, Any]:
+    owner_scripts = Path(__file__).resolve().parents[1] / "skills" / "css-grid" / "scripts"
+    sys.path.insert(0, str(owner_scripts))
+    try:
+        from z_index_visualizer import build_report
+        return build_report(data)
+    except (ImportError, ValueError) as error:
+        raise ToolInputError(str(error)) from error
+
+
 HANDLERS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "clamp-generator": clamp_generator,
     "px-to-rem-converter": px_to_rem,
@@ -266,6 +275,7 @@ HANDLERS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "oklch-color-converter": oklch_converter,
     "aspect-ratio-calculator": aspect_ratio,
     "gradient-mixer": gradient,
+    "z-index-visualizer": stacking_contexts,
 }
 
 
