@@ -4,9 +4,16 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import json
+import shlex
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any
+
+
+ALLOWED_TOOL_STATUSES = {"implemented-full", "implemented-core", "serializer-only", "procedural"}
 
 
 def load_json(path: Path) -> Any:
@@ -18,6 +25,50 @@ def load_json(path: Path) -> Any:
 
 def artifact_path(plugin: Path, value: str) -> Path:
     return plugin / value.split(" --tool ", 1)[0]
+
+
+def tool_name(url: str) -> str:
+    return url.rstrip("/").rsplit("/", 1)[-1]
+
+
+def fixture_resolves(plugin: Path, value: str) -> bool:
+    relative_path, separator, anchor = value.partition("#")
+    path = plugin / relative_path
+    if not path.is_file():
+        return False
+    if not separator:
+        return True
+    class_name, dot, method_name = anchor.partition(".")
+    if not dot or not method_name.startswith("test_"):
+        return False
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except (OSError, SyntaxError):
+        return False
+    return any(
+        isinstance(node, ast.ClassDef)
+        and node.name == class_name
+        and any(
+            isinstance(member, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and member.name == method_name
+            for member in node.body
+        )
+        for node in tree.body
+    )
+
+
+def cli_names_tool(plugin: Path, artifact: str, name: str) -> bool:
+    command = shlex.split(artifact)
+    if "--tool" not in command:
+        return True
+    command[0] = str(plugin / command[0])
+    result = subprocess.run(
+        [sys.executable, *command, "--help"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    return result.returncode == 0 and name in result.stdout
 
 
 def validate(plugin: Path) -> dict[str, Any]:
@@ -54,6 +105,9 @@ def validate(plugin: Path) -> dict[str, Any]:
         tools = tools if isinstance(tools, list) else []
     tool_urls = [entry.get("url") for entry in tools if isinstance(entry, dict)]
     if len(set(tool_urls)) != len(tool_urls): errors.append("tool URLs must be unique")
+    evidence = [entry.get("validation_fixture") for entry in tools if isinstance(entry, dict) and entry.get("status") != "procedural"]
+    if len(evidence) != len(set(evidence)):
+        errors.append("non-procedural tools must name unique validation evidence")
     required_tool_fields = {
         "url", "title", "category", "owner", "inputs", "outputs", "classification",
         "implementation_artifact", "validation_fixture", "status", "reason",
@@ -73,13 +127,17 @@ def validate(plugin: Path) -> dict[str, Any]:
         artifact = entry.get("implementation_artifact")
         if not isinstance(artifact, str) or not artifact_path(plugin, artifact).is_file():
             errors.append(f"tool {url} has missing artifact {artifact!r}")
-        if entry.get("status") != "procedural":
+        status = entry.get("status")
+        if status not in ALLOWED_TOOL_STATUSES:
+            errors.append(f"tool {url} has unsupported status {status!r}")
+        if status != "procedural":
             fixture = entry.get("validation_fixture")
-            fixture_path = plugin / str(fixture).split("#", 1)[0]
-            if not fixture or not fixture_path.is_file():
-                errors.append(f"tool {url} has missing validation fixture {fixture!r}")
-        elif not entry.get("reason"):
-            errors.append(f"procedural tool {url} requires an exclusion reason")
+            if not isinstance(fixture, str) or not fixture_resolves(plugin, fixture):
+                errors.append(f"tool {url} has unresolved validation evidence {fixture!r}")
+            if isinstance(artifact, str) and isinstance(url, str) and not cli_names_tool(plugin, artifact, tool_name(url)):
+                errors.append(f"tool {url} is not an available CLI choice in {artifact!r}")
+        if not entry.get("reason"):
+            errors.append(f"tool {url} requires a coverage reason")
 
     source_entries = sources.get("sources") if isinstance(sources, dict) else None
     if not isinstance(source_entries, list) or len(source_entries) != 7:
