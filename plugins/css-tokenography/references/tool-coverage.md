@@ -6,7 +6,7 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 
 | Tool | Category | Owner | Classification | Status | Artifact |
 |---|---|---|---|---|---|
-| Color Contrast Checker | Colors | css-variables | deterministic | procedural | APCA contract task required |
+| Color Contrast Checker | Colors | css-variables | deterministic | implemented-core | `color_contrast_checker.py` (WCAG 2.2 color-pair thresholds; APCA explicitly excluded) |
 | CSS Gradient Generator | Colors | css-gradients | deterministic | procedural | gradient contract task required |
 | OKLCH Color Converter | Colors | css-variables | deterministic | procedural | owner CLI and fixture task required |
 | Liquid Glass CSS Generator | Effects | css-transforms | deterministic | procedural | liquid-glass contract task required |

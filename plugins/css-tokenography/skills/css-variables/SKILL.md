@@ -16,6 +16,10 @@ description: Design, implement, or audit CSS custom properties and design tokens
 
 ## Color tools
 
-Run `python3 scripts/design_tool.py --tool color-contrast-checker --format json` with six-digit sRGB hex colors. The output reports WCAG contrast thresholds. Run the same CLI with `oklch-color-converter` and `{"hex":"#rrggbb"}` for dependency-free sRGB-to-OKLCH conversion and structured channels.
+Run `python3 scripts/color_contrast_checker.py --format json` with a JSON object containing `foreground` and `background` six-digit sRGB hex colors. The output separates the exact WCAG 2.2 relative-luminance ratio used for threshold comparisons from the two-decimal `display_ratio`, and reports AA/AAA text plus 3:1 non-text threshold results. This color-pair report does not establish page, component, or product conformance.
+
+APCA is not implemented. It is beta and polarity-sensitive, and this skill does not present it as a WCAG 3 conformance method. Use the [official APCA project documentation](https://git.apcacontrast.com/documentation/) and the current [WCAG 3 Working Draft](https://www.w3.org/TR/wcag-3.0/) when evaluating that separate, evolving method.
+
+Run `python3 scripts/design_tool.py --tool oklch-color-converter --format json` with `{"hex":"#rrggbb"}` for dependency-free sRGB-to-OKLCH conversion and structured channels.
 
 Return the token graph, scope/inheritance rules, fallback behavior, contrast results, and migration risks. Topic source: https://design.dev/guides/css-variables/.

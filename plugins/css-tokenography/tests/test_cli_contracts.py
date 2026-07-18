@@ -132,7 +132,9 @@ class ToolModelTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         report = json.loads(result.stdout)
         self.assertEqual(report["ratio"], 21.0)
-        self.assertTrue(report["wcag_aa_normal"])
+        self.assertEqual(report["standard"], "WCAG 2.2")
+        self.assertTrue(report["thresholds"]["aa_normal_text"])
+        self.assertEqual(report["apca"]["status"], "not-implemented")
 
     def test_oklch_converter_computes_from_srgb_hex(self) -> None:
         payload = json.dumps({"hex": "#ff0000"})

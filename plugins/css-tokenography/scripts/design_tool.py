@@ -159,13 +159,27 @@ def contrast(data: dict[str, Any]) -> dict[str, Any]:
     foreground = parse_hex(data.get("foreground"), "foreground")
     background = parse_hex(data.get("background"), "background")
     light, dark = sorted((luminance(foreground), luminance(background)), reverse=True)
-    ratio = round((light + 0.05) / (dark + 0.05), 2)
+    ratio = (light + 0.05) / (dark + 0.05)
     return {
+        "method": "wcag2-relative-luminance",
+        "standard": "WCAG 2.2",
         "ratio": ratio,
-        "wcag_aa_normal": ratio >= 4.5,
-        "wcag_aa_large": ratio >= 3.0,
-        "wcag_aaa_normal": ratio >= 7.0,
-        "wcag_aaa_large": ratio >= 4.5,
+        "display_ratio": round(ratio, 2),
+        "scope": "color-pair-thresholds-only",
+        "thresholds": {
+            "aa_normal_text": ratio >= 4.5,
+            "aa_large_text": ratio >= 3.0,
+            "aaa_normal_text": ratio >= 7.0,
+            "aaa_large_text": ratio >= 4.5,
+            "non_text": ratio >= 3.0,
+        },
+        "apca": {
+            "status": "not-implemented",
+            "reason": (
+                "APCA is beta and polarity-sensitive; it is not implemented here "
+                "and is not a WCAG 3 conformance method."
+            ),
+        },
     }
 
 

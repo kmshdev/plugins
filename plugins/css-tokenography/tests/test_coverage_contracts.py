@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TOOL_COVERAGE = ROOT / "references" / "tool-coverage.json"
 GRID_URL = "https://design.dev/tools/grid-area-mapper/"
 CONTRAST_URL = "https://design.dev/tools/color-contrast-checker/"
+PROCEDURAL_URL = "https://design.dev/tools/gradient-mixer/"
 
 
 def load_tool_rows() -> list[dict[str, object]]:
@@ -69,12 +70,13 @@ class CoverageContractTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn(message, result.stdout)
 
-    def test_inventory_keeps_only_grid_clis_non_procedural(self) -> None:
+    def test_inventory_names_all_canonical_non_procedural_clis(self) -> None:
         rows = non_procedural_rows()
 
         self.assertEqual(
             [row["url"] for row in rows],
             [
+                "https://design.dev/tools/color-contrast-checker/",
                 "https://design.dev/tools/grid-area-mapper/",
                 "https://design.dev/tools/subgrid-visualizer/",
             ],
@@ -89,6 +91,30 @@ class CoverageContractTests(unittest.TestCase):
                 self.assertNotEqual(Path(str(artifact)).name, "design_tool.py")
                 slug = str(row["url"]).rstrip("/").rsplit("/", 1)[-1]
                 self.assertEqual(Path(str(artifact)).name, slug.replace("-", "_") + ".py")
+
+    def test_contrast_coverage_discloses_apca_exclusion(self) -> None:
+        row = next(item for item in load_tool_rows() if item["url"] == CONTRAST_URL)
+
+        self.assertEqual(row["status"], "implemented-core")
+        self.assertEqual(
+            row["implementation_artifact"],
+            "skills/css-variables/scripts/color_contrast_checker.py",
+        )
+        self.assertEqual(row["validation_fixture"], "tests/fixtures/contrast-threshold-fail.json")
+        self.assertIn("exact contrast ratio", row["outputs"])
+        self.assertIn("WCAG 2.2 threshold results", row["outputs"])
+        self.assertEqual(row["coverage_gap"], None)
+        unsupported = row["unsupported_behavior"]
+        self.assertEqual(unsupported[0]["behavior"], "APCA")
+        self.assertEqual(unsupported[0]["status"], "not-implemented")
+        self.assertIn("not a WCAG 3 conformance method", unsupported[0]["reason"])
+        self.assertEqual(
+            unsupported[0]["references"],
+            {
+                "official_project": "https://git.apcacontrast.com/documentation/",
+                "wcag_3": "https://www.w3.org/TR/wcag-3.0/",
+            },
+        )
 
     def test_non_procedural_rows_name_object_fixtures_and_explicit_commands(self) -> None:
         for row in non_procedural_rows():
@@ -321,7 +347,7 @@ class CoverageContractTests(unittest.TestCase):
         self.assert_rejected(result, "JSON object under tests/fixtures")
 
     def test_validator_requires_coverage_gap_object(self) -> None:
-        result = run_validator_with_row_update(CONTRAST_URL, coverage_gap=None)
+        result = run_validator_with_row_update(PROCEDURAL_URL, coverage_gap=None)
 
         self.assert_rejected(result, "requires a coverage_gap object")
 
@@ -380,7 +406,7 @@ class CoverageContractTests(unittest.TestCase):
         )
         for name, coverage_gap, expected_error in cases:
             with self.subTest(case=name):
-                result = run_validator_with_row_update(CONTRAST_URL, coverage_gap=coverage_gap)
+                result = run_validator_with_row_update(PROCEDURAL_URL, coverage_gap=coverage_gap)
 
                 self.assert_rejected(result, expected_error)
 

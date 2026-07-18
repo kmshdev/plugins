@@ -1,5 +1,6 @@
 # Standards corrections
 
+- The color contrast CLI implements only WCAG 2.2 relative-luminance color-pair thresholds. Thresholds use the full-precision ratio while `display_ratio` is rounded separately; a displayed `4.50:1` can therefore remain below the `4.5:1` AA boundary. The result is not a page or product conformance claim. APCA is not implemented: it is beta and polarity-sensitive, and it is not a WCAG 3 conformance method. See the [official APCA project documentation](https://git.apcacontrast.com/documentation/) and the current [WCAG 3 Working Draft](https://www.w3.org/TR/wcag-3.0/).
 - Use the current Core Web Vitals thresholds from web.dev: LCP at or below 2.5 seconds, INP at or below 200 milliseconds, and CLS at or below 0.1. Evaluate field results at the 75th percentile, segmented by mobile and desktop; lab data is diagnostic, not real-user proof.
 - Do not repeat the subgrid page's claim that Chromium support is still in development. Current platform documentation reports interoperable modern-browser support; verify target browsers rather than freezing version tables into the skill.
 - Do not recommend `translateZ(0)`, `will-change`, or layer promotion as universal performance fixes. Animate transform and opacity when they satisfy the interaction, measure rendering cost, and add `will-change` briefly only when evidence justifies it.
