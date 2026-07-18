@@ -69,7 +69,7 @@ class SpecificityCalculatorTests(unittest.TestCase):
         )
 
     def test_malformed_syntax_exits_nonzero(self) -> None:
-        malformed = ["a,", "[href='x'", ":is(.a", ".", ":is (.a)", "a/*"]
+        malformed = ["a,", "[href='x'", ":is(.a", ".", ":is (.a)", "a/*", ":nth-child(foo)"]
         for selector in malformed:
             with self.subTest(selector=selector):
                 result = run_cli(selector)

@@ -102,6 +102,9 @@ def specificity(data: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(selector, str) or not selector.strip():
         raise ToolInputError("selector must be a non-empty string")
     try:
+        selector_scripts = Path(__file__).resolve().parents[1] / "skills" / "css-selectors" / "scripts"
+        if str(selector_scripts) not in sys.path:
+            sys.path.insert(0, str(selector_scripts))
         from specificity_calculator import calculate_selector_list
     except ImportError as error:
         raise ToolInputError(

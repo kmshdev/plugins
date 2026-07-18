@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 from selector_tokens import SelectorSyntaxError, Token, unescape_identifier
@@ -109,12 +110,16 @@ def _nth_selector_arguments(tokens: list[Token], pseudo_name: str) -> tuple[Sele
         ):
             of_index = index
             break
+    anb_tokens = tokens if of_index is None else tokens[:of_index]
+    anb = "".join(token.value for token in anb_tokens if token.kind != "COMMENT").strip()
+    if not re.fullmatch(
+        r"(?:odd|even|[+-]?\d+|[+-]?(?:\d+)?n(?:\s*[+-]\s*\d+)?)",
+        anb,
+        re.IGNORECASE,
+    ):
+        raise SelectorSyntaxError(f":{pseudo_name}() requires a valid An+B expression")
     if of_index is None:
-        if not _significant(tokens):
-            raise SelectorSyntaxError(f":{pseudo_name}() requires an An+B expression")
         return ()
-    if not _significant(tokens[:of_index]):
-        raise SelectorSyntaxError(f":{pseudo_name}() requires an An+B expression before 'of'")
     selectors = tokens[of_index + 1 :]
     if not _significant(selectors):
         raise SelectorSyntaxError(f":{pseudo_name}() requires a selector list after 'of'")
