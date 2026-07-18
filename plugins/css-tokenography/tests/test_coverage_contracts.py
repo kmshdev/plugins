@@ -25,6 +25,7 @@ def run_validator_with_row_update(
     url: str,
     *,
     extra_files: dict[str, str] | None = None,
+    extra_symlinks: dict[str, str] | None = None,
     **changes: object,
 ) -> subprocess.CompletedProcess[str]:
     with tempfile.TemporaryDirectory() as temporary_directory:
@@ -34,6 +35,10 @@ def run_validator_with_row_update(
             path = plugin / relative_path
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8")
+        for relative_path, target in (extra_symlinks or {}).items():
+            path = plugin / relative_path
+            path.unlink(missing_ok=True)
+            path.symlink_to(target)
         coverage = plugin / "references" / "tool-coverage.json"
         rows = json.loads(coverage.read_text(encoding="utf-8"))
         row = next(item for item in rows if item["url"] == url)
@@ -77,6 +82,8 @@ class CoverageContractTests(unittest.TestCase):
                 self.assertTrue(str(artifact).startswith(f"skills/{owner}/scripts/"))
                 self.assertTrue(str(artifact).endswith(".py"))
                 self.assertNotEqual(Path(str(artifact)).name, "design_tool.py")
+                slug = str(row["url"]).rstrip("/").rsplit("/", 1)[-1]
+                self.assertEqual(Path(str(artifact)).name, slug.replace("-", "_") + ".py")
 
     def test_non_procedural_rows_name_object_fixtures_and_explicit_commands(self) -> None:
         for row in non_procedural_rows():
@@ -138,6 +145,41 @@ class CoverageContractTests(unittest.TestCase):
         )
 
         self.assert_rejected(result, "owner-bound Python CLI")
+
+    def test_validator_rejects_owner_local_noncanonical_artifact(self) -> None:
+        artifact = "skills/css-grid/scripts/arbitrary.py"
+        fixture = "tests/fixtures/arbitrary-subgrid.json"
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_files={
+                artifact: (ROOT / "skills/css-grid/scripts/subgrid_visualizer.py").read_text(
+                    encoding="utf-8"
+                ),
+                fixture: (ROOT / "tests/fixtures/subgrid-valid.json").read_text(encoding="utf-8"),
+            },
+            implementation_artifact=artifact,
+            validation_fixture=fixture,
+            validation_command=[
+                "python3",
+                "{plugin}/" + artifact,
+                "--input",
+                "{fixture}",
+                "--format",
+                "json",
+            ],
+        )
+
+        self.assert_rejected(result, "canonical tool script")
+
+    def test_validator_rejects_canonical_symlink_to_shared_tool(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_symlinks={
+                "skills/css-grid/scripts/grid_area_mapper.py": "design_tool.py",
+            },
+        )
+
+        self.assert_rejected(result, "must not be a symlink")
 
     def test_validator_rejects_mismatched_artifact_command(self) -> None:
         result = run_validator_with_row_update(

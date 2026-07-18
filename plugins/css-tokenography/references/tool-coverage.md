@@ -2,7 +2,7 @@
 
 Canonical inventory retrieved from the live design.dev tools index on 2026-07-16. Detailed inputs, outputs, evidence, and downgrade tasks are in `tool-coverage.json`.
 
-Coverage fails closed: a non-procedural tool must use a standalone Python CLI under its owner's `scripts/` directory and declare an exact command that runs that artifact against a JSON-object fixture. The validator substitutes `{plugin}` and `{fixture}`, executes the command, requires exit 0, and requires JSON-object stdout. Shared serializers and unittest anchors are not coverage evidence.
+Coverage fails closed: a non-procedural tool must use a non-symlink Python CLI under its owner's `scripts/` directory whose filename is the normalized tool slug (`-` becomes `_`), and declare an exact command that runs that canonical artifact against a JSON-object fixture. The validator substitutes `{plugin}` and `{fixture}`, executes the command, requires exit 0, and requires JSON-object stdout. Shared serializers, aliases, and unittest anchors are not coverage evidence.
 
 | Tool | Category | Owner | Classification | Status | Artifact |
 |---|---|---|---|---|---|

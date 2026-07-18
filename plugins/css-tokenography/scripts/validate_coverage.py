@@ -220,11 +220,23 @@ def validate(plugin: Path) -> dict[str, Any]:
 
         if status != "procedural":
             artifact = entry.get("implementation_artifact")
+            artifact_candidate = plugin / artifact if isinstance(artifact, str) else None
             artifact_path = owner_cli_path(plugin, owner, artifact, must_exist=True)
-            if artifact_path is None:
+            slug = url.rstrip("/").rsplit("/", 1)[-1] if isinstance(url, str) else ""
+            canonical_name = slug.replace("-", "_") + ".py"
+            if artifact_candidate is not None and artifact_candidate.is_symlink():
+                errors.append(f"tool {url} canonical tool script must not be a symlink")
+                artifact_path = None
+            elif artifact_path is None:
                 errors.append(f"tool {url} requires an owner-bound Python CLI")
             elif artifact_path.name == "design_tool.py":
                 errors.append(f"tool {url} requires a standalone owner CLI, not shared design_tool.py")
+                artifact_path = None
+            elif artifact_path.name != canonical_name:
+                errors.append(
+                    f"tool {url} must use canonical tool script skills/{owner}/scripts/{canonical_name}"
+                )
+                artifact_path = None
 
             fixture = entry.get("validation_fixture")
             fixture_error = validation_fixture_error(plugin, fixture)
