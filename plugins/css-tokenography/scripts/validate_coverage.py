@@ -37,7 +37,16 @@ def fixture_resolves(plugin: Path, value: str) -> bool:
     if not path.is_file():
         return False
     if not separator:
-        return True
+        fixture_root = (plugin / "tests" / "fixtures").resolve()
+        if path.suffix != ".json" or not path.resolve().is_relative_to(fixture_root):
+            return False
+        try:
+            return isinstance(load_json(path), dict)
+        except ValueError:
+            return False
+    test_root = (plugin / "tests").resolve()
+    if path.suffix != ".py" or not path.resolve().is_relative_to(test_root):
+        return False
     class_name, dot, method_name = anchor.partition(".")
     if not dot or not method_name.startswith("test_"):
         return False
@@ -57,18 +66,31 @@ def fixture_resolves(plugin: Path, value: str) -> bool:
     )
 
 
-def cli_names_tool(plugin: Path, artifact: str, name: str) -> bool:
+def run_artifact(plugin: Path, artifact: str, *args: str) -> subprocess.CompletedProcess[str] | None:
     command = shlex.split(artifact)
-    if "--tool" not in command:
-        return True
+    if not command:
+        return None
     command[0] = str(plugin / command[0])
-    result = subprocess.run(
-        [sys.executable, *command, "--help"],
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    return result.returncode == 0 and name in result.stdout
+    try:
+        return subprocess.run(
+            [sys.executable, *command, *args],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except OSError:
+        return None
+
+
+def structured_downgrade_reason(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    missing_prefix = "Missing semantic contract:"
+    restoration_prefix = "Restoration task:"
+    if not value.startswith(missing_prefix) or restoration_prefix not in value:
+        return False
+    missing_contract, restoration_task = value[len(missing_prefix):].split(restoration_prefix, 1)
+    return bool(missing_contract.strip() and restoration_task.strip())
 
 
 def validate(plugin: Path) -> dict[str, Any]:
@@ -125,17 +147,48 @@ def validate(plugin: Path) -> dict[str, Any]:
         if owner not in guide_skills:
             errors.append(f"tool {url} has unknown owner {owner!r}")
         artifact = entry.get("implementation_artifact")
-        if not isinstance(artifact, str) or not artifact_path(plugin, artifact).is_file():
+        artifact_exists = isinstance(artifact, str) and artifact_path(plugin, artifact).is_file()
+        if not artifact_exists:
             errors.append(f"tool {url} has missing artifact {artifact!r}")
         status = entry.get("status")
         if status not in ALLOWED_TOOL_STATUSES:
             errors.append(f"tool {url} has unsupported status {status!r}")
         if status != "procedural":
             fixture = entry.get("validation_fixture")
-            if not isinstance(fixture, str) or not fixture_resolves(plugin, fixture):
+            fixture_is_valid = isinstance(fixture, str) and fixture_resolves(plugin, fixture)
+            if not fixture_is_valid:
                 errors.append(f"tool {url} has unresolved validation evidence {fixture!r}")
-            if isinstance(artifact, str) and isinstance(url, str) and not cli_names_tool(plugin, artifact, tool_name(url)):
-                errors.append(f"tool {url} is not an available CLI choice in {artifact!r}")
+                if isinstance(fixture, str) and "#" not in fixture:
+                    errors.append(f"tool {url} unanchored evidence must be a JSON object under tests/fixtures")
+            if artifact_exists and isinstance(artifact, str):
+                command = shlex.split(artifact)
+                help_result = run_artifact(plugin, artifact, "--help")
+                if help_result is None or help_result.returncode != 0:
+                    errors.append(f"tool {url} artifact {artifact!r} does not support --help")
+                elif "--tool" in command and isinstance(url, str) and tool_name(url) not in help_result.stdout:
+                    errors.append(f"tool {url} is not an available CLI choice in {artifact!r}")
+                if artifact_path(plugin, artifact).suffix != ".py":
+                    errors.append(f"tool {url} implementation artifact must name a Python CLI")
+                if fixture_is_valid and isinstance(fixture, str) and "#" not in fixture:
+                    fixture_result = run_artifact(
+                        plugin,
+                        artifact,
+                        "--input",
+                        str(plugin / fixture),
+                        "--format",
+                        "json",
+                    )
+                    try:
+                        fixture_output = json.loads(fixture_result.stdout) if fixture_result is not None else None
+                    except json.JSONDecodeError:
+                        fixture_output = None
+                    if fixture_result is None or fixture_result.returncode != 0 or not isinstance(fixture_output, dict):
+                        errors.append(f"tool {url} artifact cannot consume validation fixture {fixture!r}")
+        if status in {"procedural", "serializer-only"} and not structured_downgrade_reason(entry.get("reason")):
+            errors.append(
+                f"tool {url} downgrade reason requires non-empty "
+                "'Missing semantic contract:' and 'Restoration task:' clauses"
+            )
         if not entry.get("reason"):
             errors.append(f"tool {url} requires a coverage reason")
 
