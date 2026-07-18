@@ -1,6 +1,4 @@
-import ast
 import json
-import shlex
 import shutil
 import subprocess
 import sys
@@ -11,52 +9,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOL_COVERAGE = ROOT / "references" / "tool-coverage.json"
+GRID_URL = "https://design.dev/tools/grid-area-mapper/"
+CONTRAST_URL = "https://design.dev/tools/color-contrast-checker/"
 
 
 def load_tool_rows() -> list[dict[str, object]]:
     return json.loads(TOOL_COVERAGE.read_text(encoding="utf-8"))
 
 
-def implemented_tool_rows() -> list[dict[str, object]]:
+def non_procedural_rows() -> list[dict[str, object]]:
     return [row for row in load_tool_rows() if row["status"] != "procedural"]
-
-
-def tool_name(row: dict[str, object]) -> str:
-    return str(row["url"]).rstrip("/").rsplit("/", 1)[-1]
-
-
-def run_artifact(row: dict[str, object], *args: str) -> subprocess.CompletedProcess[str]:
-    command = shlex.split(str(row["implementation_artifact"]))
-    command[0] = str(ROOT / command[0])
-    return subprocess.run(
-        [sys.executable, *command, *args],
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-
-
-def unittest_method_exists(fixture: str) -> bool:
-    relative_path, separator, anchor = fixture.partition("#")
-    path = ROOT / relative_path
-    if not path.is_file():
-        return False
-    if not separator:
-        return True
-    class_name, dot, method_name = anchor.partition(".")
-    if not dot or not method_name.startswith("test_"):
-        return False
-    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-    return any(
-        isinstance(node, ast.ClassDef)
-        and node.name == class_name
-        and any(
-            isinstance(member, (ast.FunctionDef, ast.AsyncFunctionDef))
-            and member.name == method_name
-            for member in node.body
-        )
-        for node in tree.body
-    )
 
 
 def run_validator_with_row_update(
@@ -93,129 +55,215 @@ def run_validator_with_row_update(
 
 
 class CoverageContractTests(unittest.TestCase):
-    def test_non_procedural_tools_name_unique_evidence(self) -> None:
-        evidence = [row["validation_fixture"] for row in implemented_tool_rows()]
-        self.assertEqual(len(evidence), len(set(evidence)))
+    def assert_rejected(self, result: subprocess.CompletedProcess[str], message: str) -> None:
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn(message, result.stdout)
 
-    def test_non_procedural_evidence_resolves_to_a_fixture_or_unittest_method(self) -> None:
-        for row in implemented_tool_rows():
+    def test_inventory_keeps_only_grid_clis_non_procedural(self) -> None:
+        rows = non_procedural_rows()
+
+        self.assertEqual(
+            [row["url"] for row in rows],
+            [
+                "https://design.dev/tools/grid-area-mapper/",
+                "https://design.dev/tools/subgrid-visualizer/",
+            ],
+        )
+        for row in rows:
             with self.subTest(tool=row["url"]):
-                fixture = row["validation_fixture"]
-                self.assertIsInstance(fixture, str)
-                self.assertTrue(unittest_method_exists(fixture), fixture)
+                owner = row["owner"]
+                artifact = row["implementation_artifact"]
+                self.assertIsInstance(artifact, str)
+                self.assertTrue(str(artifact).startswith(f"skills/{owner}/scripts/"))
+                self.assertTrue(str(artifact).endswith(".py"))
+                self.assertNotEqual(Path(str(artifact)).name, "design_tool.py")
 
-    def test_cli_artifacts_name_existing_tools(self) -> None:
-        for row in implemented_tool_rows():
+    def test_non_procedural_rows_name_object_fixtures_and_explicit_commands(self) -> None:
+        for row in non_procedural_rows():
             with self.subTest(tool=row["url"]):
-                result = run_artifact(row, "--help")
-                self.assertEqual(result.returncode, 0, row["url"])
-                if " --tool " in str(row["implementation_artifact"]):
-                    self.assertIn(tool_name(row), result.stdout)
-
-    def test_validator_rejects_unanchored_evidence_outside_fixture_directory(self) -> None:
-        result = run_validator_with_row_update(
-            "https://design.dev/tools/oklch-color-converter/",
-            validation_fixture="skills/css-variables/SKILL.md",
-        )
-
-        self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("tests/fixtures", result.stdout)
-
-    def test_validator_rejects_fixture_the_artifact_cannot_consume(self) -> None:
-        result = run_validator_with_row_update(
-            "https://design.dev/tools/oklch-color-converter/",
-            validation_fixture="tests/fixtures/subgrid-invalid.json",
-        )
-
-        self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("cannot consume validation fixture", result.stdout)
-
-    def test_validator_rejects_existing_non_executable_artifact(self) -> None:
-        result = run_validator_with_row_update(
-            "https://design.dev/tools/grid-area-mapper/",
-            implementation_artifact="tests/fixtures/grid-valid.json",
-        )
-
-        self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("cannot consume validation fixture", result.stdout)
-
-    def test_validator_requires_structured_downgrade_reasons(self) -> None:
-        cases = (
-            ("https://design.dev/tools/color-contrast-checker/", "procedural"),
-            ("https://design.dev/tools/css-transform-playground/", "serializer-only"),
-        )
-        for url, status in cases:
-            with self.subTest(status=status):
-                result = run_validator_with_row_update(url, reason="Coverage is intentionally limited.")
-
-                self.assertNotEqual(result.returncode, 0, result.stdout)
-                self.assertIn("Missing semantic contract:", result.stdout)
-                self.assertIn("Restoration task:", result.stdout)
-
-    def test_validator_rejects_unrelated_python_artifact_for_anchored_evidence(self) -> None:
-        result = run_validator_with_row_update(
-            "https://design.dev/tools/oklch-color-converter/",
-            implementation_artifact="tests/test_cli_contracts.py",
-        )
-
-        self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("exact --tool oklch-color-converter binding", result.stdout)
-
-    def test_validator_requires_exact_shared_tool_binding(self) -> None:
-        result = run_validator_with_row_update(
-            "https://design.dev/tools/oklch-color-converter/",
-            implementation_artifact="skills/css-variables/scripts/design_tool.py --tool clamp-generator",
-        )
-
-        self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("exact --tool oklch-color-converter binding", result.stdout)
-
-    def test_validator_executes_exact_unittest_evidence(self) -> None:
-        failing_test = """import unittest
-
-
-class EvidenceTests(unittest.TestCase):
-    def test_claim(self) -> None:
-        self.fail(\"adversarial evidence failure\")
-"""
-        result = run_validator_with_row_update(
-            "https://design.dev/tools/oklch-color-converter/",
-            extra_files={"tests/test_adversarial_evidence.py": failing_test},
-            validation_fixture="tests/test_adversarial_evidence.py#EvidenceTests.test_claim",
-        )
-
-        self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("exact unittest evidence failed", result.stdout)
-
-    def test_validator_rejects_imprecise_downgrade_reasons(self) -> None:
-        cases = (
-            (
-                "short clauses",
-                "Missing semantic contract: no. Restoration task: Task 2.",
-                "minimum detail",
-            ),
-            (
-                "placeholder vocabulary",
-                "Missing semantic contract: CSS selector stuff remains unsupported. "
-                "Restoration task: Task 2 will do it later.",
-                "placeholder vocabulary",
-            ),
-            (
-                "no concrete target",
-                "Missing semantic contract: Nested functional selector parsing is not implemented. "
-                "Restoration task: Implement authoritative grammar fixtures and focused parser checks.",
-                "concrete Task N or artifact/test path",
-            ),
-        )
-        for name, reason, expected_error in cases:
-            with self.subTest(case=name):
-                result = run_validator_with_row_update(
-                    "https://design.dev/tools/specificity-calculator/",
-                    reason=reason,
+                fixture = ROOT / str(row["validation_fixture"])
+                self.assertTrue(fixture.is_relative_to(ROOT / "tests" / "fixtures"))
+                self.assertTrue(fixture.is_file(), fixture)
+                self.assertIsInstance(json.loads(fixture.read_text(encoding="utf-8")), dict)
+                command = row.get("validation_command")
+                self.assertIsInstance(command, list)
+                assert isinstance(command, list)
+                self.assertIn("{fixture}", command)
+                self.assertIn(
+                    "{plugin}/" + str(row["implementation_artifact"]),
+                    command,
                 )
 
-                self.assertNotEqual(result.returncode, 0, result.stdout)
-                self.assertIn(expected_error, result.stdout)
+    def test_validator_rejects_arbitrary_python_artifact(self) -> None:
+        artifact = "tests/arbitrary.py"
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_files={artifact: "import json\nprint(json.dumps({'ok': True}))\n"},
+            implementation_artifact=artifact,
+            validation_command=["python3", "{plugin}/" + artifact, "{fixture}"],
+        )
+
+        self.assert_rejected(result, "owner-bound Python CLI")
+
+    def test_validator_rejects_arbitrary_json_artifact(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            implementation_artifact="tests/fixtures/grid-valid.json",
+            validation_command=[
+                "python3",
+                "{plugin}/tests/fixtures/grid-valid.json",
+                "{fixture}",
+            ],
+        )
+
+        self.assert_rejected(result, "owner-bound Python CLI")
+
+    def test_validator_rejects_shared_design_tool(self) -> None:
+        artifact = "skills/css-grid/scripts/design_tool.py"
+        result = run_validator_with_row_update(
+            GRID_URL,
+            implementation_artifact=artifact,
+            validation_command=["python3", "{plugin}/" + artifact, "{fixture}"],
+        )
+
+        self.assert_rejected(result, "standalone owner CLI")
+
+    def test_validator_rejects_wrong_owner(self) -> None:
+        artifact = "skills/css-functions/scripts/grid_area_mapper.py"
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_files={artifact: "import json\nprint(json.dumps({'ok': True}))\n"},
+            implementation_artifact=artifact,
+            validation_command=["python3", "{plugin}/" + artifact, "{fixture}"],
+        )
+
+        self.assert_rejected(result, "owner-bound Python CLI")
+
+    def test_validator_rejects_mismatched_artifact_command(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            validation_command=[
+                "python3",
+                "{plugin}/skills/css-grid/scripts/subgrid_visualizer.py",
+                "--input",
+                "{fixture}",
+                "--format",
+                "json",
+            ],
+        )
+
+        self.assert_rejected(result, "must invoke declared implementation artifact")
+
+    def test_validator_rejects_mismatched_fixture_command(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            validation_command=[
+                "python3",
+                "{plugin}/skills/css-grid/scripts/grid_area_mapper.py",
+                "--input",
+                "{plugin}/tests/fixtures/subgrid-valid.json",
+                "--format",
+                "json",
+            ],
+        )
+
+        self.assert_rejected(result, "must invoke declared validation fixture")
+
+    def test_validator_rejects_failing_validation_command(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            validation_fixture="tests/fixtures/grid-disconnected.json",
+        )
+
+        self.assert_rejected(result, "validation command failed")
+
+    def test_validator_rejects_non_json_command_output(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            validation_command=[
+                "python3",
+                "{plugin}/skills/css-grid/scripts/grid_area_mapper.py",
+                "--input",
+                "{fixture}",
+                "--format",
+                "css",
+            ],
+        )
+
+        self.assert_rejected(result, "must emit a JSON object")
+
+    def test_validator_rejects_non_object_fixture(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_files={"tests/fixtures/arbitrary.json": "[]\n"},
+            validation_fixture="tests/fixtures/arbitrary.json",
+        )
+
+        self.assert_rejected(result, "JSON object under tests/fixtures")
+
+    def test_validator_requires_coverage_gap_object(self) -> None:
+        result = run_validator_with_row_update(CONTRAST_URL, coverage_gap=None)
+
+        self.assert_rejected(result, "requires a coverage_gap object")
+
+    def test_validator_rejects_malformed_coverage_gap_fields(self) -> None:
+        cases = (
+            (
+                "missing contract",
+                {
+                    "missing_contract": "APCA vectors",
+                    "restoration_artifact": "skills/css-variables/scripts/color_contrast_checker.py",
+                    "restoration_tests": ["tests/test_color_contrast.py"],
+                    "acceptance": ["Reports APCA contrast from independent vectors"],
+                },
+                "missing_contract must be a non-empty array",
+            ),
+            (
+                "wrong restoration owner",
+                {
+                    "missing_contract": ["APCA vectors"],
+                    "restoration_artifact": "skills/css-grid/scripts/color_contrast_checker.py",
+                    "restoration_tests": ["tests/test_color_contrast.py"],
+                    "acceptance": ["Reports APCA contrast from independent vectors"],
+                },
+                "restoration_artifact must be owner-bound",
+            ),
+            (
+                "missing restoration tests",
+                {
+                    "missing_contract": ["APCA vectors"],
+                    "restoration_artifact": "skills/css-variables/scripts/color_contrast_checker.py",
+                    "restoration_tests": [],
+                    "acceptance": ["Reports APCA contrast from independent vectors"],
+                },
+                "restoration_tests must be a non-empty array",
+            ),
+            (
+                "restoration test outside tests",
+                {
+                    "missing_contract": ["APCA vectors"],
+                    "restoration_artifact": "skills/css-variables/scripts/color_contrast_checker.py",
+                    "restoration_tests": ["skills/css-variables/SKILL.md"],
+                    "acceptance": ["Reports APCA contrast from independent vectors"],
+                },
+                "restoration_tests entries must be paths under tests/",
+            ),
+            (
+                "missing acceptance",
+                {
+                    "missing_contract": ["APCA vectors"],
+                    "restoration_artifact": "skills/css-variables/scripts/color_contrast_checker.py",
+                    "restoration_tests": ["tests/test_color_contrast.py"],
+                    "acceptance": [],
+                },
+                "acceptance must be a non-empty array",
+            ),
+        )
+        for name, coverage_gap, expected_error in cases:
+            with self.subTest(case=name):
+                result = run_validator_with_row_update(CONTRAST_URL, coverage_gap=coverage_gap)
+
+                self.assert_rejected(result, expected_error)
 
 
 if __name__ == "__main__":

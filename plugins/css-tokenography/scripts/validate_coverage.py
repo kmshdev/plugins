@@ -1,24 +1,16 @@
 #!/usr/bin/env python3
-"""Validate css-tokenography guide, tool, source, and artifact coverage."""
+"""Validate css-tokenography coverage using fixture-driven CLI evidence."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import re
-import shlex
 import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 
 
 ALLOWED_TOOL_STATUSES = {"implemented-full", "implemented-core", "serializer-only", "procedural"}
-MIN_REASON_CLAUSE_LENGTH = 32
-PLACEHOLDER_REASON_RE = re.compile(r"\b(?:stuff|todo|later)\b|\bdo\s+it\b", re.IGNORECASE)
-CONCRETE_RESTORATION_RE = re.compile(
-    r"\bTask\s+[1-9]\d*\b|(?:tests|skills|scripts|references)/[A-Za-z0-9_.\-/]+"
-)
 
 
 def load_json(path: Path) -> Any:
@@ -28,87 +20,116 @@ def load_json(path: Path) -> Any:
         raise ValueError(f"Unable to read {path}: {error}") from error
 
 
-def artifact_path(plugin: Path, value: str) -> Path:
-    return plugin / value.split(" --tool ", 1)[0]
+def is_non_empty_string(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
 
 
-def tool_name(url: str) -> str:
-    return url.rstrip("/").rsplit("/", 1)[-1]
+def is_path_under(plugin: Path, value: Any, directory: Path) -> bool:
+    if not is_non_empty_string(value):
+        return False
+    relative = Path(value)
+    if relative.is_absolute():
+        return False
+    path = (plugin / relative).resolve()
+    root = directory.resolve()
+    return path != root and path.is_relative_to(root)
 
 
-def evidence_kind(plugin: Path, value: str) -> str | None:
-    relative_path, separator, anchor = value.partition("#")
-    path = plugin / relative_path
-    if not path.is_file():
+def owner_cli_path(plugin: Path, owner: Any, value: Any, *, must_exist: bool) -> Path | None:
+    if not is_non_empty_string(owner) or not is_non_empty_string(value):
         return None
-    if not separator:
-        fixture_root = (plugin / "tests" / "fixtures").resolve()
-        if path.suffix != ".json" or not path.resolve().is_relative_to(fixture_root):
-            return None
-        try:
-            return "fixture" if isinstance(load_json(path), dict) else None
-        except ValueError:
-            return None
-    test_root = (plugin / "tests").resolve()
-    if path.suffix != ".py" or not path.resolve().is_relative_to(test_root):
+    if not is_path_under(plugin, value, plugin / "skills" / owner / "scripts"):
         return None
-    class_name, dot, method_name = anchor.partition(".")
-    if not dot or not method_name.startswith("test_"):
+    path = plugin / value
+    if path.suffix != ".py" or (must_exist and not path.is_file()):
         return None
-    return "unittest"
+    return path
 
 
-def run_artifact(plugin: Path, artifact: str, *args: str) -> subprocess.CompletedProcess[str] | None:
+def non_empty_string_array(value: Any) -> bool:
+    return (
+        isinstance(value, list)
+        and bool(value)
+        and all(is_non_empty_string(item) for item in value)
+    )
+
+
+def coverage_gap_errors(plugin: Path, owner: Any, value: Any) -> list[str]:
+    if not isinstance(value, dict):
+        return ["requires a coverage_gap object"]
+
+    errors: list[str] = []
+    if not non_empty_string_array(value.get("missing_contract")):
+        errors.append("coverage_gap missing_contract must be a non-empty array of strings")
+
+    restoration_artifact = value.get("restoration_artifact")
+    if owner_cli_path(plugin, owner, restoration_artifact, must_exist=False) is None:
+        errors.append(
+            f"coverage_gap restoration_artifact must be owner-bound under skills/{owner}/scripts/ and name a Python file"
+        )
+
+    restoration_tests = value.get("restoration_tests")
+    if not non_empty_string_array(restoration_tests):
+        errors.append("coverage_gap restoration_tests must be a non-empty array of paths")
+    elif any(not is_path_under(plugin, path, plugin / "tests") for path in restoration_tests):
+        errors.append("coverage_gap restoration_tests entries must be paths under tests/")
+
+    if not non_empty_string_array(value.get("acceptance")):
+        errors.append("coverage_gap acceptance must be a non-empty array of strings")
+    return errors
+
+
+def validation_fixture_error(plugin: Path, value: Any) -> str | None:
+    if not is_path_under(plugin, value, plugin / "tests" / "fixtures"):
+        return "must name a JSON object under tests/fixtures"
+    path = plugin / value
+    if path.suffix != ".json" or not path.is_file():
+        return "must name a JSON object under tests/fixtures"
     try:
-        command = shlex.split(artifact)
+        fixture = load_json(path)
     except ValueError:
-        return None
-    if not command:
-        return None
-    command[0] = str(plugin / command[0])
+        return "must name a JSON object under tests/fixtures"
+    return None if isinstance(fixture, dict) else "must name a JSON object under tests/fixtures"
+
+
+def execute_validation_command(
+    plugin: Path,
+    artifact: str,
+    fixture: str,
+    value: Any,
+) -> list[str]:
+    if not isinstance(value, list) or not value or not all(is_non_empty_string(item) for item in value):
+        return ["requires an explicit validation_command array of strings"]
+
+    declared_artifact = "{plugin}/" + artifact
+    if len(value) < 2 or value[1] != declared_artifact:
+        return ["validation_command must invoke declared implementation artifact"]
+    if value.count("{fixture}") != 1:
+        return ["validation_command must invoke declared validation fixture"]
+
+    command = [
+        part.replace("{plugin}", str(plugin)).replace("{fixture}", str(plugin / fixture))
+        for part in value
+    ]
     try:
-        return subprocess.run(
-            [sys.executable, *command, *args],
+        result = subprocess.run(
+            command,
+            cwd=plugin,
             text=True,
             capture_output=True,
             check=False,
         )
-    except OSError:
-        return None
-
-
-def run_unittest_evidence(plugin: Path, evidence: str) -> subprocess.CompletedProcess[str]:
-    relative_path, _, anchor = evidence.partition("#")
-    module = Path(relative_path).with_suffix("").as_posix().replace("/", ".")
-    return subprocess.run(
-        [sys.executable, "-m", "unittest", f"{module}.{anchor}"],
-        cwd=plugin,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-
-
-def downgrade_reason_errors(value: Any) -> list[str]:
-    errors: list[str] = []
-    if not isinstance(value, str):
-        return ["requires non-empty 'Missing semantic contract:' and 'Restoration task:' clauses"]
-    missing_prefix = "Missing semantic contract:"
-    restoration_prefix = "Restoration task:"
-    if not value.startswith(missing_prefix) or restoration_prefix not in value:
-        return ["requires non-empty 'Missing semantic contract:' and 'Restoration task:' clauses"]
-    missing_contract, restoration_task = value[len(missing_prefix):].split(restoration_prefix, 1)
-    missing_contract = missing_contract.strip()
-    restoration_task = restoration_task.strip()
-    if not missing_contract or not restoration_task:
-        return ["requires non-empty 'Missing semantic contract:' and 'Restoration task:' clauses"]
-    if PLACEHOLDER_REASON_RE.search(missing_contract) or PLACEHOLDER_REASON_RE.search(restoration_task):
-        errors.append("contains placeholder vocabulary such as stuff/TODO/later/do it")
-    if len(missing_contract) < MIN_REASON_CLAUSE_LENGTH or len(restoration_task) < MIN_REASON_CLAUSE_LENGTH:
-        errors.append(f"requires minimum detail of {MIN_REASON_CLAUSE_LENGTH} characters per clause")
-    if not CONCRETE_RESTORATION_RE.search(restoration_task):
-        errors.append("restoration clause must name a concrete Task N or artifact/test path")
-    return errors
+    except OSError as error:
+        return [f"validation command failed to start: {error}"]
+    if result.returncode != 0:
+        return [f"validation command failed with exit {result.returncode}"]
+    try:
+        output = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        output = None
+    if not isinstance(output, dict):
+        return ["validation command must emit a JSON object"]
+    return []
 
 
 def validate(plugin: Path) -> dict[str, Any]:
@@ -124,8 +145,10 @@ def validate(plugin: Path) -> dict[str, Any]:
         guides = guides if isinstance(guides, list) else []
     guide_skills = [entry.get("skill") for entry in guides if isinstance(entry, dict)]
     guide_urls = [entry.get("url") for entry in guides if isinstance(entry, dict)]
-    if len(set(guide_skills)) != len(guide_skills): errors.append("guide skills must be unique")
-    if len(set(guide_urls)) != len(guide_urls): errors.append("guide URLs must be unique")
+    if len(set(guide_skills)) != len(guide_skills):
+        errors.append("guide skills must be unique")
+    if len(set(guide_urls)) != len(guide_urls):
+        errors.append("guide URLs must be unique")
     for entry in guides:
         if not isinstance(entry, dict):
             errors.append("guide entries must be objects")
@@ -140,88 +163,91 @@ def validate(plugin: Path) -> dict[str, Any]:
         elif "TODO" in skill_file.read_text(encoding="utf-8"):
             errors.append(f"skill {skill} contains TODO placeholders")
 
+    skill_directories = sorted(path.parent for path in (plugin / "skills").glob("*/SKILL.md"))
+    agent_files = sorted((plugin / "skills").glob("*/agents/openai.yaml"))
+    if len(skill_directories) != 17:
+        errors.append("plugin must contain exactly 17 skill directories")
+    if len(agent_files) != 17:
+        errors.append("plugin must contain exactly 17 agents/openai.yaml files")
+
     if not isinstance(tools, list) or len(tools) != 33:
         errors.append("tool-coverage.json must contain exactly 33 tool entries")
         tools = tools if isinstance(tools, list) else []
     tool_urls = [entry.get("url") for entry in tools if isinstance(entry, dict)]
-    if len(set(tool_urls)) != len(tool_urls): errors.append("tool URLs must be unique")
-    evidence = [entry.get("validation_fixture") for entry in tools if isinstance(entry, dict) and entry.get("status") != "procedural"]
+    if len(set(tool_urls)) != len(tool_urls):
+        errors.append("tool URLs must be unique")
+    evidence = [
+        entry.get("validation_fixture")
+        for entry in tools
+        if isinstance(entry, dict) and entry.get("status") != "procedural"
+    ]
     if len(evidence) != len(set(evidence)):
-        errors.append("non-procedural tools must name unique validation evidence")
+        errors.append("non-procedural tools must name unique validation fixtures")
+
     required_tool_fields = {
-        "url", "title", "category", "owner", "inputs", "outputs", "classification",
-        "implementation_artifact", "validation_fixture", "status", "reason",
+        "url",
+        "title",
+        "category",
+        "owner",
+        "inputs",
+        "outputs",
+        "classification",
+        "implementation_artifact",
+        "validation_fixture",
+        "validation_command",
+        "status",
+        "reason",
+        "coverage_gap",
     }
     for entry in tools:
         if not isinstance(entry, dict):
             errors.append("tool entries must be objects")
             continue
-        missing_fields = sorted(required_tool_fields - set(entry))
-        if missing_fields: errors.append(f"tool {entry.get('url')} missing fields: {', '.join(missing_fields)}")
         url = entry.get("url")
+        missing_fields = sorted(required_tool_fields - set(entry))
+        if missing_fields:
+            errors.append(f"tool {url} missing fields: {', '.join(missing_fields)}")
         owner = entry.get("owner")
         if not isinstance(url, str) or not url.startswith("https://design.dev/tools/"):
             errors.append(f"invalid tool URL {url!r}")
         if owner not in guide_skills:
             errors.append(f"tool {url} has unknown owner {owner!r}")
-        artifact = entry.get("implementation_artifact")
-        artifact_exists = isinstance(artifact, str) and artifact_path(plugin, artifact).is_file()
-        if not artifact_exists:
-            errors.append(f"tool {url} has missing artifact {artifact!r}")
         status = entry.get("status")
         if status not in ALLOWED_TOOL_STATUSES:
             errors.append(f"tool {url} has unsupported status {status!r}")
-        if status != "procedural":
-            fixture = entry.get("validation_fixture")
-            evidence_type = evidence_kind(plugin, fixture) if isinstance(fixture, str) else None
-            if evidence_type is None:
-                errors.append(f"tool {url} has unresolved validation evidence {fixture!r}")
-                if isinstance(fixture, str) and "#" not in fixture:
-                    errors.append(f"tool {url} unanchored evidence must be a JSON object under tests/fixtures")
-            if artifact_exists and isinstance(artifact, str):
-                try:
-                    command = shlex.split(artifact)
-                except ValueError:
-                    command = []
-                help_result = run_artifact(plugin, artifact, "--help")
-                if help_result is None or help_result.returncode != 0:
-                    errors.append(f"tool {url} artifact {artifact!r} does not support --help")
-                slug = tool_name(url) if isinstance(url, str) else ""
-                tool_positions = [index for index, part in enumerate(command) if part == "--tool"]
-                if tool_positions:
-                    exact_tool_binding = (
-                        len(tool_positions) == 1
-                        and tool_positions[0] + 1 < len(command)
-                        and command[tool_positions[0] + 1] == slug
-                    )
-                    if not exact_tool_binding:
-                        errors.append(f"tool {url} artifact requires exact --tool {slug} binding")
-                elif evidence_type == "unittest":
-                    errors.append(f"tool {url} anchored evidence requires exact --tool {slug} binding")
-                if evidence_type == "fixture" and isinstance(fixture, str):
-                    fixture_result = run_artifact(
-                        plugin,
-                        artifact,
-                        "--input",
-                        str(plugin / fixture),
-                        "--format",
-                        "json",
-                    )
-                    try:
-                        fixture_output = json.loads(fixture_result.stdout) if fixture_result is not None else None
-                    except json.JSONDecodeError:
-                        fixture_output = None
-                    if fixture_result is None or fixture_result.returncode != 0 or not isinstance(fixture_output, dict):
-                        errors.append(f"tool {url} artifact cannot consume validation fixture {fixture!r}")
-                elif evidence_type == "unittest" and isinstance(fixture, str):
-                    unittest_result = run_unittest_evidence(plugin, fixture)
-                    if unittest_result.returncode != 0:
-                        errors.append(f"tool {url} exact unittest evidence failed: {fixture!r}")
-        if status in {"procedural", "serializer-only"}:
-            for reason_error in downgrade_reason_errors(entry.get("reason")):
-                errors.append(f"tool {url} downgrade reason {reason_error}")
-        if not entry.get("reason"):
+        if not is_non_empty_string(entry.get("reason")):
             errors.append(f"tool {url} requires a coverage reason")
+
+        if status != "procedural":
+            artifact = entry.get("implementation_artifact")
+            artifact_path = owner_cli_path(plugin, owner, artifact, must_exist=True)
+            if artifact_path is None:
+                errors.append(f"tool {url} requires an owner-bound Python CLI")
+            elif artifact_path.name == "design_tool.py":
+                errors.append(f"tool {url} requires a standalone owner CLI, not shared design_tool.py")
+
+            fixture = entry.get("validation_fixture")
+            fixture_error = validation_fixture_error(plugin, fixture)
+            if fixture_error:
+                errors.append(f"tool {url} {fixture_error}")
+            if (
+                artifact_path is not None
+                and artifact_path.name != "design_tool.py"
+                and fixture_error is None
+                and isinstance(artifact, str)
+                and isinstance(fixture, str)
+            ):
+                for command_error in execute_validation_command(
+                    plugin,
+                    artifact,
+                    fixture,
+                    entry.get("validation_command"),
+                ):
+                    errors.append(f"tool {url} {command_error}")
+
+        if status in {"procedural", "serializer-only"}:
+            for gap_error in coverage_gap_errors(plugin, owner, entry.get("coverage_gap")):
+                errors.append(f"tool {url} {gap_error}")
 
     source_entries = sources.get("sources") if isinstance(sources, dict) else None
     if not isinstance(source_entries, list) or len(source_entries) != 7:
@@ -236,6 +262,8 @@ def validate(plugin: Path) -> dict[str, Any]:
         "guides": len(guides),
         "tools": len(tools),
         "sources": len(source_entries) if isinstance(source_entries, list) else 0,
+        "skills": len(skill_directories),
+        "agents": len(agent_files),
         "errors": errors,
     }
 
@@ -253,8 +281,12 @@ def main() -> int:
     if args.format == "json":
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
-        print(f"guides={report['guides']} tools={report['tools']} sources={report['sources']}")
-        for error in report["errors"]: print(f"ERROR {error}")
+        print(
+            f"guides={report['guides']} tools={report['tools']} sources={report['sources']} "
+            f"skills={report['skills']} agents={report['agents']}"
+        )
+        for error in report["errors"]:
+            print(f"ERROR {error}")
     return 1 if report["errors"] else 0
 
 
