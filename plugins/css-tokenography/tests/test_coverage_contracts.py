@@ -25,6 +25,7 @@ def run_validator_with_row_update(
     url: str,
     *,
     extra_files: dict[str, str] | None = None,
+    extra_hardlinks: dict[str, str] | None = None,
     extra_symlinks: dict[str, str] | None = None,
     **changes: object,
 ) -> subprocess.CompletedProcess[str]:
@@ -39,6 +40,10 @@ def run_validator_with_row_update(
             path = plugin / relative_path
             path.unlink(missing_ok=True)
             path.symlink_to(target)
+        for relative_path, target in (extra_hardlinks or {}).items():
+            path = plugin / relative_path
+            path.unlink(missing_ok=True)
+            path.hardlink_to(plugin / target)
         coverage = plugin / "references" / "tool-coverage.json"
         rows = json.loads(coverage.read_text(encoding="utf-8"))
         row = next(item for item in rows if item["url"] == url)
@@ -180,6 +185,78 @@ class CoverageContractTests(unittest.TestCase):
         )
 
         self.assert_rejected(result, "must not be a symlink")
+
+    def test_validator_rejects_canonical_hardlink_to_shared_tool(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_hardlinks={
+                "skills/css-grid/scripts/grid_area_mapper.py": (
+                    "skills/css-grid/scripts/design_tool.py"
+                ),
+            },
+        )
+
+        self.assert_rejected(result, "link count must be 1")
+
+    def test_validator_rejects_copied_shared_tool_content(self) -> None:
+        canonical_artifact = "skills/css-grid/scripts/grid_area_mapper.py"
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_files={
+                canonical_artifact: (ROOT / "skills/css-grid/scripts/design_tool.py").read_text(
+                    encoding="utf-8"
+                ),
+            },
+        )
+
+        self.assert_rejected(result, "duplicates shared design_tool.py content")
+
+    def test_validator_rejects_direct_shared_tool_import(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_files={
+                "skills/css-grid/scripts/grid_area_mapper.py": (
+                    "import design_tool\n"
+                    "import json\n"
+                    "print(json.dumps({'ok': True}))\n"
+                ),
+            },
+        )
+
+        self.assert_rejected(result, "must not reference shared design_tool.py")
+
+    def test_validator_rejects_runpy_delegation_to_shared_tool(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_files={
+                "skills/css-grid/scripts/grid_area_mapper.py": (
+                    "import json\n"
+                    "from pathlib import Path\n"
+                    "import runpy\n"
+                    "runpy.run_path(str(Path(__file__).with_name('design_tool.py')), "
+                    "run_name='shared_serializer')\n"
+                    "print(json.dumps({'ok': True}))\n"
+                ),
+            },
+        )
+
+        self.assert_rejected(result, "must not reference shared design_tool.py")
+
+    def test_validator_rejects_subprocess_delegation_to_shared_tool(self) -> None:
+        result = run_validator_with_row_update(
+            GRID_URL,
+            extra_files={
+                "skills/css-grid/scripts/grid_area_mapper.py": (
+                    "import json\n"
+                    "import subprocess\n"
+                    "def delegate():\n"
+                    "    return subprocess.run(['python3', 'design_tool.py'], check=False)\n"
+                    "print(json.dumps({'ok': True}))\n"
+                ),
+            },
+        )
+
+        self.assert_rejected(result, "must not reference shared design_tool.py")
 
     def test_validator_rejects_mismatched_artifact_command(self) -> None:
         result = run_validator_with_row_update(

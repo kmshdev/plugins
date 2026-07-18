@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import ast
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -44,6 +46,53 @@ def owner_cli_path(plugin: Path, owner: Any, value: Any, *, must_exist: bool) ->
     if path.suffix != ".py" or (must_exist and not path.is_file()):
         return None
     return path
+
+
+def file_digest(path: Path) -> bytes:
+    return hashlib.sha256(path.read_bytes()).digest()
+
+
+def shared_wrapper_reference_error(path: Path) -> str | None:
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except (OSError, UnicodeError, SyntaxError) as error:
+        return f"cannot be parsed for shared-wrapper isolation: {error}"
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import) and any(
+            alias.name.rsplit(".", 1)[-1] == "design_tool" for alias in node.names
+        ):
+            return "must not reference shared design_tool.py"
+        if isinstance(node, ast.ImportFrom):
+            module = node.module or ""
+            if module.rsplit(".", 1)[-1] == "design_tool" or any(
+                alias.name == "design_tool" for alias in node.names
+            ):
+                return "must not reference shared design_tool.py"
+        if (
+            isinstance(node, ast.Constant)
+            and isinstance(node.value, str)
+            and "design_tool.py" in node.value
+        ):
+            return "must not reference shared design_tool.py"
+    return None
+
+
+def shared_wrapper_isolation_error(plugin: Path, path: Path) -> str | None:
+    try:
+        if path.stat().st_nlink != 1:
+            return "canonical tool script link count must be 1"
+        artifact_digest = file_digest(path)
+        shared_digests = {
+            file_digest(shared_path)
+            for shared_path in plugin.glob("skills/*/scripts/design_tool.py")
+            if shared_path.is_file()
+        }
+    except OSError as error:
+        return f"cannot inspect canonical tool script: {error}"
+    if artifact_digest in shared_digests:
+        return "canonical tool script duplicates shared design_tool.py content"
+    return shared_wrapper_reference_error(path)
 
 
 def non_empty_string_array(value: Any) -> bool:
@@ -237,6 +286,11 @@ def validate(plugin: Path) -> dict[str, Any]:
                     f"tool {url} must use canonical tool script skills/{owner}/scripts/{canonical_name}"
                 )
                 artifact_path = None
+            else:
+                isolation_error = shared_wrapper_isolation_error(plugin, artifact_path)
+                if isolation_error:
+                    errors.append(f"tool {url} {isolation_error}")
+                    artifact_path = None
 
             fixture = entry.get("validation_fixture")
             fixture_error = validation_fixture_error(plugin, fixture)
