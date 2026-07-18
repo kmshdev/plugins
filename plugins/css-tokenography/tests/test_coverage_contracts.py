@@ -59,10 +59,19 @@ def unittest_method_exists(fixture: str) -> bool:
     )
 
 
-def run_validator_with_row_update(url: str, **changes: object) -> subprocess.CompletedProcess[str]:
+def run_validator_with_row_update(
+    url: str,
+    *,
+    extra_files: dict[str, str] | None = None,
+    **changes: object,
+) -> subprocess.CompletedProcess[str]:
     with tempfile.TemporaryDirectory() as temporary_directory:
         plugin = Path(temporary_directory) / "css-tokenography"
         shutil.copytree(ROOT, plugin)
+        for relative_path, content in (extra_files or {}).items():
+            path = plugin / relative_path
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
         coverage = plugin / "references" / "tool-coverage.json"
         rows = json.loads(coverage.read_text(encoding="utf-8"))
         row = next(item for item in rows if item["url"] == url)
@@ -128,7 +137,7 @@ class CoverageContractTests(unittest.TestCase):
         )
 
         self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("Python CLI", result.stdout)
+        self.assertIn("cannot consume validation fixture", result.stdout)
 
     def test_validator_requires_structured_downgrade_reasons(self) -> None:
         cases = (
@@ -142,6 +151,71 @@ class CoverageContractTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0, result.stdout)
                 self.assertIn("Missing semantic contract:", result.stdout)
                 self.assertIn("Restoration task:", result.stdout)
+
+    def test_validator_rejects_unrelated_python_artifact_for_anchored_evidence(self) -> None:
+        result = run_validator_with_row_update(
+            "https://design.dev/tools/oklch-color-converter/",
+            implementation_artifact="tests/test_cli_contracts.py",
+        )
+
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("exact --tool oklch-color-converter binding", result.stdout)
+
+    def test_validator_requires_exact_shared_tool_binding(self) -> None:
+        result = run_validator_with_row_update(
+            "https://design.dev/tools/oklch-color-converter/",
+            implementation_artifact="skills/css-variables/scripts/design_tool.py --tool clamp-generator",
+        )
+
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("exact --tool oklch-color-converter binding", result.stdout)
+
+    def test_validator_executes_exact_unittest_evidence(self) -> None:
+        failing_test = """import unittest
+
+
+class EvidenceTests(unittest.TestCase):
+    def test_claim(self) -> None:
+        self.fail(\"adversarial evidence failure\")
+"""
+        result = run_validator_with_row_update(
+            "https://design.dev/tools/oklch-color-converter/",
+            extra_files={"tests/test_adversarial_evidence.py": failing_test},
+            validation_fixture="tests/test_adversarial_evidence.py#EvidenceTests.test_claim",
+        )
+
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("exact unittest evidence failed", result.stdout)
+
+    def test_validator_rejects_imprecise_downgrade_reasons(self) -> None:
+        cases = (
+            (
+                "short clauses",
+                "Missing semantic contract: no. Restoration task: Task 2.",
+                "minimum detail",
+            ),
+            (
+                "placeholder vocabulary",
+                "Missing semantic contract: CSS selector stuff remains unsupported. "
+                "Restoration task: Task 2 will do it later.",
+                "placeholder vocabulary",
+            ),
+            (
+                "no concrete target",
+                "Missing semantic contract: Nested functional selector parsing is not implemented. "
+                "Restoration task: Implement authoritative grammar fixtures and focused parser checks.",
+                "concrete Task N or artifact/test path",
+            ),
+        )
+        for name, reason, expected_error in cases:
+            with self.subTest(case=name):
+                result = run_validator_with_row_update(
+                    "https://design.dev/tools/specificity-calculator/",
+                    reason=reason,
+                )
+
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertIn(expected_error, result.stdout)
 
 
 if __name__ == "__main__":
