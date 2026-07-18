@@ -27,11 +27,11 @@ The plugin source is under [`plugins/docdev`](./plugins/docdev). The marketplace
 
 ### css-tokenography
 
-`css-tokenography` provides 18 independently triggerable CSS, typography, web-performance, and Windsurf-rules skills backed by current standards, source coverage records, and dependency-free developer-tool CLIs.
+`css-tokenography` provides 18 independently triggerable CSS, typography, web-performance, and Windsurf-rules skills backed by standards research, source coverage records, and dependency-free developer-tool CLIs.
 
 Its deterministic tooling includes grid-area mapping, subgrid modeling, performance-budget analysis, WCAG contrast checks, OKLCH conversion, CSS specificity, fluid `clamp()` generation, transform composition, and cubic Bézier validation. Browser-, raster-, or codec-dependent tools have explicit procedural workflows instead of hidden omissions.
 
-The plugin source is under [`plugins/css-tokenography`](./plugins/css-tokenography). Its guide, tool, and source-skill inventories are under [`plugins/css-tokenography/references`](./plugins/css-tokenography/references).
+The plugin source is under [`plugins/css-tokenography`](./plugins/css-tokenography). Its guide, tool, and source-skill inventories are under [`plugins/css-tokenography/references`](./plugins/css-tokenography/references). The current semantic audit and next-phase implementation plan are [`standards-audit-2026-07-19.md`](./plugins/css-tokenography/references/standards-audit-2026-07-19.md) and [`standards-hardening-execplan.md`](./plugins/css-tokenography/references/standards-hardening-execplan.md).
 
 ## Validate locally
 

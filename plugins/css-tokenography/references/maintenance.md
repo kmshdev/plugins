@@ -1,5 +1,9 @@
 # Maintenance and refresh
 
+Current standards checkpoint: `standards-audit-2026-07-19.md`.
+
+Next implementation phase: `standards-hardening-execplan.md`.
+
 1. Remap `https://design.dev/guides/` and `https://design.dev/tools/`; compare index links, sitemap-backed map results, and the previous inventory.
 2. Scrape changed guide/tool pages and record the retrieval date. Keep raw output outside the plugin in an ignored Firecrawl or work-note directory.
 3. Recheck material browser, accessibility, performance, and Windsurf claims against current official sources.
