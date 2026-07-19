@@ -1,0 +1,5 @@
+{
+  "subject": "transform",
+  "input": {"value": "translateX(10px) rotate(20deg)"},
+  "adapters": ["lightningcss"]
+}
