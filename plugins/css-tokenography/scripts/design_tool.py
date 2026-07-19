@@ -228,12 +228,10 @@ def gradient(data: dict[str, Any]) -> dict[str, Any]:
 
 
 SIMPLE_TOOLS: dict[str, tuple[str, list[str]]] = {
-    "backdrop-filter-playground": ("backdrop-filter", ["blur", "brightness", "contrast", "saturate"]),
     "border-radius-playground": ("border-radius", ["value"]),
     "box-shadow-generator": ("box-shadow", ["value"]),
     "clip-path-shapes": ("clip-path", ["value"]),
     "css-background-generator": ("background", ["value"]),
-    "css-filter-effects": ("filter", ["value"]),
     "css-loaders": ("animation", ["value"]),
     "css-tooltips": ("content", ["value"]),
     "custom-cursor-generator": ("cursor", ["value"]),
@@ -271,6 +269,27 @@ def stacking_contexts(data: dict[str, Any]) -> dict[str, Any]:
         raise ToolInputError(str(error)) from error
 
 
+def filter_effects(data: dict[str, Any], property_name: str) -> dict[str, Any]:
+    owner_scripts = Path(__file__).resolve().parents[1] / "skills" / "css-transforms" / "scripts"
+    sys.path.insert(0, str(owner_scripts))
+    try:
+        from filter_model import build_filter_report
+        if "property" not in data:
+            if property_name == "filter":
+                raise ToolInputError("Use the typed property/kind/functions filter contract; raw filter strings are unsupported")
+            functions = [
+                {"name": name, "value": data[name]}
+                for name in ("blur", "brightness", "contrast", "saturate")
+                if name in data
+            ]
+            data = {"property": property_name, "kind": "list", "functions": functions}
+        if data.get("property") != property_name:
+            raise ToolInputError(f"property must be {property_name!r}")
+        return build_filter_report(data)
+    except (ImportError, ValueError) as error:
+        raise ToolInputError(str(error)) from error
+
+
 HANDLERS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "clamp-generator": clamp_generator,
     "px-to-rem-converter": px_to_rem,
@@ -283,6 +302,8 @@ HANDLERS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "aspect-ratio-calculator": aspect_ratio,
     "gradient-mixer": gradient,
     "z-index-visualizer": stacking_contexts,
+    "css-filter-effects": lambda data: filter_effects(data, "filter"),
+    "backdrop-filter-playground": lambda data: filter_effects(data, "backdrop-filter"),
 }
 
 

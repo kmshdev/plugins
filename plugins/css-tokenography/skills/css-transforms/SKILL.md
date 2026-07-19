@@ -22,6 +22,12 @@ Run `python3 scripts/css_transform_playground.py --input transform.json --format
 
 The CLI validates translate, scale, rotate, skew, `matrix()`, `matrix3d()`, and `perspective()` arity and units, preserves caller order, and computes a dependency-free 4x4 matrix. `none` is semantically different from an identity-valued list because only the latter creates stacking and containing blocks. Matrix output does not include origin or ancestor-perspective layout effects, which require box geometry and browser collection.
 
+## Filters and backdrop filters
+
+Run `python3 scripts/css_filter_effects.py` or `python3 scripts/backdrop_filter_playground.py` with `property`, `kind`, and an ordered `functions` array. The typed grammar covers blur, amount functions, hue rotation, bounded drop shadows, and network-free `url(#id)` references; external URLs are rejected. Backdrop input may also declare surface background, alpha, border, and radius facts.
+
+Non-`none` filter lists report their stacking and absolute/fixed containing-block effects. Backdrop visibility is inferred only from declared alpha facts, uses sRGB filter interpolation metadata, and retains the Filter Effects Level 2 draft/no-consensus caveat. The model serializes declarations; it does not render pixels or resolve a browser backdrop root.
+
 ## Guardrails
 
 - Do not add `translateZ(0)` or `will-change` as a default optimization.

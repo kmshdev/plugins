@@ -27,3 +27,9 @@ These comparisons establish semantic parity for the dependency-free models; they
 The typed model preserves the transform-function order supplied by the caller and composes the corresponding 4x4 matrices in CSS list order. It keeps ancestor `perspective` separate from `perspective()` in the transform list and preserves the semantic distinction between `transform: none` and an identity-valued transform list.
 
 The output does not claim pixel parity, transformed-box geometry, browser hit testing, GPU acceleration, or compositor-layer promotion. Those require a concrete element, its containing layout, and runtime browser evidence.
+
+## Filter and backdrop-filter controls
+
+The filter model implements ordered controls for blur, brightness, contrast, drop shadow, grayscale, hue rotation, invert, opacity, saturate, sepia, and local-fragment filter references. The backdrop model additionally serializes the observed background, border, radius, and transparency facts and reports when an opaque declared background makes the backdrop effect unobservable from those facts.
+
+This is serializer and semantic metadata parity, not browser visual fidelity. Backdrop-root behavior remains an unsettled Filter Effects Level 2 draft area. Liquid glass remains procedural because a faithful model still lacks gradients, shadows, layers, content-color handling, fallbacks, and dedicated reference fixtures.
