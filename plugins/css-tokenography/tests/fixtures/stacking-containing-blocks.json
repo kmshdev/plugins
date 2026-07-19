@@ -1,0 +1,10 @@
+{
+  "elements": [
+    {"id": "root", "parent": null, "order": 0, "is_root": true, "style": {}},
+    {"id": "opacity-surface", "parent": "root", "order": 1, "style": {"opacity": 0.8}},
+    {"id": "fixed-through-opacity", "parent": "opacity-surface", "order": 2, "style": {"position": "fixed"}},
+    {"id": "transformed", "parent": "root", "order": 3, "style": {"transform": "translateX(0px)"}},
+    {"id": "absolute-in-transform", "parent": "transformed", "order": 4, "style": {"position": "absolute"}},
+    {"id": "fixed-in-transform", "parent": "transformed", "order": 5, "style": {"position": "fixed"}}
+  ]
+}

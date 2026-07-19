@@ -1,0 +1,9 @@
+{
+  "property": "filter",
+  "kind": "list",
+  "functions": [
+    {"name": "contrast", "value": "150%"},
+    {"name": "blur", "value": "4px"},
+    {"name": "hue-rotate", "value": "20deg"}
+  ]
+}

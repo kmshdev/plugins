@@ -1,0 +1,4 @@
+interface:
+  display_name: "Css Transforms"
+  short_description: "Apply current Css Transforms guidance"
+  default_prompt: "Use $css-transforms to implement and review this task."

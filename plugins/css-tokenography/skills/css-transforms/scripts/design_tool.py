@@ -1,0 +1,4 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import runpy
+runpy.run_path(Path(__file__).resolve().parents[3] / "scripts" / "design_tool.py", run_name="__main__")

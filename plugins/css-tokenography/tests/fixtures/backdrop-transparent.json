@@ -1,0 +1,14 @@
+{
+  "property": "backdrop-filter",
+  "kind": "list",
+  "functions": [
+    {"name": "blur", "value": "12px"},
+    {"name": "saturate", "value": "140%"}
+  ],
+  "surface": {
+    "background": "rgba(255,255,255,0.35)",
+    "background_alpha": 0.35,
+    "border": "1px solid rgba(255,255,255,0.4)",
+    "border_radius": "16px"
+  }
+}

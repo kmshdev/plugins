@@ -1,0 +1,10 @@
+{
+  "rows": 3,
+  "columns": 3,
+  "gap": "1rem",
+  "cells": [
+    ["header", "header", "header"],
+    ["nav", "main", "main"],
+    ["footer", "footer", "footer"]
+  ]
+}

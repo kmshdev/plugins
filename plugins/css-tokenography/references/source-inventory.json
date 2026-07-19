@@ -1,0 +1,17 @@
+{
+  "retrieved": "2026-07-16",
+  "sources": [
+    {"name":"css-animate","path":"/Users/kmsh/Agents/tradingview/apps/web/.agents/skills/css-animate/SKILL.md","disposition":"split","destinations":["css-transitions","css-animations","css-scroll-driven-animations"]},
+    {"name":"css-debug","path":"/Users/kmsh/Agents/tradingview/apps/web/.agents/skills/css-debug/SKILL.md","disposition":"rewrite","destinations":["css-selectors","css-grid","css-variables","web-performance-optimization"]},
+    {"name":"css-expert","path":"/Users/kmsh/Agents/tradingview/apps/web/.agents/skills/css-expert/SKILL.md","disposition":"retire-router","destinations":["all-guide-skills"]},
+    {"name":"css-layout","path":"/Users/kmsh/Agents/tradingview/apps/web/.agents/skills/css-layout/SKILL.md","disposition":"split","destinations":["css-grid","css-flexbox","css-centering","css-container-queries"]},
+    {"name":"css-refactor","path":"/Users/kmsh/Agents/tradingview/apps/web/.agents/skills/css-refactor/SKILL.md","disposition":"rewrite-as-workflows","destinations":["css-cascade-layers","css-variables","css-media-queries","web-typography"]},
+    {"name":"css-responsive","path":"/Users/kmsh/Agents/tradingview/apps/web/.agents/skills/css-responsive/SKILL.md","disposition":"split","destinations":["css-media-queries","css-container-queries","web-typography","web-performance-optimization"]},
+    {"name":"css-theme","path":"/Users/kmsh/Agents/tradingview/apps/web/.agents/skills/css-theme/SKILL.md","disposition":"split","destinations":["css-variables","css-dark-mode","css-gradients"]}
+  ],
+  "inspiration": [
+    "/Users/kmsh/Agents/anthera-data-stack/.agents/skills/better-colors",
+    "/Users/kmsh/Agents/anthera-data-stack/.agents/skills/better-typography",
+    "/Users/kmsh/Agents/anthera-data-stack/.agents/skills/better-ui"
+  ]
+}

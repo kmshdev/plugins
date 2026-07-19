@@ -1,0 +1,4 @@
+{
+  "metrics": {"lcp_ms": 2200, "cls": 0.08},
+  "resources": {"javascript_bytes": 250000, "css_bytes": 50000, "total_bytes": 850000, "requests": 42}
+}

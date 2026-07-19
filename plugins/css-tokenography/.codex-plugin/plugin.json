@@ -1,0 +1,23 @@
+{
+  "name": "css-tokenography",
+  "version": "0.1.0+codex.20260718203155",
+  "description": "Current, testable CSS engineering guides and deterministic design-tool models.",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "CSS Tokenography",
+    "shortDescription": "CSS guides, audits, tokens, and tool CLIs.",
+    "longDescription": "CSS Tokenography provides CSS, typography, and performance skills for Codex, backed by current standards and deterministic developer-tool scripts.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [
+      "CSS implementation",
+      "design token audits",
+      "performance budgets",
+      "developer tool CLIs"
+    ],
+    "defaultPrompt": "Use CSS Tokenography to implement or audit this CSS task with current standards and runnable checks."
+  }
+}

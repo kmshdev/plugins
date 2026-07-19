@@ -1,0 +1,66 @@
+[
+  {"source":"css-animate","sections":[
+    {"section":"workflow and decision tree","action":"split","destination":"css-transitions, css-animations, css-scroll-driven-animations"},
+    {"section":"composited-property performance rules","action":"rewrite","destination":"css-transitions and web-performance-optimization"},
+    {"section":"transition patterns and easing","action":"preserve","destination":"css-transitions"},
+    {"section":"keyframes patterns","action":"preserve","destination":"css-animations"},
+    {"section":"scroll-driven animations","action":"rewrite","destination":"css-scroll-driven-animations"},
+    {"section":"View Transition API","action":"retire","destination":"out of requested guide inventory; retain only a cross-reference in css-animations"},
+    {"section":"reduced motion and accessibility","action":"preserve","destination":"css-transitions, css-animations, css-scroll-driven-animations"}
+  ]},
+  {"source":"css-debug","sections":[
+    {"section":"classification and isolation workflow","action":"preserve","destination":"shared debugging checklist referenced by relevant skills"},
+    {"section":"specificity debugging","action":"rewrite","destination":"css-selectors"},
+    {"section":"inheritance debugging","action":"rewrite","destination":"css-variables and css-cascade-layers"},
+    {"section":"layout, overflow, sizing, and margin debugging","action":"split","destination":"css-grid, css-flexbox, css-centering"},
+    {"section":"z-index and stacking contexts","action":"preserve","destination":"css-grid tool workflow"},
+    {"section":"custom-property resolution","action":"preserve","destination":"css-variables"},
+    {"section":"layout thrashing and CLS","action":"rewrite","destination":"web-performance-optimization"}
+  ]},
+  {"source":"css-expert","sections":[
+    {"section":"core principles and writing rules","action":"rewrite","destination":"shared standards reference"},
+    {"section":"layout decision tree","action":"split","destination":"css-grid, css-flexbox, css-centering"},
+    {"section":"custom-property architecture","action":"preserve","destination":"css-variables"},
+    {"section":"cascade-layer order","action":"preserve","destination":"css-cascade-layers"},
+    {"section":"responsive strategy","action":"split","destination":"css-media-queries and css-container-queries"},
+    {"section":"animation guidelines","action":"rewrite","destination":"css-transitions and css-animations"},
+    {"section":"accessibility checklist","action":"split","destination":"topic-specific skills"},
+    {"section":"catch-all trigger","action":"retire","destination":"replaced by 17 independently triggerable skills"}
+  ]},
+  {"source":"css-layout","sections":[
+    {"section":"workflow and decision tree","action":"split","destination":"css-grid, css-flexbox, css-centering"},
+    {"section":"named areas, auto-fit, subgrid, dense placement","action":"preserve","destination":"css-grid"},
+    {"section":"navigation, wrapping, equal-width, sticky-footer flex patterns","action":"preserve","destination":"css-flexbox"},
+    {"section":"grid, flex, auto-margin, dialog centering","action":"preserve","destination":"css-centering"},
+    {"section":"page layout recipes","action":"rewrite","destination":"css-grid and css-flexbox"},
+    {"section":"container-query setup and units","action":"preserve","destination":"css-container-queries"},
+    {"section":"logical properties and accessibility","action":"preserve","destination":"all layout skills"}
+  ]},
+  {"source":"css-refactor","sections":[
+    {"section":"scan, prioritize, and present-diff workflow","action":"preserve","destination":"shared audit workflow"},
+    {"section":"float and legacy flex migration","action":"rewrite","destination":"css-grid and css-flexbox"},
+    {"section":"important and specificity migration","action":"rewrite","destination":"css-cascade-layers and css-selectors"},
+    {"section":"vendor prefixes","action":"rewrite","destination":"shared current-compatibility rule"},
+    {"section":"px media queries","action":"rewrite","destination":"css-media-queries"},
+    {"section":"imports and layer migration","action":"preserve","destination":"css-cascade-layers"},
+    {"section":"color migration and design tokens","action":"rewrite","destination":"css-variables and css-dark-mode"},
+    {"section":"font sizing and logical properties","action":"rewrite","destination":"web-typography"}
+  ]},
+  {"source":"css-responsive","sections":[
+    {"section":"strategy hierarchy","action":"rewrite","destination":"css-container-queries and css-media-queries"},
+    {"section":"container queries and units","action":"preserve","destination":"css-container-queries"},
+    {"section":"media queries and breakpoints","action":"rewrite","destination":"css-media-queries"},
+    {"section":"fluid typography and spacing","action":"preserve","destination":"web-typography and css-functions"},
+    {"section":"responsive images","action":"rewrite","destination":"web-performance-optimization"},
+    {"section":"viewport units and intrinsic sizing","action":"preserve","destination":"css-functions and css-centering"},
+    {"section":"accessibility and reduced data/motion","action":"preserve","destination":"css-media-queries and web-performance-optimization"}
+  ]},
+  {"source":"css-theme","sections":[
+    {"section":"primitive and semantic color tokens","action":"preserve","destination":"css-variables"},
+    {"section":"OKLCH and color-mix","action":"rewrite","destination":"css-variables and css-gradients"},
+    {"section":"automatic and manual dark mode","action":"preserve","destination":"css-dark-mode"},
+    {"section":"minimal theme toggle","action":"rewrite","destination":"css-dark-mode"},
+    {"section":"component token architecture","action":"preserve","destination":"css-variables"},
+    {"section":"contrast and accessibility","action":"rewrite","destination":"css-variables and css-dark-mode"}
+  ]}
+]

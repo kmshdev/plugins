@@ -1,0 +1,4 @@
+interface:
+  display_name: "Css Cascade Layers"
+  short_description: "Apply current Css Cascade Layers guidance"
+  default_prompt: "Use $css-cascade-layers to implement and review this task."

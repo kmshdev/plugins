@@ -1,0 +1,4 @@
+interface:
+  display_name: "Css Media Queries"
+  short_description: "Apply current Css Media Queries guidance"
+  default_prompt: "Use $css-media-queries to implement and review this task."

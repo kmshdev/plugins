@@ -1,0 +1,12 @@
+{
+  "ancestor": {"perspective": "800px", "perspective_origin": "center"},
+  "transform": {
+    "kind": "list",
+    "functions": [
+      {"name": "perspective", "args": ["600px"]},
+      {"name": "rotateY", "args": ["25deg"]},
+      {"name": "translateX", "args": ["10px"]}
+    ]
+  },
+  "transform_origin": "center"
+}

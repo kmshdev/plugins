@@ -1,0 +1,4 @@
+{
+  "metrics": {"lcp_ms": "fast", "cls": 0.08, "inp_ms": 180},
+  "resources": {"javascript_bytes": 250000, "css_bytes": 50000, "image_bytes": 420000, "font_bytes": 80000, "total_bytes": 850000, "requests": 42, "third_party_requests": 6}
+}

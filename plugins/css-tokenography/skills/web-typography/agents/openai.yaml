@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web Typography"
+  short_description: "Apply current Web Typography guidance"
+  default_prompt: "Use $web-typography to implement and review this task."
