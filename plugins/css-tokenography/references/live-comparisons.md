@@ -33,3 +33,35 @@ The output does not claim pixel parity, transformed-box geometry, browser hit te
 The filter model implements ordered controls for blur, brightness, contrast, drop shadow, grayscale, hue rotation, invert, opacity, saturate, sepia, and local-fragment filter references. The backdrop model additionally serializes the observed background, border, radius, and transparency facts and reports when an opaque declared background makes the backdrop effect unobservable from those facts.
 
 This is serializer and semantic metadata parity, not browser visual fidelity. Backdrop-root behavior remains an unsettled Filter Effects Level 2 draft area. Liquid glass remains procedural because a faithful model still lacks gradients, shadows, layers, content-color handling, fallbacks, and dedicated reference fixtures.
+
+## Phase 2 comparison envelope
+
+The Phase 2 aggregate review did not run a new live browser or pixel comparison.
+The retrieved design.dev inventory identifies the requested tool surfaces; the
+ten Phase 2 promotions are instead supported by owner-bound CLI fixtures,
+focused contract tests, and coverage validation. `implemented-full` means full
+coverage of the observed non-visual contract recorded in the inventory, not
+reproduction of the live editor UI.
+
+- Clamp, PX/REM, and aspect ratio evidence covers typed numeric validation,
+  stable formulas, exact integral reduction, and serialization. It does not
+  observe a page's computed root font size or prove browser layout dimensions.
+- nth-child evidence covers the CSS An+B microsyntax and safe selector
+  generation; it does not query a live DOM. Cubic-bezier evidence covers finite
+  control points and the CSS x-coordinate validity boundary; it does not sample
+  an animation or compare a rendered timing curve.
+- Gradient evidence covers a bounded typed grammar, source-ordered stops, and
+  serialization. Lightning CSS was not installed for the recorded real oracle
+  probe, so that observation is `unavailable`; a controlled fake executable
+  tests adapter wiring only and is not an external agreement result. OKLCH
+  evidence covers numeric conversion from six/eight-digit sRGB hex, not
+  gamut-mapped pixels, rendered interpolation, contrast, APCA, or WCAG
+  conformance.
+- Border-radius and box-shadow evidence covers bounded grammar, slash shorthand,
+  explicit typed layers, and declared layer order. It does not reproduce corner
+  geometry, shadow blur kernels, compositing, or pixels.
+- Flexbox evidence covers validated container controls, logical axes, DOM source
+  order, and order-modified source order. Without writing mode, direction,
+  dimensions, intrinsic sizes, and flex item sizing inputs, it does not predict
+  physical directions, wrapping, free-space distribution, or browser-computed
+  sizes.
