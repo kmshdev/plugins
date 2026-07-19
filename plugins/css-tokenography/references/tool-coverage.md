@@ -10,13 +10,13 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | CSS Gradient Generator | Colors | css-gradients | deterministic | implemented-core | `gradient_mixer.py` (typed geometry and ordered stops; advanced stop/interpolation grammar disclosed) |
 | OKLCH Color Converter | Colors | css-variables | deterministic | implemented-full | `oklch_color_converter.py` (six/eight-digit sRGB; unclamped binary64 channels; no contrast/APCA claim) |
 | Liquid Glass CSS Generator | Effects | css-transforms | deterministic | procedural | liquid-glass contract task required |
-| CSS Box Shadow Generator | Effects | css-transforms | deterministic | procedural | shadow contract task required |
+| CSS Box Shadow Generator | Effects | css-transforms | deterministic | implemented-core | `box_shadow_generator.py` (typed ordered layers; explicit signed offsets/spread, nonnegative blur, bounded colors) |
 | CSS Hover Effects Generator | Effects | css-transitions | deterministic | procedural | hover-state contract task required |
 | CSS Clip-Path Generator | Effects | css-transforms | deterministic | procedural | shape contract task required |
 | Neumorphism CSS Generator | Effects | css-transforms | deterministic | procedural | output and contrast task required |
 | CSS Filter Effects | Effects | css-transforms | deterministic | procedural | filter grammar task required |
 | CSS Backdrop Filter Generator | Effects | css-transforms | deterministic | procedural | backdrop semantics task required |
-| CSS Border Radius Generator | Effects | css-functions | deterministic | procedural | radius grammar task required |
+| CSS Border Radius Generator | Effects | css-functions | deterministic | implemented-core | `border_radius_playground.py` (one-to-four nonnegative horizontal radii; optional slash and vertical radii) |
 | CSS Tooltip Generator | Effects | css-transitions | deterministic | procedural | accessible interaction task required |
 | Custom CSS Cursor Generator | Effects | css-functions | deterministic | procedural | cursor grammar task required |
 | CSS Background Pattern Generator | Effects | css-gradients | deterministic | procedural | pattern contract task required |
