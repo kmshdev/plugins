@@ -15,19 +15,22 @@ STRING_FIELDS = ("id", "role", "license", "source", "adoption")
 def load_json(path: Path) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
         raise ValueError(f"Unable to read {path}: {error}") from error
 
 
+def error_report(message: str) -> dict[str, object]:
+    return {"adapters": [], "errors": [message], "warnings": []}
+
+
 def validate(plugin: Path) -> dict[str, object]:
-    loaded = load_json(plugin / "references" / "automation-adapters.json")
+    try:
+        loaded = load_json(plugin / "references" / "automation-adapters.json")
+    except ValueError as error:
+        return error_report(str(error))
     errors: list[str] = []
     if not isinstance(loaded, list):
-        return {
-            "adapters": [],
-            "errors": ["automation-adapters.json must contain an array"],
-            "warnings": [],
-        }
+        return error_report("automation-adapters.json must contain an array")
 
     rows: list[dict[str, object]] = []
     for index, value in enumerate(loaded):
@@ -43,8 +46,11 @@ def validate(plugin: Path) -> dict[str, object]:
             if not isinstance(field_value, str) or not field_value.strip():
                 errors.append(f"adapter {adapter_id} {field} must be a non-empty string")
 
-        if not isinstance(row.get("required"), bool):
+        required = row.get("required")
+        if not isinstance(required, bool):
             errors.append(f"adapter {adapter_id} required must be a boolean")
+        elif required:
+            errors.append(f"adapter {adapter_id} required must be false")
 
         command = row.get("command")
         if (
@@ -84,8 +90,7 @@ def main() -> int:
     try:
         report = validate(args.plugin.resolve())
     except ValueError as error:
-        print(f"adapter-validator: {error}")
-        return 1
+        report = error_report(str(error))
 
     if args.format == "json":
         print(json.dumps(report, indent=2, sort_keys=True))
