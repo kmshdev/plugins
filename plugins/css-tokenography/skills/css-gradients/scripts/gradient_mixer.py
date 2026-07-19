@@ -21,6 +21,8 @@ def read_json(path: str, stdin: TextIO) -> dict[str, object]:
     try:
         raw = stdin.read() if path == "-" else Path(path).read_text(encoding="utf-8")
         value = json.loads(raw)
+    except UnicodeError as error:
+        raise InputError("Unable to read JSON input: input is not valid UTF-8") from error
     except (OSError, json.JSONDecodeError) as error:
         raise InputError(f"Unable to read JSON input: {error}") from error
     if not isinstance(value, dict):
@@ -29,11 +31,17 @@ def read_json(path: str, stdin: TextIO) -> dict[str, object]:
 
 
 def build_report(data: dict[str, object]) -> dict[str, object]:
-    if set(data) == {"subject", "input", "adapters"}:
+    fixture_keys = {"subject", "input", "adapters"}
+    if fixture_keys <= set(data) and set(data) <= fixture_keys | {"core"}:
         if data.get("subject") != "gradient" or not isinstance(data.get("input"), dict):
             raise InputError("Gradient evidence fixtures require subject 'gradient' and object input")
-        data = data["input"]
+        fixture = data
+        data = fixture["input"]
         assert isinstance(data, dict)
+        report = Gradient.from_data(data).to_report()
+        if "core" in fixture and fixture["core"] != {"value": report["value"]}:
+            raise InputError("Gradient evidence fixture core must match the canonical serialized value")
+        return report
     return Gradient.from_data(data).to_report()
 
 

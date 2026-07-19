@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from types import MappingProxyType
 from typing import Mapping
 
 
@@ -18,11 +19,6 @@ ANGLE_PERCENTAGE = re.compile(
 )
 LENGTH_PERCENTAGE = re.compile(
     rf"^(?:[+-]?0(?:\.0+)?|{NUMBER}(?:%|px|em|rem|ex|ch|lh|rlh|vw|vh|vmin|vmax|cm|mm|q|in|pc|pt))$"
-)
-FUNCTION_COLOR = re.compile(
-    r"^(?:rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color)"
-    r"\([A-Za-z0-9#.,%+\-/ ]+\)$",
-    re.IGNORECASE,
 )
 HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{3,8}$")
 IDENTIFIER = re.compile(r"^[A-Za-z][A-Za-z0-9-]*$")
@@ -77,10 +73,12 @@ def validate_color(value: object, field: str) -> str:
         return color
     if IDENTIFIER.fullmatch(color) and color.lower() in NAMED_COLORS:
         return color
-    if FUNCTION_COLOR.fullmatch(color):
-        return color
+    if "(" in color or ")" in color:
+        raise InputError(
+            f"{field} functional colors are unsupported; use a CSS hex or named color"
+        )
     raise InputError(
-        f"{field} must be a bounded CSS hex, named, or functional color"
+        f"{field} must be a valid CSS hex or named color"
     )
 
 
@@ -215,7 +213,11 @@ class Gradient:
             raise InputError("kind must be linear, radial, or conic")
         assert isinstance(kind, str)
         object.__setattr__(self, "kind", kind)
-        object.__setattr__(self, "geometry", validate_geometry(kind, geometry))
+        object.__setattr__(
+            self,
+            "geometry",
+            MappingProxyType(validate_geometry(kind, geometry)),
+        )
         object.__setattr__(self, "stops", validate_stops(kind, stops))
 
     @classmethod
@@ -277,7 +279,7 @@ class Gradient:
                 "One position per color stop; two-position stops and transition hints are not modeled.",
                 "This model requires at least two stops although CSS Images Level 4 also defines single-stop gradients.",
                 "Geometry positions use keywords; calc(), explicit radial radii, and interpolation-method controls are not modeled.",
-                "Functional colors are injection-bounded but require browser parsing for full grammar conformance.",
+                "Functional colors are unsupported; use validated CSS hex or named colors.",
                 "Serialization does not establish rendered contrast, gamut mapping, or browser pixel fidelity.",
             ],
         }

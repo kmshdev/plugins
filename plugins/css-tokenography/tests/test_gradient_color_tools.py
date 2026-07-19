@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -183,6 +184,38 @@ class GradientModelTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(message, result.stderr)
 
+    def test_gradient_rejects_unvalidated_functional_colors(self) -> None:
+        for color in (
+            "rgb(,,,,)",
+            "rgb(255 0 0)",
+            "rgb(255, 0, 0)",
+            "oklch(0.5 0.1 30)",
+            "color(display-p3 1 0 0)",
+        ):
+            with self.subTest(color=color):
+                result = invoke(
+                    GRADIENT,
+                    {
+                        "kind": "linear",
+                        "geometry": {},
+                        "stops": [{"color": color}, {"color": "#ffffff"}],
+                    },
+                    "--format",
+                    "json",
+                )
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(
+                    "functional colors are unsupported; use a CSS hex or named color",
+                    result.stderr,
+                )
+
+        report = run_fixture(GRADIENT, "gradient-linear.json")
+        self.assertIn(
+            "Functional colors are unsupported; use validated CSS hex or named colors.",
+            report["limitations"],
+        )
+
     def test_gradient_rejects_invalid_stops_without_sorting_or_coercion(self) -> None:
         for stops, message in (
             ([{"color": "red"}], "at least two color stops"),
@@ -229,11 +262,26 @@ class GradientModelTests(unittest.TestCase):
         with self.assertRaisesRegex(Exception, "cannot assign to field"):
             gradient.stops[0].color = "red"
 
+        serialized = gradient.value()
+        with self.assertRaises(TypeError):
+            gradient.geometry["direction"] = "to left"
+        self.assertEqual(gradient.value(), serialized)
+
     def test_gradient_help_is_available(self) -> None:
         result = invoke(GRADIENT, None, "--help")
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("linear, radial, or conic", result.stdout)
+
+    def test_gradient_rejects_invalid_utf8_input_without_a_traceback(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "gradient.json"
+            path.write_bytes(b"\xff")
+            result = invoke(GRADIENT, None, "--input", str(path), "--format", "json")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Unable to read JSON input: input is not valid UTF-8", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
 
 
 class OklchConverterTests(unittest.TestCase):
@@ -255,7 +303,7 @@ class OklchConverterTests(unittest.TestCase):
         self.assertEqual(report["input"], "#000000")
         self.assertEqual(report["oklch"], {"l": 0.0, "c": 0.0, "h": 0.0})
         self.assertEqual(report["alpha"], 1.0)
-        self.assertEqual(report["css"], "oklch(0% 0 none)")
+        self.assertEqual(report["css"], "oklch(0 0 none)")
 
     def test_oklch_retains_numeric_hue_but_serializes_powerless_hue_as_none(self) -> None:
         result = invoke(OKLCH, {"hex": "#ffffff"}, "--format", "json")
@@ -288,7 +336,8 @@ class OklchConverterTests(unittest.TestCase):
         css = report["css"]
         channels = css.removeprefix("oklch(").removesuffix(")").split(" / ")[0].split()
 
-        self.assertEqual(float(channels[0].removesuffix("%")) / 100, report["oklch"]["l"])
+        self.assertNotIn("%", channels[0])
+        self.assertEqual(float(channels[0]), report["oklch"]["l"])
         self.assertEqual(float(channels[1]), report["oklch"]["c"])
         self.assertEqual(float(channels[2]), report["oklch"]["h"])
 
@@ -297,6 +346,16 @@ class OklchConverterTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("sRGB", result.stdout)
+
+    def test_oklch_rejects_invalid_utf8_input_without_a_traceback(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "color.json"
+            path.write_bytes(b"\xff")
+            result = invoke(OKLCH, None, "--input", str(path), "--format", "json")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Unable to read JSON input: input is not valid UTF-8", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
 
 
 class GradientOracleTests(unittest.TestCase):
@@ -314,6 +373,49 @@ class GradientOracleTests(unittest.TestCase):
         report = json.loads(result.stdout)
         self.assertIn(report["classification"], {"agreement", "divergence", "unavailable"})
         self.assertEqual(report["observations"][0]["oracle"], "lightningcss")
+
+    def test_run_oracles_compares_adapter_output_to_canonical_gradient_core(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            executable = Path(temporary_directory) / "lightningcss"
+            executable.write_text(
+                f"#!{sys.executable}\n"
+                "import sys\n"
+                "from pathlib import Path\n"
+                "arguments = sys.argv[1:]\n"
+                "output = Path(arguments[2])\n"
+                "source = Path(arguments[3])\n"
+                "expected = '.oracle { background-image: linear-gradient(90deg, #000000 50%, #ffffff 50%); }\\n'\n"
+                "if source.read_text(encoding='utf-8') != expected:\n"
+                "    raise SystemExit(3)\n"
+                "output.write_text('.oracle{background-image:linear-gradient(90deg, #000000 50%, #ffffff 50%)}', encoding='utf-8')\n",
+                encoding="utf-8",
+            )
+            executable.chmod(0o755)
+            environment = os.environ.copy()
+            environment["PATH"] = temporary_directory
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ORACLES),
+                    "--input",
+                    str(FIXTURES / "gradient-linear.json"),
+                    "--format",
+                    "json",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+                env=environment,
+            )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["classification"], "agreement")
+        self.assertEqual(
+            report["core"],
+            {"value": "linear-gradient(90deg, #000000 50%, #ffffff 50%)"},
+        )
+        self.assertEqual(report["observations"][0]["relation_to_core"], "exact")
 
     def test_lightningcss_adapter_normalizes_typed_gradient_when_available(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

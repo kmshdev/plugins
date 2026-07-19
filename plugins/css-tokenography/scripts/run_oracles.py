@@ -32,9 +32,11 @@ def validate_payload(value: object) -> dict[str, object]:
     if value.get("subject") not in {"transform", "gradient"}:
         raise ValueError("subject must be transform or gradient")
 
-    core = value.get("input")
-    if not isinstance(core, dict):
+    adapter_input = value.get("input")
+    if not isinstance(adapter_input, dict):
         raise ValueError("input.input must be an object")
+    if "core" in value and not isinstance(value["core"], dict):
+        raise ValueError("input.core must be an object")
 
     adapters = value.get("adapters")
     if (
@@ -109,7 +111,11 @@ def json_exact(left: object, right: object) -> bool:
 
 
 def execute_adapter(
-    argv: list[str], payload: dict[str, object], *, oracle: str | None = None
+    argv: list[str],
+    payload: dict[str, object],
+    *,
+    oracle: str | None = None,
+    comparable_core: dict[str, object] | None = None,
 ) -> OracleObservation:
     oracle_name = oracle or argv[0]
     executable = shutil.which(argv[0])
@@ -136,7 +142,8 @@ def execute_adapter(
             notes=(f"adapter returned invalid JSON: {error}",),
         )
 
-    relation = "exact" if json_exact(value, payload) else "different"
+    expected = payload if comparable_core is None else comparable_core
+    relation = "exact" if json_exact(value, expected) else "different"
     return OracleObservation(
         oracle_name,
         "ok",
@@ -148,8 +155,10 @@ def execute_adapter(
 def run(payload: dict[str, object], overrides: dict[str, list[str]]) -> EvidenceEnvelope:
     registry = load_registry()
     requested = payload["adapters"]
-    core = payload["input"]
+    adapter_input = payload["input"]
+    core = payload.get("core", adapter_input)
     assert isinstance(requested, list)
+    assert isinstance(adapter_input, dict)
     assert isinstance(core, dict)
     envelope = EvidenceEnvelope(core=core)
 
@@ -166,7 +175,14 @@ def run(payload: dict[str, object], overrides: dict[str, list[str]]) -> Evidence
             raise ValueError(f"adapter {adapter_id} is not registered")
 
         if adapter_id in overrides:
-            envelope.add(execute_adapter(overrides[adapter_id], core, oracle=adapter_id))
+            envelope.add(
+                execute_adapter(
+                    overrides[adapter_id],
+                    adapter_input,
+                    oracle=adapter_id,
+                    comparable_core=core,
+                )
+            )
             continue
 
         declared_command = row["command"]
@@ -192,7 +208,14 @@ def run(payload: dict[str, object], overrides: dict[str, list[str]]) -> Evidence
             "--executable",
             shutil.which(declared_command[0]) or declared_command[0],
         ]
-        envelope.add(execute_adapter(command, core, oracle=adapter_id))
+        envelope.add(
+            execute_adapter(
+                command,
+                adapter_input,
+                oracle=adapter_id,
+                comparable_core=core,
+            )
+        )
     return envelope
 
 

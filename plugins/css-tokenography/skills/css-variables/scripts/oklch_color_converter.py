@@ -31,6 +31,8 @@ def read_json(path: str, stdin: TextIO) -> dict[str, object]:
     try:
         raw = stdin.read() if path == "-" else Path(path).read_text(encoding="utf-8")
         value = json.loads(raw)
+    except UnicodeError as error:
+        raise InputError("Unable to read JSON input: input is not valid UTF-8") from error
     except (OSError, json.JSONDecodeError) as error:
         raise InputError(f"Unable to read JSON input: {error}") from error
     if not isinstance(value, dict):
@@ -94,7 +96,7 @@ def convert(value: object) -> dict[str, object]:
     powerless_hue = chroma <= POWERLESS_HUE_EPSILON
     serialized_hue = "none" if powerless_hue else compact(hue)
     css = (
-        f"oklch({compact(lightness * 100)}% {compact(chroma)} {serialized_hue}"
+        f"oklch({compact(lightness)} {compact(chroma)} {serialized_hue}"
         + (f" / {compact(alpha)}" if has_alpha else "")
         + ")"
     )
