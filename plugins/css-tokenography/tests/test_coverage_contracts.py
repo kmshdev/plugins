@@ -88,6 +88,7 @@ class CoverageContractTests(unittest.TestCase):
                 "https://design.dev/tools/cubic-bezier-studio/",
                 "https://design.dev/tools/grid-area-mapper/",
                 "https://design.dev/tools/subgrid-visualizer/",
+                "https://design.dev/tools/flexbox-playground/",
                 "https://design.dev/tools/z-index-visualizer/",
                 "https://design.dev/tools/clamp-generator/",
                 "https://design.dev/tools/px-to-rem-converter/",

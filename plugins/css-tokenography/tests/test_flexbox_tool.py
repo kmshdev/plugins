@@ -1,0 +1,208 @@
+import importlib.util
+import json
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+FIXTURES = ROOT / "tests" / "fixtures"
+FLEX = ROOT / "skills" / "css-flexbox" / "scripts" / "flexbox_playground.py"
+FLEX_MODEL = ROOT / "skills" / "css-flexbox" / "scripts" / "flexbox_model.py"
+
+
+def invoke(
+    data: object | None = None,
+    *args: str,
+    raw_stdin: str | None = None,
+) -> subprocess.CompletedProcess[str]:
+    stdin = raw_stdin if raw_stdin is not None else None if data is None else json.dumps(data)
+    return subprocess.run(
+        [sys.executable, str(FLEX), *args],
+        input=stdin,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def run_json_raw(data: object) -> subprocess.CompletedProcess[str]:
+    return invoke(data, "--format", "json")
+
+
+def run_json(data: object) -> dict[str, object]:
+    result = run_json_raw(data)
+    if result.returncode != 0:
+        raise AssertionError(result.stderr)
+    return json.loads(result.stdout)
+
+
+def run_fixture(script: Path, fixture: str) -> dict[str, object]:
+    result = subprocess.run(
+        [sys.executable, str(script), "--input", str(FIXTURES / fixture), "--format", "json"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise AssertionError(result.stderr)
+    return json.loads(result.stdout)
+
+
+class FlexboxPlaygroundTests(unittest.TestCase):
+    def test_row_reverse_changes_main_axis_without_reordering_source(self) -> None:
+        report = run_fixture(FLEX, "flexbox-wrapped.json")
+
+        self.assertEqual(report["source_order"], ["a", "b", "c"])
+        self.assertEqual(report["main_axis"], "inline-end-to-inline-start")
+        self.assertEqual(report["cross_axis"], "block-start-to-block-end")
+
+    def test_container_controls_emit_canonical_declarations(self) -> None:
+        report = run_fixture(FLEX, "flexbox-wrapped.json")
+
+        self.assertEqual(
+            report["declarations"],
+            {
+                "display": "flex",
+                "flex-direction": "row-reverse",
+                "flex-wrap": "wrap",
+                "justify-content": "space-between",
+                "align-items": "center",
+                "gap": "1rem",
+            },
+        )
+        self.assertEqual(
+            report["css"],
+            "display: flex;\n"
+            "flex-direction: row-reverse;\n"
+            "flex-wrap: wrap;\n"
+            "justify-content: space-between;\n"
+            "align-items: center;\n"
+            "gap: 1rem;",
+        )
+
+    def test_column_wrap_reverse_normalizes_both_logical_axes(self) -> None:
+        report = run_json({"direction": "column", "wrap": "wrap-reverse"})
+
+        self.assertEqual(report["main_axis"], "block-start-to-block-end")
+        self.assertEqual(report["cross_axis"], "inline-end-to-inline-start")
+
+    def test_unknown_alignment_and_enum_controls_are_rejected(self) -> None:
+        cases = (
+            ({"align_items": "middle"}, "align_items must be one of"),
+            ({"justify_content": "left"}, "justify_content must be one of"),
+            ({"direction": "horizontal"}, "direction must be one of"),
+            ({"wrap": "reverse"}, "wrap must be one of"),
+        )
+
+        for data, message in cases:
+            with self.subTest(data=data):
+                result = run_json_raw(data)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(message, result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_gap_and_closed_input_shape_are_validated(self) -> None:
+        cases = (
+            ({"gap": "-1px"}, "gap must not be negative"),
+            ({"gap": "1.px"}, "gap must be normal or a supported CSS length or percentage"),
+            ({"gap": "1rem; color: red"}, "gap must be normal or a supported CSS length or percentage"),
+            ({"extra": True}, "Input supports only"),
+        )
+
+        for data, message in cases:
+            with self.subTest(data=data):
+                result = run_json_raw(data)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(message, result.stderr)
+
+    def test_items_preserve_source_order_and_expose_order_modified_order(self) -> None:
+        report = run_json(
+            {
+                "items": [
+                    {"id": "first", "order": 2},
+                    {"id": "second", "order": -1},
+                    {"id": "third"},
+                ]
+            }
+        )
+
+        self.assertEqual(report["source_order"], ["first", "second", "third"])
+        self.assertEqual(report["order_modified_source_order"], ["second", "third", "first"])
+        self.assertEqual([item["source_index"] for item in report["items"]], [0, 1, 2])
+        self.assertIn("DOM", report["accessibility"][0])
+
+    def test_invalid_items_are_rejected_without_inferring_layout(self) -> None:
+        cases = (
+            ({"items": "a"}, "items must be an array"),
+            ({"items": ["a"]}, "items[0] must be an object"),
+            ({"items": [{"id": ""}]}, "items[0].id must be a simple identifier"),
+            ({"items": [{"id": "a", "order": True}]}, "items[0].order must be an integer"),
+            ({"items": [{"id": "a"}, {"id": "a"}]}, "item ids must be unique"),
+            ({"items": [{"id": "a", "size": "20px"}]}, "items[0] supports only id and order"),
+        )
+
+        for data, message in cases:
+            with self.subTest(data=data):
+                result = run_json_raw(data)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(message, result.stderr)
+
+        report = run_json({})
+        self.assertNotIn("sizes", report)
+        self.assertTrue(any("dimensions" in limitation for limitation in report["limitations"]))
+
+    def test_model_exposes_frozen_typed_item_records(self) -> None:
+        spec = importlib.util.spec_from_file_location("flexbox_model", FLEX_MODEL)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+
+        flexbox = module.Flexbox.from_data({"items": [{"id": "item"}]})
+
+        self.assertIsInstance(flexbox.items, tuple)
+        with self.assertRaisesRegex(Exception, "cannot assign to field"):
+            flexbox.items[0].order = 2
+
+    def test_file_stdin_css_human_evidence_and_help_are_supported(self) -> None:
+        data = json.loads((FIXTURES / "flexbox-wrapped.json").read_text(encoding="utf-8"))
+        first = run_json_raw(data)
+        second = run_json_raw(data)
+        css = invoke(data, "--format", "css")
+        human = invoke(data)
+        evidence = invoke(data, "--format", "json", "--evidence")
+        help_result = invoke(None, "--help")
+
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertEqual(first.stdout, second.stdout)
+        self.assertEqual(css.stdout.strip(), json.loads(first.stdout)["css"])
+        self.assertIn("inline-end-to-inline-start", human.stdout)
+        envelope = json.loads(evidence.stdout)
+        self.assertEqual(envelope["core"], json.loads(first.stdout))
+        self.assertEqual(envelope["classification"], "unavailable")
+        self.assertEqual(envelope["observations"], [])
+        self.assertEqual(help_result.returncode, 0, help_result.stderr)
+        self.assertIn("Flexbox", help_result.stdout)
+
+    def test_malformed_json_and_invalid_utf8_are_actionable(self) -> None:
+        malformed = invoke(None, "--format", "json", raw_stdin="{")
+        self.assertNotEqual(malformed.returncode, 0)
+        self.assertIn("Unable to read JSON input", malformed.stderr)
+        self.assertNotIn("Traceback", malformed.stderr)
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "flexbox.json"
+            path.write_bytes(b"\xff")
+            invalid_utf8 = invoke(None, "--input", str(path), "--format", "json")
+
+        self.assertNotEqual(invalid_utf8.returncode, 0)
+        self.assertIn("input is not valid UTF-8", invalid_utf8.stderr)
+        self.assertNotIn("Traceback", invalid_utf8.stderr)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -25,7 +25,7 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | CSS Loaders | Effects | css-animations | deterministic | procedural | loader model task required |
 | CSS Grid Area Mapper | Layout | css-grid | deterministic | implemented-full | `grid_area_mapper.py` |
 | CSS Subgrid Visualizer | Layout | css-grid | deterministic | implemented-full | `subgrid_visualizer.py` |
-| CSS Flexbox Playground | Layout | css-flexbox | deterministic | procedural | flex control task required |
+| CSS Flexbox Playground | Layout | css-flexbox | deterministic | implemented-core | `flexbox_playground.py` (bounded container enums, logical axes, source/order-modified item order; no browser sizing prediction) |
 | Z-Index Visualizer | Layout | css-grid | deterministic | procedural | stacking-context task required |
 | CSS Clamp Generator | Typography | css-functions | deterministic | implemented-full | `clamp_generator.py` (finite endpoints, fluid slope/intercept, CSS) |
 | CSS Text Shadow Generator | Typography | web-typography | deterministic | procedural | shadow and legibility task required |
