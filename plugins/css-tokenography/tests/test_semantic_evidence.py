@@ -17,21 +17,46 @@ from css_tokenography_core import (
 
 
 class SemanticEvidenceTests(unittest.TestCase):
-    def test_disagreement_retains_both_observations(self) -> None:
+    def test_unanimous_differing_values_are_not_inferred_equivalent(self) -> None:
         envelope = EvidenceEnvelope(core={"value": "rotate(1turn)"})
         envelope.add(
             OracleObservation(
-                "lightningcss", "ok", {"value": "rotate(360deg)"}
+                "lightningcss",
+                "ok",
+                {"value": "rotate(360deg)"},
+                relation_to_core="different",
             )
         )
         envelope.add(
-            OracleObservation("chromium", "ok", {"value": "rotate(360deg)"})
+            OracleObservation(
+                "chromium",
+                "ok",
+                {"value": "rotate(360deg)"},
+                relation_to_core="different",
+            )
         )
 
         report = envelope.to_dict()
 
-        self.assertEqual(report["classification"], "equivalent")
+        self.assertEqual(report["classification"], "divergence")
         self.assertEqual(len(report["observations"]), 2)
+        self.assertEqual(
+            [item["relation_to_core"] for item in report["observations"]],
+            ["different", "different"],
+        )
+
+    def test_explicit_rotation_equivalence_is_equivalent(self) -> None:
+        envelope = EvidenceEnvelope(core={"value": "rotate(1turn)"})
+        envelope.add(
+            OracleObservation(
+                "lightningcss",
+                "ok",
+                {"value": "rotate(360deg)"},
+                relation_to_core="equivalent",
+            )
+        )
+
+        self.assertEqual(envelope.to_dict()["classification"], "equivalent")
 
     def test_unavailable_is_not_agreement(self) -> None:
         envelope = EvidenceEnvelope(core={"value": "x"})
@@ -46,6 +71,7 @@ class SemanticEvidenceTests(unittest.TestCase):
                 "chromium",
                 "ok",
                 {"value": "x"},
+                relation_to_core="exact",
                 provenance=Provenance(
                     source="chromium",
                     version="128",
@@ -70,10 +96,15 @@ class SemanticEvidenceTests(unittest.TestCase):
         )
         round_tripped = json.loads(json.dumps(report))
         self.assertEqual(round_tripped["observations"][0]["notes"], ["stable"])
+        self.assertEqual(
+            round_tripped["observations"][0]["relation_to_core"], "exact"
+        )
 
     def test_provenance_and_observations_are_immutable(self) -> None:
         provenance = Provenance(source="wpt")
-        observation = OracleObservation("chromium", "ok", {"value": "x"})
+        observation = OracleObservation(
+            "chromium", "ok", {"value": "x"}, relation_to_core="exact"
+        )
 
         with self.assertRaises(FrozenInstanceError):
             provenance.source = "other"
@@ -82,7 +113,9 @@ class SemanticEvidenceTests(unittest.TestCase):
 
     def test_errors_take_precedence_over_available_results(self) -> None:
         observations = [
-            OracleObservation("chromium", "ok", {"value": "x"}),
+            OracleObservation(
+                "chromium", "ok", {"value": "x"}, relation_to_core="exact"
+            ),
             OracleObservation("lightningcss", "error", None),
         ]
 
@@ -90,36 +123,76 @@ class SemanticEvidenceTests(unittest.TestCase):
             classify_observations({"value": "x"}, observations), "error"
         )
 
-    def test_differing_available_results_are_divergence(self) -> None:
+    def test_matching_and_unavailable_results_are_partial(self) -> None:
         observations = [
-            OracleObservation("chromium", "ok", {"value": "x"}),
-            OracleObservation("lightningcss", "ok", {"value": "y"}),
+            OracleObservation(
+                "chromium", "ok", {"value": "x"}, relation_to_core="exact"
+            ),
+            OracleObservation("lightningcss", "unavailable", None),
         ]
 
         self.assertEqual(
-            classify_observations({"value": "x"}, observations), "divergence"
+            classify_observations({"value": "x"}, observations), "partial"
         )
 
-    def test_unsupported_without_available_results_is_unsupported(self) -> None:
+    def test_matching_and_unsupported_results_are_partial(self) -> None:
+        observations = [
+            OracleObservation(
+                "chromium", "ok", {"value": "x"}, relation_to_core="exact"
+            ),
+            OracleObservation("lightningcss", "unsupported", None),
+        ]
+
+        self.assertEqual(
+            classify_observations({"value": "x"}, observations), "partial"
+        )
+
+    def test_matching_and_bounded_subset_results_are_bounded_subset(self) -> None:
+        observations = [
+            OracleObservation(
+                "chromium", "ok", {"value": "x"}, relation_to_core="exact"
+            ),
+            OracleObservation(
+                "wpt",
+                "ok",
+                {"covered": ["rotate", "translate"]},
+                relation_to_core="bounded-subset",
+            ),
+        ]
+
+        self.assertEqual(
+            classify_observations({"value": "x"}, observations), "bounded-subset"
+        )
+
+    def test_unsupported_without_usable_results_is_unavailable(self) -> None:
         observations = [
             OracleObservation("lightningcss", "unsupported", None),
             OracleObservation("chromium", "unavailable", None),
         ]
 
         self.assertEqual(
-            classify_observations({"value": "x"}, observations), "unsupported"
+            classify_observations({"value": "x"}, observations), "unavailable"
         )
 
-    def test_explicit_bounded_subset_is_retained(self) -> None:
-        observations = [
+    def test_ok_observation_requires_relation_evidence(self) -> None:
+        with self.assertRaisesRegex(ValueError, "relation_to_core is required"):
+            OracleObservation("chromium", "ok", {"value": "x"})
+
+    def test_ok_observation_rejects_invalid_relation_evidence(self) -> None:
+        with self.assertRaisesRegex(ValueError, "invalid relation_to_core"):
             OracleObservation(
-                "wpt", "bounded-subset", {"covered": ["rotate", "translate"]}
+                "chromium", "ok", {"value": "x"}, relation_to_core="same"
             )
-        ]
 
-        self.assertEqual(
-            classify_observations({"value": "x"}, observations), "bounded-subset"
-        )
+    def test_non_usable_observations_reject_relation_evidence(self) -> None:
+        for status in ("unavailable", "unsupported", "error"):
+            with self.subTest(status=status):
+                with self.assertRaisesRegex(
+                    ValueError, "relation_to_core must be absent"
+                ):
+                    OracleObservation(
+                        "oracle", status, None, relation_to_core="different"
+                    )
 
 
 if __name__ == "__main__":
