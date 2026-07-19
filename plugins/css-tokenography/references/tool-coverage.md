@@ -27,10 +27,10 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | CSS Subgrid Visualizer | Layout | css-grid | deterministic | implemented-full | `subgrid_visualizer.py` |
 | CSS Flexbox Playground | Layout | css-flexbox | deterministic | procedural | flex control task required |
 | Z-Index Visualizer | Layout | css-grid | deterministic | procedural | stacking-context task required |
-| CSS Clamp Generator | Typography | css-functions | deterministic | procedural | owner CLI and fixture task required |
+| CSS Clamp Generator | Typography | css-functions | deterministic | implemented-full | `clamp_generator.py` (finite endpoints, fluid slope/intercept, CSS) |
 | CSS Text Shadow Generator | Typography | web-typography | deterministic | procedural | shadow and legibility task required |
 | Metallic Text Effect Generator | Typography | css-gradients | deterministic | procedural | effect composition task required |
-| PX to REM Converter | Typography | web-typography | deterministic | procedural | conversion contract task required |
+| PX to REM Converter | Typography | web-typography | deterministic | implemented-full | `px_to_rem_converter.py` (finite conversion, explicit positive root) |
 | Code Screenshot Generator | Utilities | web-performance-optimization | browser-dependent | procedural | pinned renderer task required |
 | ASCII Code Generator | Utilities | css-functions | asset-dependent | procedural | source glyph task required |
 | CSS Specificity Calculator | Utilities | css-selectors | deterministic | implemented-core | `specificity_calculator.py` (per-member Selectors Level 4 tuples, spans, and notes) |
@@ -38,6 +38,6 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | Browser Feature Detection | Utilities | css-media-queries | browser-dependent | procedural | target-browser probe task required |
 | Image Optimizer | Utilities | web-performance-optimization | codec-dependent | procedural | pinned codec task required |
 | Favicon Generator | Utilities | web-performance-optimization | codec-dependent | procedural | icon rendering task required |
-| Aspect Ratio Calculator | Utilities | css-functions | deterministic | procedural | ratio contract task required |
+| Aspect Ratio Calculator | Utilities | css-functions | deterministic | implemented-full | `aspect_ratio_calculator.py` (exact integral reduction, normalized decimals) |
 
 `implemented-full` and `implemented-core` are executable-evidence claims. `serializer-only`, if used later, must satisfy the same executable contract and also name its limitations. `procedural` and `serializer-only` entries carry a structured `coverage_gap` with missing behaviors, an owner-bound restoration artifact, restoration tests, and observable acceptance outcomes. The validator checks schema and path ownership; it does not infer semantic quality from prose.

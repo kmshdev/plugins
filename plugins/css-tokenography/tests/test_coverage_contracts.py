@@ -84,7 +84,10 @@ class CoverageContractTests(unittest.TestCase):
                 "https://design.dev/tools/grid-area-mapper/",
                 "https://design.dev/tools/subgrid-visualizer/",
                 "https://design.dev/tools/z-index-visualizer/",
+                "https://design.dev/tools/clamp-generator/",
+                "https://design.dev/tools/px-to-rem-converter/",
                 "https://design.dev/tools/specificity-calculator/",
+                "https://design.dev/tools/aspect-ratio-calculator/",
             ],
         )
         for row in rows:
