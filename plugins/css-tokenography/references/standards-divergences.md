@@ -14,31 +14,47 @@
   caller's root size, and aspect-ratio output does not predict the used size of
   a box. Integral aspect ratios are reduced exactly; non-integral inputs retain
   binary64 precision rather than inventing a rational source value.
-- nth-child parsing follows the CSS Syntax An+B token boundaries, including
-  ASCII digits and CSS whitespace. The generator accepts only An+B plus one
-  safe type or universal selector token; the broader `of <complex-real-selector-list>`
-  form belongs to selector matching and is intentionally outside this input
-  contract. Cubic-bezier enforces x coordinates in `[0,1]` while allowing finite
-  y overshoot, as required by CSS Easing.
-- The gradient model is a bounded CSS Images subset. It requires at least two
-  stops and omits two-position stops, transition hints, `calc()`, explicit
-  radial radii, numeric center positions, functional colors, and explicit
-  interpolation-space or hue-path controls. Its report names CSS Images 4's
-  current Oklab default as a draft semantic that still requires target-browser
-  verification.
+- nth-child parsing follows the [CSS Syntax An+B microsyntax](https://www.w3.org/TR/css-syntax-3/#anb-microsyntax),
+  including ASCII digits and CSS whitespace. The generator accepts only An+B
+  plus one safe type or universal selector token; Selectors defines the broader
+  [`:nth-child(An+B [of S]?)`](https://www.w3.org/TR/selectors-4/#the-nth-child-pseudo)
+  form, which is intentionally outside this generator's input contract.
+  Cubic-bezier enforces x coordinates in `[0,1]` while allowing finite y
+  overshoot, matching [CSS Easing's cubic Bézier grammar](https://www.w3.org/TR/css-easing-2/#cubic-bezier-easing-functions).
+- The gradient model is a bounded [CSS Images gradient](https://www.w3.org/TR/css-images-4/#gradients)
+  subset. It requires at least two stops although the normative
+  [color-stop list](https://www.w3.org/TR/css-images-4/#color-stop-syntax)
+  accepts one or more, and it omits two-position stops, transition hints,
+  `calc()`, explicit radial radii, numeric center positions, functional colors,
+  and explicit interpolation-space or hue-path controls. Its report names the
+  current [Oklab gradient-interpolation default](https://www.w3.org/TR/css-images-4/#coloring-gradient-line)
+  as a draft semantic that still requires target-browser verification.
 - The OKLCH converter accepts only six/eight-digit sRGB hex and performs the CSS
-  Color 4 conversion without gamut mapping or clamping. It reports powerless
-  hue separately at `C <= 0.000004`; conversion output is not rendered-color or
-  accessibility-conformance evidence.
+  Color 4 [Oklab-to-OkLCh conversion](https://www.w3.org/TR/css-color-4/#lab-to-lch)
+  without gamut mapping or clamping. It reports hue as powerless at
+  `C <= 0.000004`, the threshold in the normative
+  [OkLCh syntax table](https://www.w3.org/TR/css-color-4/#specifying-oklab-oklch),
+  following the [powerless-component rule](https://www.w3.org/TR/css-color-4/#powerless).
+  Conversion output is not rendered-color or accessibility-conformance
+  evidence.
 - Border-radius accepts one to four primitive nonnegative length-percentage
-  values per axis. Box-shadow requires every typed layer to state `inset`, both
-  offsets, blur, spread, and color even where CSS text syntax permits omitted
-  components and defaults. `calc()`, `var()`, global keywords, functional colors,
-  and newer length units outside the shared bounded grammar are not modeled.
+  values per axis, matching the [border-radius shorthand grammar](https://www.w3.org/TR/css-backgrounds-3/#border-radius).
+  Box-shadow requires every typed layer to state `inset`, both offsets, blur,
+  spread, and color even where the [box-shadow grammar](https://www.w3.org/TR/css-backgrounds-3/#box-shadow)
+  permits omitted components and defaults; it preserves the specified
+  [front-to-back shadow order](https://www.w3.org/TR/css-backgrounds-3/#shadow-layers).
+  `calc()`, `var()`, global keywords, functional colors, and newer length units
+  outside the shared bounded grammar are not modeled.
 - The Flexbox model intentionally stops before the browser layout algorithm.
-  Logical axes do not establish physical directions without writing mode and
-  direction; line breaking, intrinsic sizing, free-space distribution, growth,
-  shrinkage, and computed item sizes remain browser-dependent. Gap accepts only
-  `normal` or the shared primitive nonnegative length-percentage grammar.
+  Its [main and cross axes](https://www.w3.org/TR/css-flexbox-1/#box-model) do not
+  establish physical directions without writing mode and direction, and it
+  reports [order-modified document order](https://www.w3.org/TR/css-flexbox-1/#order-property)
+  separately from source order. Line breaking, intrinsic sizing, free-space
+  distribution, growth, shrinkage, and computed item sizes remain
+  browser-dependent. Gap accepts only `normal` or the shared primitive
+  nonnegative length-percentage grammar defined for
+  [row and column gutters](https://www.w3.org/TR/css-align-3/#column-row-gap).
 
-Primary checks: MDN CSS guides and web.dev Core Web Vitals and optimization articles. design.dev remains the requested topic and observed-tool coverage source.
+Phase 2 normative claims use the W3C sections linked inline. Other primary
+checks are MDN CSS guides and web.dev Core Web Vitals and optimization articles;
+design.dev remains the requested topic and observed-tool coverage source.
