@@ -104,6 +104,28 @@ class FlexboxPlaygroundTests(unittest.TestCase):
                 self.assertIn(message, result.stderr)
                 self.assertNotIn("Traceback", result.stderr)
 
+    def test_defaults_apply_only_when_controls_are_absent(self) -> None:
+        defaults = run_json({})["declarations"]
+        self.assertEqual(defaults["flex-direction"], "row")
+        self.assertEqual(defaults["flex-wrap"], "nowrap")
+        self.assertEqual(defaults["justify-content"], "normal")
+        self.assertEqual(defaults["align-items"], "normal")
+        self.assertEqual(defaults["gap"], "normal")
+
+        cases = (
+            ("direction", "direction must be one of"),
+            ("wrap", "wrap must be one of"),
+            ("justify_content", "justify_content must be one of"),
+            ("align_items", "align_items must be one of"),
+            ("gap", "gap must be normal or a supported CSS length or percentage"),
+        )
+        for field, message in cases:
+            with self.subTest(field=field):
+                result = run_json_raw({field: None})
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(message, result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+
     def test_gap_and_closed_input_shape_are_validated(self) -> None:
         cases = (
             ({"gap": "-1px"}, "gap must not be negative"),
@@ -153,6 +175,64 @@ class FlexboxPlaygroundTests(unittest.TestCase):
         report = run_json({})
         self.assertNotIn("sizes", report)
         self.assertTrue(any("dimensions" in limitation for limitation in report["limitations"]))
+
+    def test_item_identifier_and_order_bounds_are_explicit(self) -> None:
+        maximum_identifier = "a" + "x" * 127
+        report = run_json(
+            {
+                "items": [
+                    {"id": maximum_identifier, "order": -2_147_483_648},
+                    {"id": "maximum-order", "order": 2_147_483_647},
+                ]
+            }
+        )
+        self.assertEqual(report["source_order"], [maximum_identifier, "maximum-order"])
+
+        cases = (
+            (
+                {"items": [{"id": "a" + "x" * 128}]},
+                "items[0].id must be at most 128 characters",
+            ),
+            (
+                {"items": [{"id": "a", "order": -2_147_483_649}]},
+                "items[0].order must be between -2147483648 and 2147483647",
+            ),
+            (
+                {"items": [{"id": "a", "order": 2_147_483_648}]},
+                "items[0].order must be between -2147483648 and 2147483647",
+            ),
+        )
+        for data, message in cases:
+            with self.subTest(message=message):
+                result = run_json_raw(data)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(message, result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_items_array_has_a_deterministic_limit(self) -> None:
+        at_limit = [{"id": f"item-{index}"} for index in range(1000)]
+        self.assertEqual(len(run_json({"items": at_limit})["items"]), 1000)
+
+        result = run_json_raw({"items": [*at_limit, {"id": "one-too-many"}]})
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("items must contain at most 1000 entries", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_input_size_and_python_integer_digit_failures_are_actionable(self) -> None:
+        oversized_input = invoke(None, "--format", "json", raw_stdin=" " * 65_537)
+        self.assertNotEqual(oversized_input.returncode, 0)
+        self.assertIn("JSON input must not exceed 65536 UTF-8 bytes", oversized_input.stderr)
+        self.assertNotIn("Traceback", oversized_input.stderr)
+
+        oversized_integer = invoke(
+            None,
+            "--format",
+            "json",
+            raw_stdin='{"items":[{"id":"a","order":' + "9" * 5000 + "}]}",
+        )
+        self.assertNotEqual(oversized_integer.returncode, 0)
+        self.assertIn("Unable to read JSON input", oversized_integer.stderr)
+        self.assertNotIn("Traceback", oversized_integer.stderr)
 
     def test_model_exposes_frozen_typed_item_records(self) -> None:
         spec = importlib.util.spec_from_file_location("flexbox_model", FLEX_MODEL)

@@ -17,13 +17,29 @@ from css_tokenography_core import EvidenceEnvelope
 from flexbox_model import Flexbox, InputError
 
 
+MAX_INPUT_BYTES = 65_536
+
+
 def read_json(path: str, stdin: TextIO) -> dict[str, object]:
     try:
-        raw = stdin.read() if path == "-" else Path(path).read_text(encoding="utf-8")
+        if path == "-":
+            raw = stdin.read(MAX_INPUT_BYTES + 1)
+            if len(raw.encode("utf-8")) > MAX_INPUT_BYTES:
+                raise InputError(
+                    f"JSON input must not exceed {MAX_INPUT_BYTES} UTF-8 bytes"
+                )
+        else:
+            with Path(path).open("rb") as input_file:
+                encoded = input_file.read(MAX_INPUT_BYTES + 1)
+            if len(encoded) > MAX_INPUT_BYTES:
+                raise InputError(
+                    f"JSON input must not exceed {MAX_INPUT_BYTES} UTF-8 bytes"
+                )
+            raw = encoded.decode("utf-8")
         value = json.loads(raw)
     except UnicodeError as error:
         raise InputError("Unable to read JSON input: input is not valid UTF-8") from error
-    except (OSError, json.JSONDecodeError) as error:
+    except (OSError, ValueError) as error:
         raise InputError(f"Unable to read JSON input: {error}") from error
     if not isinstance(value, dict):
         raise InputError("Input must be a JSON object")

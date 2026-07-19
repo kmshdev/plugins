@@ -36,20 +36,22 @@ CONTAINER_FIELDS = {
 }
 ITEM_FIELDS = {"id", "order"}
 IDENTIFIER = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
+MAX_ITEMS = 1000
+MAX_IDENTIFIER_LENGTH = 128
+MIN_ORDER = -(2**31)
+MAX_ORDER = 2**31 - 1
 
 
-def enum_value(value: object, *, field: str, choices: set[str], default: str) -> str:
-    result = default if value is None else value
-    if not isinstance(result, str) or result not in choices:
+def enum_value(value: object, *, field: str, choices: set[str]) -> str:
+    if not isinstance(value, str) or value not in choices:
         raise InputError(f"{field} must be one of {', '.join(sorted(choices))}")
-    return result
+    return value
 
 
 def gap_value(value: object) -> str:
-    result = "normal" if value is None else value
-    if not isinstance(result, str):
+    if not isinstance(value, str):
         raise InputError("gap must be normal or a supported CSS length or percentage")
-    result = result.strip()
+    result = value.strip()
     if result == "normal":
         return result
     if LENGTH_PERCENTAGE.fullmatch(result) is None:
@@ -74,9 +76,17 @@ class FlexItem:
         identifier = data.get("id")
         if not isinstance(identifier, str) or IDENTIFIER.fullmatch(identifier) is None:
             raise InputError(f"items[{index}].id must be a simple identifier")
+        if len(identifier) > MAX_IDENTIFIER_LENGTH:
+            raise InputError(
+                f"items[{index}].id must be at most {MAX_IDENTIFIER_LENGTH} characters"
+            )
         order = data.get("order", 0)
         if isinstance(order, bool) or not isinstance(order, int):
             raise InputError(f"items[{index}].order must be an integer")
+        if not MIN_ORDER <= order <= MAX_ORDER:
+            raise InputError(
+                f"items[{index}].order must be between {MIN_ORDER} and {MAX_ORDER}"
+            )
         return cls(id=identifier, order=order, source_index=index)
 
     def to_report(self) -> dict[str, object]:
@@ -86,6 +96,8 @@ class FlexItem:
 def parse_items(value: object) -> tuple[FlexItem, ...]:
     if not isinstance(value, list):
         raise InputError("items must be an array")
+    if len(value) > MAX_ITEMS:
+        raise InputError(f"items must contain at most {MAX_ITEMS} entries")
     items = tuple(FlexItem.from_data(item, index=index) for index, item in enumerate(value))
     ids = [item.id for item in items]
     if len(set(ids)) != len(ids):
@@ -131,27 +143,26 @@ class Flexbox:
             )
         return cls(
             direction=enum_value(
-                data.get("direction"),
+                data["direction"] if "direction" in data else "row",
                 field="direction",
                 choices=FLEX_DIRECTIONS,
-                default="row",
             ),
             wrap=enum_value(
-                data.get("wrap"), field="wrap", choices=FLEX_WRAPS, default="nowrap"
+                data["wrap"] if "wrap" in data else "nowrap",
+                field="wrap",
+                choices=FLEX_WRAPS,
             ),
             justify_content=enum_value(
-                data.get("justify_content"),
+                data["justify_content"] if "justify_content" in data else "normal",
                 field="justify_content",
                 choices=JUSTIFY_CONTENT,
-                default="normal",
             ),
             align_items=enum_value(
-                data.get("align_items"),
+                data["align_items"] if "align_items" in data else "normal",
                 field="align_items",
                 choices=ALIGN_ITEMS,
-                default="normal",
             ),
-            gap=gap_value(data.get("gap")),
+            gap=gap_value(data["gap"] if "gap" in data else "normal"),
             items=parse_items(data.get("items", [])),
         )
 
