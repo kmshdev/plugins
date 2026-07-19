@@ -224,6 +224,16 @@ class FlexboxPlaygroundTests(unittest.TestCase):
         self.assertIn("JSON input must not exceed 65536 UTF-8 bytes", oversized_input.stderr)
         self.assertNotIn("Traceback", oversized_input.stderr)
 
+        with tempfile.TemporaryDirectory() as directory:
+            oversized_path = Path(directory) / "oversized.json"
+            oversized_path.write_text(" " * 65_537, encoding="utf-8")
+            oversized_file = invoke(
+                None, "--input", str(oversized_path), "--format", "json"
+            )
+        self.assertNotEqual(oversized_file.returncode, 0)
+        self.assertIn("JSON input must not exceed 65536 UTF-8 bytes", oversized_file.stderr)
+        self.assertNotIn("Traceback", oversized_file.stderr)
+
         oversized_integer = invoke(
             None,
             "--format",
@@ -233,6 +243,31 @@ class FlexboxPlaygroundTests(unittest.TestCase):
         self.assertNotEqual(oversized_integer.returncode, 0)
         self.assertIn("Unable to read JSON input", oversized_integer.stderr)
         self.assertNotIn("Traceback", oversized_integer.stderr)
+
+    def test_exact_maximum_input_size_is_accepted_for_stdin_and_file(self) -> None:
+        maximum_input = "{}" + " " * (65_536 - 2)
+        self.assertEqual(len(maximum_input.encode("utf-8")), 65_536)
+
+        stdin_result = invoke(None, "--format", "json", raw_stdin=maximum_input)
+        self.assertEqual(stdin_result.returncode, 0, stdin_result.stderr)
+        self.assertEqual(json.loads(stdin_result.stdout)["source_order"], [])
+
+        with tempfile.TemporaryDirectory() as directory:
+            maximum_path = Path(directory) / "maximum.json"
+            maximum_path.write_text(maximum_input, encoding="utf-8")
+            file_result = invoke(None, "--input", str(maximum_path), "--format", "json")
+        self.assertEqual(file_result.returncode, 0, file_result.stderr)
+        self.assertEqual(json.loads(file_result.stdout)["source_order"], [])
+
+    def test_deeply_nested_valid_json_is_an_actionable_parser_error(self) -> None:
+        nested_input = '{"items":' + "[" * 10_000 + "0" + "]" * 10_000 + "}"
+        self.assertLess(len(nested_input.encode("utf-8")), 65_536)
+
+        result = invoke(None, "--format", "json", raw_stdin=nested_input)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("JSON nesting exceeds the supported parser depth", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
 
     def test_model_exposes_frozen_typed_item_records(self) -> None:
         spec = importlib.util.spec_from_file_location("flexbox_model", FLEX_MODEL)

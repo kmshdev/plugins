@@ -37,6 +37,10 @@ def read_json(path: str, stdin: TextIO) -> dict[str, object]:
                 )
             raw = encoded.decode("utf-8")
         value = json.loads(raw)
+    except RecursionError as error:
+        raise InputError(
+            "Unable to read JSON input: JSON nesting exceeds the supported parser depth"
+        ) from error
     except UnicodeError as error:
         raise InputError("Unable to read JSON input: input is not valid UTF-8") from error
     except (OSError, ValueError) as error:
