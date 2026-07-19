@@ -48,7 +48,7 @@ class ClampGeneratorTests(unittest.TestCase):
 
         self.assertEqual(
             report["css"],
-            "clamp(1rem, 0.833333rem + 0.833333vw, 1.5rem)",
+            "clamp(1rem, 0.8333333333333334rem + 0.8333333333333334vw, 1.5rem)",
         )
         self.assertAlmostEqual(report["slope_vw"], 0.8333333333333334)
         self.assertAlmostEqual(report["intercept_rem"], 0.8333333333333334)
@@ -83,13 +83,36 @@ class ClampGeneratorTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("calculation must produce finite values", result.stderr)
 
+    def test_clamp_preserves_small_nonzero_values_in_css(self) -> None:
+        report = run_json(
+            CLAMP,
+            {
+                "min_px": 1e-8,
+                "max_px": 2e-8,
+                "min_viewport_px": 320,
+                "max_viewport_px": 1280,
+                "root_px": 16,
+            },
+        )
+
+        self.assertEqual(
+            report["css"],
+            "clamp(6.25e-10rem, 4.166666666666667e-10rem + "
+            "1.0416666666666667e-09vw, 1.25e-09rem)",
+        )
+        self.assertNotEqual(report["intercept_rem"], 0)
+        self.assertNotEqual(report["slope_vw"], 0)
+
     def test_css_and_human_formats_are_useful(self) -> None:
         data = {"min_px": 16, "max_px": 24, "min_viewport_px": 320, "max_viewport_px": 1280, "root_px": 16}
 
         css = run_raw(CLAMP, data, "--format", "css")
         human = run_raw(CLAMP, data)
 
-        self.assertEqual(css.stdout.strip(), "clamp(1rem, 0.833333rem + 0.833333vw, 1.5rem)")
+        self.assertEqual(
+            css.stdout.strip(),
+            "clamp(1rem, 0.8333333333333334rem + 0.8333333333333334vw, 1.5rem)",
+        )
         self.assertIn("320px", human.stdout)
         self.assertIn("1280px", human.stdout)
         self.assertIn("clamp(1rem", human.stdout)
@@ -108,6 +131,29 @@ class AspectRatioCalculatorTests(unittest.TestCase):
 
         self.assertEqual(report["pair"], [1.68, 1])
         self.assertEqual(report["css"], "aspect-ratio: 1.68 / 1;")
+
+    def test_small_decimal_ratio_remains_nonzero_in_json_and_css(self) -> None:
+        report = run_json(RATIO, {"width": 1e-8, "height": 1})
+
+        self.assertEqual(report["pair"], [1e-8, 1])
+        self.assertEqual(report["css"], "aspect-ratio: 1e-08 / 1;")
+        self.assertEqual(report["ratio"], report["pair"][0])
+
+    def test_large_integer_dimensions_reduce_exactly(self) -> None:
+        cases = (
+            (9007199254740993, 3, [3002399751580331, 1]),
+            (18014398509481986, 6, [3002399751580331, 1]),
+            (9007199254740995, 5, [1801439850948199, 1]),
+        )
+
+        for width, height, expected_pair in cases:
+            with self.subTest(width=width, height=height):
+                report = run_json(RATIO, {"width": width, "height": height})
+                self.assertEqual(report["pair"], expected_pair)
+                self.assertEqual(
+                    report["css"],
+                    f"aspect-ratio: {expected_pair[0]} / {expected_pair[1]};",
+                )
 
     def test_ratio_rejects_invalid_dimensions(self) -> None:
         for data, message in (
@@ -149,6 +195,19 @@ class PxToRemConverterTests(unittest.TestCase):
 
         self.assertEqual(report["rem"], -0.5)
         self.assertEqual(report["css"], "-0.5rem")
+
+    def test_px_rem_preserves_small_nonzero_values_in_css(self) -> None:
+        report = run_json(PX_REM, {"px": 1e-7, "root_px": 16})
+
+        self.assertEqual(report["rem"], 6.25e-9)
+        self.assertEqual(report["css"], "6.25e-09rem")
+        self.assertEqual(float(str(report["css"]).removesuffix("rem")), report["rem"])
+
+    def test_px_rem_normalizes_negative_zero_in_css(self) -> None:
+        report = run_json(PX_REM, {"px": -0.0, "root_px": 16})
+
+        self.assertEqual(report["rem"], -0.0)
+        self.assertEqual(report["css"], "0rem")
 
     def test_px_rem_rejects_zero_root(self) -> None:
         result = run_raw(PX_REM, {"px": 16, "root_px": 0}, "--format", "json")

@@ -31,31 +31,38 @@ def read_json(path: str, stdin: TextIO) -> dict[str, object]:
     return value
 
 
-def finite_number(data: dict[str, object], key: str) -> float:
+Number = int | float
+
+
+def finite_number(data: dict[str, object], key: str) -> Number:
     value = data.get(key)
     if (
         isinstance(value, bool)
         or not isinstance(value, (int, float))
-        or not math.isfinite(float(value))
+        or (isinstance(value, float) and not math.isfinite(value))
     ):
         raise InputError(f"{key} must be a finite number")
-    return float(value)
+    return value
 
 
-def _finite_value(value: object, key: str) -> float:
+def _finite_value(value: object, key: str) -> Number:
     return finite_number({key: value}, key)
 
 
-def compact(value: float) -> str:
-    return f"{value:.6f}".rstrip("0").rstrip(".")
+def compact(value: int | float) -> str:
+    if value == 0:
+        return "0"
+    if isinstance(value, int) or value.is_integer():
+        return str(int(value))
+    return repr(value)
 
 
 def build_clamp(
-    min_px: float,
-    max_px: float,
-    min_viewport_px: float,
-    max_viewport_px: float,
-    root_px: float,
+    min_px: Number,
+    max_px: Number,
+    min_viewport_px: Number,
+    max_viewport_px: Number,
+    root_px: Number,
 ) -> dict[str, object]:
     minimum = _finite_value(min_px, "min_px")
     maximum = _finite_value(max_px, "max_px")
@@ -92,24 +99,29 @@ def build_clamp(
     }
 
 
-def reduce_ratio(width: float, height: float) -> dict[str, object]:
+def reduce_ratio(width: Number, height: Number) -> dict[str, object]:
     normalized_width = _finite_value(width, "width")
     normalized_height = _finite_value(height, "height")
     if normalized_width <= 0 or normalized_height <= 0:
         raise InputError("width and height must be greater than zero")
 
-    ratio = normalized_width / normalized_height
-    if not math.isfinite(ratio):
-        raise InputError("aspect-ratio calculation must produce finite values")
-
-    if normalized_width.is_integer() and normalized_height.is_integer():
-        divisor = math.gcd(int(normalized_width), int(normalized_height))
-        pair: list[int | float] = [
-            int(normalized_width) // divisor,
-            int(normalized_height) // divisor,
+    if isinstance(normalized_width, int) and isinstance(normalized_height, int):
+        divisor = math.gcd(normalized_width, normalized_height)
+        pair: list[int | float] | None = [
+            normalized_width // divisor,
+            normalized_height // divisor,
         ]
     else:
-        pair = [round(ratio, 6), 1]
+        pair = None
+
+    try:
+        ratio = normalized_width / normalized_height
+    except OverflowError as error:
+        raise InputError("aspect-ratio calculation must produce finite values") from error
+    if not math.isfinite(ratio):
+        raise InputError("aspect-ratio calculation must produce finite values")
+    if pair is None:
+        pair = [ratio, 1]
 
     return {
         "ratio": ratio,
@@ -118,7 +130,7 @@ def reduce_ratio(width: float, height: float) -> dict[str, object]:
     }
 
 
-def px_to_rem(px: float, root_px: float) -> dict[str, object]:
+def px_to_rem(px: Number, root_px: Number) -> dict[str, object]:
     pixels = _finite_value(px, "px")
     root = _finite_value(root_px, "root_px")
     if root <= 0:
