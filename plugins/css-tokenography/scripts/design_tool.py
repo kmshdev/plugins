@@ -12,6 +12,13 @@ from pathlib import Path
 from typing import Any, Callable, TextIO
 
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from css_tokenography_core import AnPlusBError, parse_an_plus_b
+
+
 class ToolInputError(ValueError):
     pass
 
@@ -138,8 +145,10 @@ def specificity(data: dict[str, Any]) -> dict[str, Any]:
 
 def nth_child(data: dict[str, Any]) -> dict[str, Any]:
     expression = data.get("expression")
-    if not isinstance(expression, str) or not re.fullmatch(r"\s*(?:odd|even|[+-]?\d+|[+-]?\d*n(?:\s*[+-]\s*\d+)?)\s*", expression, re.I):
-        raise ToolInputError("expression must be odd, even, an integer, or an An+B expression")
+    try:
+        parse_an_plus_b(expression)
+    except AnPlusBError as error:
+        raise ToolInputError(str(error)) from error
     element = data.get("element", "li")
     element = css_value(element, "element")
     return {"selector": f"{element}:nth-child({expression.strip()})", "css": f"{element}:nth-child({expression.strip()}) {{\n  /* styles */\n}}"}

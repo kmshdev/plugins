@@ -11,6 +11,8 @@ SELECTOR_SCRIPTS = ROOT / "skills" / "css-selectors" / "scripts"
 TRANSITION_SCRIPTS = ROOT / "skills" / "css-transitions" / "scripts"
 NTH = SELECTOR_SCRIPTS / "nth_child_selector.py"
 BEZIER = TRANSITION_SCRIPTS / "cubic_bezier_studio.py"
+SPECIFICITY = SELECTOR_SCRIPTS / "specificity_calculator.py"
+LEGACY = ROOT / "scripts" / "design_tool.py"
 
 
 def run_raw(
@@ -32,6 +34,16 @@ def run_json(script: Path, data: dict[str, object], *args: str) -> dict[str, obj
     if result.returncode != 0:
         raise AssertionError(result.stderr)
     return json.loads(result.stdout)
+
+
+def run_text(script: Path, raw: str, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, str(script), *args],
+        input=raw,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
 
 
 class NthChildSelectorTests(unittest.TestCase):
@@ -87,6 +99,8 @@ class NthChildSelectorTests(unittest.TestCase):
             "３n+1",
             "2n+١",
             "2n+\v1",
+            "2n of",
+            "2n of .item",
         )
 
         for expression, expected in valid.items():
@@ -110,6 +124,10 @@ class NthChildSelectorTests(unittest.TestCase):
             "li/*comment*/",
             "li) { color: red; }",
             ".item",
+            "l\\69\vbody",
+            "li\x00body",
+            "li\x1fbody",
+            "li\x7fbody",
         )
 
         for element in invalid_elements:
@@ -131,6 +149,83 @@ class NthChildSelectorTests(unittest.TestCase):
         result = run_raw(NTH, {"expression": 2}, "--format", "json")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("expression", result.stderr)
+
+    def test_an_plus_b_rejection_is_consistent_across_public_paths(self) -> None:
+        for expression in ("３n+1", "2n+١"):
+            commands = (
+                (NTH, {"expression": expression}, ("--format", "json"), "nth-child-selector"),
+                (
+                    SPECIFICITY,
+                    {"selector": f":nth-child({expression})"},
+                    ("--format", "json"),
+                    "specificity-calculator",
+                ),
+                (
+                    LEGACY,
+                    {"expression": expression, "element": "li"},
+                    ("--tool", "nth-child-selector", "--format", "json"),
+                    "design-tool",
+                ),
+            )
+            for script, data, args, tool_name in commands:
+                with self.subTest(expression=expression, tool=tool_name):
+                    result = run_raw(script, data, *args)
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn(tool_name, result.stderr)
+
+    def test_valid_public_paths_preserve_output_schemas(self) -> None:
+        canonical = run_json(NTH, {"expression": "2n + 1", "element": "li"})
+        specificity = run_json(
+            SPECIFICITY,
+            {"selector": ":nth-child(2n of .item)"},
+        )
+        legacy = run_json(
+            LEGACY,
+            {"expression": "2n + 1", "element": "li"},
+            "--tool",
+            "nth-child-selector",
+        )
+
+        self.assertEqual(
+            set(canonical),
+            {"coefficients", "css", "expression", "selector"},
+        )
+        self.assertEqual(
+            set(specificity),
+            {"inline_style", "selector", "selectors", "standard"},
+        )
+        self.assertEqual(
+            set(specificity["selectors"][0]),
+            {"notes", "selector", "span", "specificity"},
+        )
+        self.assertEqual(specificity["selectors"][0]["specificity"], [0, 2, 0])
+        self.assertEqual(set(legacy), {"css", "model", "selector", "tool"})
+        self.assertEqual(legacy["selector"], "li:nth-child(2n + 1)")
+
+    def test_oversized_json_integers_are_actionable_without_tracebacks(self) -> None:
+        digits = "9" * 5000
+        cases = (
+            (
+                NTH,
+                '{"expression":' + digits + "}",
+                ("--format", "json"),
+                "nth-child-selector",
+            ),
+            (
+                BEZIER,
+                '{"x1":0.2,"y1":' + digits + ',"x2":0.8,"y2":1}',
+                ("--format", "json"),
+                "cubic-bezier-studio",
+            ),
+        )
+
+        for script, raw, args, tool_name in cases:
+            with self.subTest(tool=tool_name):
+                result = run_text(script, raw, *args)
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertIn(tool_name, result.stderr)
+                self.assertIn("Unable to read JSON input", result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
 
     def test_nth_child_cli_supports_fixture_css_human_help_and_evidence(self) -> None:
         fixture = FIXTURES / "nth-child-valid.json"

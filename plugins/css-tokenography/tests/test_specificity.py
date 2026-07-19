@@ -69,12 +69,35 @@ class SpecificityCalculatorTests(unittest.TestCase):
         )
 
     def test_malformed_syntax_exits_nonzero(self) -> None:
-        malformed = ["a,", "[href='x'", ":is(.a", ".", ":is (.a)", "a/*", ":nth-child(foo)", ":nth-child(2 n)"]
+        malformed = [
+            "a,",
+            "[href='x'",
+            ":is(.a",
+            ".",
+            ":is (.a)",
+            "a/*",
+            ":nth-child(foo)",
+            ":nth-child(2 n)",
+            ":nth-child(３n+1)",
+            ":nth-child(2n+١)",
+            ":nth-child(2n of)",
+        ]
         for selector in malformed:
             with self.subTest(selector=selector):
                 result = run_cli(selector)
                 self.assertNotEqual(result.returncode, 0, result.stdout)
                 self.assertIn("specificity-calculator", result.stderr)
+
+    def test_valid_nth_child_of_clause_preserves_report_schema(self) -> None:
+        result = run_cli(":nth-child(2n of .item)")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(
+            set(payload),
+            {"inline_style", "selector", "selectors", "standard"},
+        )
+        self.assertEqual(payload["selectors"][0]["specificity"], [0, 2, 0])
 
     def test_tokenizer_preserves_balanced_syntax_without_splitting_nested_commas(self) -> None:
         tokens = tokenize_selector(r'a/* note */:is(.x\,y, [data-x="a,b"])')

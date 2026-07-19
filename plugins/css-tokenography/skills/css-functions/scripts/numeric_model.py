@@ -24,7 +24,7 @@ def read_json(path: str, stdin: TextIO) -> dict[str, object]:
     try:
         raw = stdin.read() if path == "-" else Path(path).read_text(encoding="utf-8")
         value = json.loads(raw)
-    except (OSError, json.JSONDecodeError) as error:
+    except (OSError, ValueError) as error:
         raise InputError(f"Unable to read JSON input: {error}") from error
     if not isinstance(value, dict):
         raise InputError("Input must be a JSON object")

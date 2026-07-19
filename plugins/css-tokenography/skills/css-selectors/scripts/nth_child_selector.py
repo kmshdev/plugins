@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 from typing import TextIO
@@ -16,84 +15,35 @@ from selector_tokens import SelectorSyntaxError, tokenize_selector
 PLUGIN_SCRIPTS = Path(__file__).resolve().parents[3] / "scripts"
 sys.path.insert(0, str(PLUGIN_SCRIPTS))
 
-from css_tokenography_core import EvidenceEnvelope
+from css_tokenography_core import (
+    AnPlusBError,
+    EvidenceEnvelope,
+    parse_an_plus_b as parse_core_an_plus_b,
+)
 
 
 class InputError(ValueError):
     pass
 
 
-CSS_WS = r"[ \t\r\n\f]"
-ANB_RE = re.compile(
-    rf"^{CSS_WS}*(?:(?P<keyword>odd|even)|(?P<integer>[+-]?[0-9]+)|"
-    rf"(?P<a>[+-]?(?:[0-9]+)?)n(?:{CSS_WS}*(?P<b_sign>[+-])"
-    rf"{CSS_WS}*(?P<b_digits>[0-9]+))?){CSS_WS}*$",
-    re.IGNORECASE,
-)
-
-
 def read_json(path: str, stdin: TextIO) -> dict[str, object]:
     try:
         raw = stdin.read() if path == "-" else Path(path).read_text(encoding="utf-8")
         value = json.loads(raw)
-    except (OSError, json.JSONDecodeError) as error:
+    except (OSError, ValueError) as error:
         raise InputError(f"Unable to read JSON input: {error}") from error
     if not isinstance(value, dict):
         raise InputError("Input must be a JSON object")
     return value
 
 
-def _canonical_expression(a_value: int, b_value: int) -> str:
-    if a_value == 0:
-        return str(b_value)
-    if a_value == 1:
-        expression = "n"
-    elif a_value == -1:
-        expression = "-n"
-    else:
-        expression = f"{a_value}n"
-    if b_value > 0:
-        return f"{expression}+{b_value}"
-    if b_value < 0:
-        return f"{expression}{b_value}"
-    return expression
-
-
 def parse_an_plus_b(value: str) -> dict[str, object]:
-    """Parse CSS Syntax Level 3 An+B without collapsing token boundaries."""
+    """Expose the shared CSS Syntax parser through the canonical CLI module."""
 
-    if not isinstance(value, str):
-        raise InputError("expression must be a string")
-    match = ANB_RE.fullmatch(value)
-    if match is None:
-        raise InputError("expression must be odd, even, an integer, or An+B")
-
-    keyword = match.group("keyword")
     try:
-        if keyword is not None:
-            a_value, b_value = (2, 1) if keyword.lower() == "odd" else (2, 0)
-        elif match.group("integer") is not None:
-            a_value, b_value = 0, int(match.group("integer"))
-        else:
-            coefficient = match.group("a")
-            if coefficient in (None, "", "+"):
-                a_value = 1
-            elif coefficient == "-":
-                a_value = -1
-            else:
-                a_value = int(coefficient)
-            digits = match.group("b_digits")
-            b_value = 0 if digits is None else int(digits)
-            if match.group("b_sign") == "-":
-                b_value = -b_value
-    except ValueError as error:
-        raise InputError("expression contains an integer that is too large") from error
-
-    return {
-        "a": a_value,
-        "b": b_value,
-        "expression": _canonical_expression(a_value, b_value),
-    }
+        return parse_core_an_plus_b(value)
+    except AnPlusBError as error:
+        raise InputError(str(error)) from error
 
 
 def _element_token(value: object) -> str:
