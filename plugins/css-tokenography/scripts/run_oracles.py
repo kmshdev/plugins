@@ -93,6 +93,21 @@ def parse_overrides(values: list[str]) -> dict[str, list[str]]:
     return overrides
 
 
+def json_exact(left: object, right: object) -> bool:
+    if type(left) is not type(right):
+        return False
+    if isinstance(left, dict):
+        return left.keys() == right.keys() and all(
+            json_exact(left[key], right[key]) for key in left
+        )
+    if isinstance(left, list):
+        return len(left) == len(right) and all(
+            json_exact(left_item, right_item)
+            for left_item, right_item in zip(left, right)
+        )
+    return left == right
+
+
 def execute_adapter(
     argv: list[str], payload: dict[str, object], *, oracle: str | None = None
 ) -> OracleObservation:
@@ -121,7 +136,7 @@ def execute_adapter(
             notes=(f"adapter returned invalid JSON: {error}",),
         )
 
-    relation = "exact" if value == payload else "different"
+    relation = "exact" if json_exact(value, payload) else "different"
     return OracleObservation(
         oracle_name,
         "ok",
@@ -198,7 +213,17 @@ def main() -> int:
         overrides = parse_overrides(args.adapter_command)
         envelope = run(payload, overrides)
     except ValueError as error:
-        print(f"oracle-runner: {error}", file=sys.stderr)
+        print(
+            json.dumps(
+                {
+                    "classification": "error",
+                    "errors": [str(error)],
+                    "observations": [],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
         return 1
 
     report = envelope.to_dict()
