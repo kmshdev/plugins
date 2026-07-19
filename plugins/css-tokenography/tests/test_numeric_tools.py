@@ -130,6 +130,7 @@ class AspectRatioCalculatorTests(unittest.TestCase):
         report = run_json(RATIO, {"width": 10.5, "height": 6.25})
 
         self.assertEqual(report["pair"], [1.68, 1])
+        self.assertIsInstance(report["ratio"], float)
         self.assertEqual(report["css"], "aspect-ratio: 1.68 / 1;")
 
     def test_small_decimal_ratio_remains_nonzero_in_json_and_css(self) -> None:
@@ -154,6 +155,22 @@ class AspectRatioCalculatorTests(unittest.TestCase):
                     report["css"],
                     f"aspect-ratio: {expected_pair[0]} / {expected_pair[1]};",
                 )
+
+    def test_large_integral_ratio_stays_exact_in_json_css_and_human_output(self) -> None:
+        data = {"width": 9007199254740993, "height": 1}
+
+        report = run_json(RATIO, data)
+        human = run_raw(RATIO, data)
+
+        self.assertEqual(report["pair"], [9007199254740993, 1])
+        self.assertEqual(report["ratio"], 9007199254740993)
+        self.assertIsInstance(report["ratio"], int)
+        self.assertEqual(
+            report["css"],
+            "aspect-ratio: 9007199254740993 / 1;",
+        )
+        self.assertIn("reduces to 9007199254740993:1", human.stdout)
+        self.assertIn("aspect-ratio: 9007199254740993 / 1;", human.stdout)
 
     def test_ratio_rejects_invalid_dimensions(self) -> None:
         for data, message in (

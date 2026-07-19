@@ -114,19 +114,22 @@ def reduce_ratio(width: Number, height: Number) -> dict[str, object]:
     else:
         pair = None
 
-    try:
-        ratio = normalized_width / normalized_height
-    except OverflowError as error:
-        raise InputError("aspect-ratio calculation must produce finite values") from error
-    if not math.isfinite(ratio):
-        raise InputError("aspect-ratio calculation must produce finite values")
+    if pair is not None and pair[1] == 1:
+        ratio: int | float = pair[0]
+    else:
+        try:
+            ratio = normalized_width / normalized_height
+        except OverflowError as error:
+            raise InputError("aspect-ratio calculation must produce finite values") from error
+        if not math.isfinite(ratio):
+            raise InputError("aspect-ratio calculation must produce finite values")
     if pair is None:
         pair = [ratio, 1]
 
     return {
         "ratio": ratio,
         "pair": pair,
-        "css": f"aspect-ratio: {compact(float(pair[0]))} / {compact(float(pair[1]))};",
+        "css": f"aspect-ratio: {compact(pair[0])} / {compact(pair[1])};",
     }
 
 

@@ -20,7 +20,7 @@ def human_report(report: dict[str, object], data: dict[str, object]) -> str:
     assert isinstance(pair, list)
     return (
         f"{width} × {height} reduces to "
-        f"{compact(float(pair[0]))}:{compact(float(pair[1]))}\n{report['css']}"
+        f"{compact(pair[0])}:{compact(pair[1])}\n{report['css']}"
     )
 
 
