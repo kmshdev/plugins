@@ -240,6 +240,113 @@ class GradientModelTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(message, result.stderr)
 
+    def test_gradient_rejects_trailing_decimal_numeric_tokens(self) -> None:
+        cases = (
+            (
+                {
+                    "kind": "linear",
+                    "geometry": {"direction": "1.deg"},
+                    "stops": [{"color": "#000"}, {"color": "#fff"}],
+                },
+                "geometry.direction",
+            ),
+            (
+                {
+                    "kind": "conic",
+                    "geometry": {"from": "1.deg"},
+                    "stops": [{"color": "#000"}, {"color": "#fff"}],
+                },
+                "geometry.from",
+            ),
+            (
+                {
+                    "kind": "linear",
+                    "geometry": {},
+                    "stops": [
+                        {"color": "#000", "position": "1.px"},
+                        {"color": "#fff"},
+                    ],
+                },
+                "stops[0].position",
+            ),
+            (
+                {
+                    "kind": "linear",
+                    "geometry": {},
+                    "stops": [
+                        {"color": "#000", "position": "1.%"},
+                        {"color": "#fff"},
+                    ],
+                },
+                "stops[0].position",
+            ),
+            (
+                {
+                    "kind": "conic",
+                    "geometry": {},
+                    "stops": [
+                        {"color": "#000", "position": "1.deg"},
+                        {"color": "#fff"},
+                    ],
+                },
+                "stops[0].position",
+            ),
+            (
+                {
+                    "kind": "conic",
+                    "geometry": {},
+                    "stops": [
+                        {"color": "#000", "position": "1.%"},
+                        {"color": "#fff"},
+                    ],
+                },
+                "stops[0].position",
+            ),
+        )
+
+        for data, field in cases:
+            with self.subTest(kind=data["kind"], field=field):
+                result = invoke(GRADIENT, data, "--format", "json")
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(field, result.stderr)
+
+    def test_gradient_accepts_complete_numeric_tokens(self) -> None:
+        for direction in ("1deg", "1.0deg", ".5turn"):
+            with self.subTest(direction=direction):
+                result = invoke(
+                    GRADIENT,
+                    {
+                        "kind": "linear",
+                        "geometry": {"direction": direction},
+                        "stops": [{"color": "#000"}, {"color": "#fff"}],
+                    },
+                    "--format",
+                    "json",
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+        for kind, position in (
+            ("linear", "1px"),
+            ("linear", "1%"),
+            ("conic", "1deg"),
+            ("conic", "1%"),
+        ):
+            with self.subTest(kind=kind, position=position):
+                result = invoke(
+                    GRADIENT,
+                    {
+                        "kind": kind,
+                        "geometry": {},
+                        "stops": [
+                            {"color": "#000", "position": position},
+                            {"color": "#fff"},
+                        ],
+                    },
+                    "--format",
+                    "json",
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_gradient_model_exposes_frozen_typed_records(self) -> None:
         spec = importlib.util.spec_from_file_location("gradient_model", GRADIENT_MODEL)
         self.assertIsNotNone(spec)

@@ -12,7 +12,7 @@ class InputError(ValueError):
     pass
 
 
-NUMBER = r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)"
+NUMBER = r"[+-]?(?:\d+(?:\.\d+)?|\.\d+)"
 ANGLE = re.compile(rf"^(?:[+-]?0(?:\.0+)?|{NUMBER}(?:deg|grad|rad|turn))$")
 ANGLE_PERCENTAGE = re.compile(
     rf"^(?:[+-]?0(?:\.0+)?|{NUMBER}(?:%|deg|grad|rad|turn))$"
