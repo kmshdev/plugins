@@ -16,7 +16,7 @@ description: Implement or audit CSS property transitions, explicit transition-pr
 
 ## Easing tool
 
-Run `python3 scripts/design_tool.py --tool cubic-bezier-studio --format json` with `x1`, `y1`, `x2`, and `y2`. The CLI validates the CSS x-axis constraints. Use `hover-effect-generator` only for the target state, then add explicit transition properties and accessible non-hover activation.
+Run `python3 scripts/cubic_bezier_studio.py --format json` with `x1`, `y1`, `x2`, and `y2`. The CLI constrains finite x coordinates to `[0,1]` and permits finite y overshoot, matching CSS easing semantics. Use `hover-effect-generator` only for the target state, then add explicit transition properties and accessible non-hover activation.
 
 ## Review output
 

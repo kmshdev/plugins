@@ -21,7 +21,7 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | Custom CSS Cursor Generator | Effects | css-functions | deterministic | procedural | cursor grammar task required |
 | CSS Background Pattern Generator | Effects | css-gradients | deterministic | procedural | pattern contract task required |
 | CSS Transform Playground | Effects | css-transforms | deterministic | procedural | owner CLI and transform semantics task required |
-| Cubic Bezier Generator | Effects | css-transitions | deterministic | procedural | owner CLI and fixture task required |
+| Cubic Bezier Generator | Effects | css-transitions | deterministic | implemented-full | `cubic_bezier_studio.py` (finite points; x constrained to `[0,1]`; y overshoot supported) |
 | CSS Loaders | Effects | css-animations | deterministic | procedural | loader model task required |
 | CSS Grid Area Mapper | Layout | css-grid | deterministic | implemented-full | `grid_area_mapper.py` |
 | CSS Subgrid Visualizer | Layout | css-grid | deterministic | implemented-full | `subgrid_visualizer.py` |
@@ -34,7 +34,7 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | Code Screenshot Generator | Utilities | web-performance-optimization | browser-dependent | procedural | pinned renderer task required |
 | ASCII Code Generator | Utilities | css-functions | asset-dependent | procedural | source glyph task required |
 | CSS Specificity Calculator | Utilities | css-selectors | deterministic | implemented-core | `specificity_calculator.py` (per-member Selectors Level 4 tuples, spans, and notes) |
-| nth-child Selector Generator | Utilities | css-selectors | deterministic | procedural | selector contract task required |
+| nth-child Selector Generator | Utilities | css-selectors | deterministic | implemented-full | `nth_child_selector.py` (token-boundary-aware An+B normalization and safe selector generation) |
 | Browser Feature Detection | Utilities | css-media-queries | browser-dependent | procedural | target-browser probe task required |
 | Image Optimizer | Utilities | web-performance-optimization | codec-dependent | procedural | pinned codec task required |
 | Favicon Generator | Utilities | web-performance-optimization | codec-dependent | procedural | icon rendering task required |
