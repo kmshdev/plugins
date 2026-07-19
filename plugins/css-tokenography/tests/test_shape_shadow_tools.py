@@ -176,11 +176,13 @@ class BoxShadowGeneratorTests(unittest.TestCase):
         self.assertEqual(report["semantics"]["negative_offsets"], "allowed")
         self.assertEqual(report["semantics"]["negative_spread"], "allowed")
         self.assertEqual(report["semantics"]["negative_blur"], "invalid")
+        self.assertEqual(report["semantics"]["inset"], "required explicit boolean")
         self.assertEqual(report["semantics"]["omitted_color"], "not modeled; color is explicit")
 
     def test_shadow_rejects_negative_blur_and_invalid_typed_layers(self) -> None:
         valid = {
             "id": "valid",
+            "inset": False,
             "offset_x": "0",
             "offset_y": "0",
             "blur": "0",
@@ -212,9 +214,10 @@ class BoxShadowGeneratorTests(unittest.TestCase):
                 self.assertIn(message, result.stderr)
                 self.assertNotIn("Traceback", result.stderr)
 
-    def test_shadow_requires_explicit_lengths_color_and_unique_ids(self) -> None:
+    def test_shadow_requires_explicit_fields_and_unique_ids(self) -> None:
         complete = {
             "id": "one",
+            "inset": False,
             "offset_x": "0",
             "offset_y": "0",
             "blur": "0",
@@ -222,6 +225,7 @@ class BoxShadowGeneratorTests(unittest.TestCase):
             "color": "black",
         }
         cases = (
+            ({"layers": [{key: value for key, value in complete.items() if key != "inset"}]}, "layers[0].inset is required"),
             ({"layers": [{key: value for key, value in complete.items() if key != "blur"}]}, "layers[0].blur is required"),
             ({"layers": [{key: value for key, value in complete.items() if key != "color"}]}, "layers[0].color is required"),
             ({"layers": [complete, complete]}, "layer ids must be unique"),
@@ -246,6 +250,7 @@ class BoxShadowGeneratorTests(unittest.TestCase):
                 "layers": [
                     {
                         "id": "first",
+                        "inset": False,
                         "offset_x": "-1px",
                         "offset_y": "2px",
                         "blur": "3px",

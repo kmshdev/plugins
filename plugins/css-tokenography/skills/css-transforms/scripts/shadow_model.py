@@ -19,7 +19,7 @@ LENGTH = re.compile(
 )
 IDENTIFIER = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
 LAYER_FIELDS = {"id", "inset", "offset_x", "offset_y", "blur", "spread", "color"}
-REQUIRED_LAYER_FIELDS = ("id", "offset_x", "offset_y", "blur", "spread", "color")
+REQUIRED_LAYER_FIELDS = ("id", "inset", "offset_x", "offset_y", "blur", "spread", "color")
 
 
 def parse_length(value: object, *, field: str, allow_negative: bool) -> str:
@@ -59,7 +59,7 @@ class ShadowLayer:
         for key in REQUIRED_LAYER_FIELDS:
             if key not in data:
                 raise InputError(f"{field}.{key} is required")
-        inset = data.get("inset", False)
+        inset = data["inset"]
         if not isinstance(inset, bool):
             raise InputError(f"{field}.inset must be boolean")
         return cls(
@@ -126,7 +126,7 @@ class BoxShadow:
                 "negative_offsets": "allowed",
                 "negative_spread": "allowed",
                 "negative_blur": "invalid",
-                "inset": "optional; false by default",
+                "inset": "required explicit boolean",
                 "omitted_color": "not modeled; color is explicit",
             },
             "standards": {
