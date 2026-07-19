@@ -11,6 +11,12 @@ from pathlib import Path
 from typing import TextIO
 
 
+PLUGIN_SCRIPTS = Path(__file__).resolve().parents[3] / "scripts"
+sys.path.insert(0, str(PLUGIN_SCRIPTS))
+
+from css_tokenography_core import EvidenceEnvelope
+
+
 HEX_COLOR = re.compile(r"#[0-9a-fA-F]{6}")
 
 
@@ -90,6 +96,7 @@ def parser() -> argparse.ArgumentParser:
     )
     result.add_argument("--input", default="-", help="JSON file path, or '-' for stdin (default)")
     result.add_argument("--format", choices=("json", "human"), default="human")
+    result.add_argument("--evidence", action="store_true", help="Emit a JSON evidence envelope")
     return result
 
 
@@ -102,7 +109,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"color-contrast-checker: {error}", file=sys.stderr)
         return 1
 
-    if args.format == "json":
+    if args.evidence:
+        print(json.dumps(EvidenceEnvelope(core=report).to_dict(), indent=2, sort_keys=True))
+    elif args.format == "json":
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
         print(f"WCAG 2.2 contrast: {report['display_ratio']}:1")
