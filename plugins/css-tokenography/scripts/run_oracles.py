@@ -29,8 +29,8 @@ def load_json(path: Path) -> Any:
 def validate_payload(value: object) -> dict[str, object]:
     if not isinstance(value, dict):
         raise ValueError("input must contain a JSON object")
-    if value.get("subject") != "transform":
-        raise ValueError("subject must be transform")
+    if value.get("subject") not in {"transform", "gradient"}:
+        raise ValueError("subject must be transform or gradient")
 
     core = value.get("input")
     if not isinstance(core, dict):
@@ -199,6 +199,12 @@ def run(payload: dict[str, object], overrides: dict[str, list[str]]) -> Evidence
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run optional CSS oracle adapters.")
     parser.add_argument("--input", type=Path, required=True)
+    parser.add_argument(
+        "--format",
+        choices=("json",),
+        default="json",
+        help="Output format (JSON only)",
+    )
     parser.add_argument(
         "--adapter-command",
         action="append",

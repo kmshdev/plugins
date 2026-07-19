@@ -1,0 +1,8 @@
+{
+  "kind": "conic",
+  "geometry": {"from": "45deg", "position": "center"},
+  "stops": [
+    {"color": "#ff0000", "position": "0deg"},
+    {"color": "#0000ff", "position": "1turn"}
+  ]
+}

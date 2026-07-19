@@ -12,7 +12,7 @@ TOOL_COVERAGE = ROOT / "references" / "tool-coverage.json"
 GRID_URL = "https://design.dev/tools/grid-area-mapper/"
 CONTRAST_URL = "https://design.dev/tools/color-contrast-checker/"
 SPECIFICITY_URL = "https://design.dev/tools/specificity-calculator/"
-PROCEDURAL_URL = "https://design.dev/tools/gradient-mixer/"
+PROCEDURAL_URL = "https://design.dev/tools/liquid-glass-generator/"
 
 
 def load_tool_rows() -> list[dict[str, object]]:
@@ -78,6 +78,8 @@ class CoverageContractTests(unittest.TestCase):
             [row["url"] for row in rows],
             [
                 "https://design.dev/tools/color-contrast-checker/",
+                "https://design.dev/tools/gradient-mixer/",
+                "https://design.dev/tools/oklch-color-converter/",
                 "https://design.dev/tools/css-filter-effects/",
                 "https://design.dev/tools/backdrop-filter-playground/",
                 "https://design.dev/tools/css-transform-playground/",
@@ -382,7 +384,7 @@ class CoverageContractTests(unittest.TestCase):
                 "missing contract",
                 {
                     "missing_contract": "APCA vectors",
-                    "restoration_artifact": "skills/css-variables/scripts/color_contrast_checker.py",
+                    "restoration_artifact": "skills/css-transforms/scripts/liquid_glass_generator.py",
                     "restoration_tests": ["tests/test_color_contrast.py"],
                     "acceptance": ["Reports APCA contrast from independent vectors"],
                 },
@@ -402,7 +404,7 @@ class CoverageContractTests(unittest.TestCase):
                 "missing restoration tests",
                 {
                     "missing_contract": ["APCA vectors"],
-                    "restoration_artifact": "skills/css-variables/scripts/color_contrast_checker.py",
+                    "restoration_artifact": "skills/css-transforms/scripts/liquid_glass_generator.py",
                     "restoration_tests": [],
                     "acceptance": ["Reports APCA contrast from independent vectors"],
                 },
@@ -412,7 +414,7 @@ class CoverageContractTests(unittest.TestCase):
                 "restoration test outside tests",
                 {
                     "missing_contract": ["APCA vectors"],
-                    "restoration_artifact": "skills/css-variables/scripts/color_contrast_checker.py",
+                    "restoration_artifact": "skills/css-transforms/scripts/liquid_glass_generator.py",
                     "restoration_tests": ["skills/css-variables/SKILL.md"],
                     "acceptance": ["Reports APCA contrast from independent vectors"],
                 },
@@ -422,7 +424,7 @@ class CoverageContractTests(unittest.TestCase):
                 "missing acceptance",
                 {
                     "missing_contract": ["APCA vectors"],
-                    "restoration_artifact": "skills/css-variables/scripts/color_contrast_checker.py",
+                    "restoration_artifact": "skills/css-transforms/scripts/liquid_glass_generator.py",
                     "restoration_tests": ["tests/test_color_contrast.py"],
                     "acceptance": [],
                 },

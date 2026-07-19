@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Translate the transform oracle protocol to the optional Lightning CSS CLI."""
+"""Translate typed transform/gradient oracle input to the optional Lightning CSS CLI."""
 
 from __future__ import annotations
 
@@ -12,7 +12,18 @@ import tempfile
 from pathlib import Path
 
 
-TRANSFORM = re.compile(r"\.oracle\{transform:([^}]+)\}")
+DECLARATION = re.compile(r"\.oracle\{(?:transform|background-image):([^}]+)\}")
+
+
+GRADIENT_SCRIPTS = (
+    Path(__file__).resolve().parents[2]
+    / "skills"
+    / "css-gradients"
+    / "scripts"
+)
+sys.path.insert(0, str(GRADIENT_SCRIPTS))
+
+from gradient_model import Gradient
 
 
 def main() -> int:
@@ -22,9 +33,16 @@ def main() -> int:
 
     try:
         payload = json.load(sys.stdin)
-        value = payload["value"]
-        if not isinstance(value, str) or not value:
-            raise ValueError("value must be a non-empty string")
+        if not isinstance(payload, dict):
+            raise ValueError("input must be an object")
+        if "kind" in payload:
+            property_name = "background-image"
+            value = Gradient.from_data(payload).value()
+        else:
+            property_name = "transform"
+            value = payload["value"]
+            if not isinstance(value, str) or not value:
+                raise ValueError("value must be a non-empty string")
     except (json.JSONDecodeError, KeyError, TypeError, ValueError) as error:
         print(f"lightningcss-adapter: invalid input: {error}", file=sys.stderr)
         return 1
@@ -33,7 +51,9 @@ def main() -> int:
         directory = Path(temporary_directory)
         source = directory / "oracle.css"
         output = directory / "oracle.min.css"
-        source.write_text(f".oracle {{ transform: {value}; }}\n", encoding="utf-8")
+        source.write_text(
+            f".oracle {{ {property_name}: {value}; }}\n", encoding="utf-8"
+        )
         result = subprocess.run(
             [
                 args.executable,
@@ -55,7 +75,7 @@ def main() -> int:
             print(f"lightningcss-adapter: unable to read output: {error}", file=sys.stderr)
             return 1
 
-    match = TRANSFORM.fullmatch(css.strip())
+    match = DECLARATION.fullmatch(css.strip())
     if match is None:
         print("lightningcss-adapter: unexpected CSS output", file=sys.stderr)
         return 1

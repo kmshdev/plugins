@@ -20,6 +20,6 @@ Run `python3 scripts/color_contrast_checker.py --format json` with a JSON object
 
 APCA is not implemented. It is beta and polarity-sensitive, and this skill does not present it as a WCAG 3 conformance method. Use the [official APCA project documentation](https://git.apcacontrast.com/documentation/) and the current [WCAG 3 Working Draft](https://www.w3.org/TR/wcag-3.0/) when evaluating that separate, evolving method.
 
-Run `python3 scripts/design_tool.py --tool oklch-color-converter --format json` with `{"hex":"#rrggbb"}` for dependency-free sRGB-to-OKLCH conversion and structured channels.
+Run `python3 scripts/oklch_color_converter.py --format json` with `{"hex":"#rrggbb"}` or `{"hex":"#rrggbbaa"}` for dependency-free sRGB-to-OKLCH conversion. The canonical report exposes unclamped binary64 channels, optional alpha, round-trip CSS serialization, and explicit no-gamut-mapping scope. Color-space conversion alone does not establish contrast, APCA, or WCAG conformance.
 
 Return the token graph, scope/inheritance rules, fallback behavior, contrast results, and migration risks. Topic source: https://design.dev/guides/css-variables/.

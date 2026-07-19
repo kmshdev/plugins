@@ -7,8 +7,8 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | Tool | Category | Owner | Classification | Status | Artifact |
 |---|---|---|---|---|---|
 | Color Contrast Checker | Colors | css-variables | deterministic | implemented-core | `color_contrast_checker.py` (WCAG 2.2 color-pair thresholds; APCA explicitly excluded) |
-| CSS Gradient Generator | Colors | css-gradients | deterministic | procedural | gradient contract task required |
-| OKLCH Color Converter | Colors | css-variables | deterministic | procedural | owner CLI and fixture task required |
+| CSS Gradient Generator | Colors | css-gradients | deterministic | implemented-core | `gradient_mixer.py` (typed geometry and ordered stops; advanced stop/interpolation grammar disclosed) |
+| OKLCH Color Converter | Colors | css-variables | deterministic | implemented-full | `oklch_color_converter.py` (six/eight-digit sRGB; unclamped binary64 channels; no contrast/APCA claim) |
 | Liquid Glass CSS Generator | Effects | css-transforms | deterministic | procedural | liquid-glass contract task required |
 | CSS Box Shadow Generator | Effects | css-transforms | deterministic | procedural | shadow contract task required |
 | CSS Hover Effects Generator | Effects | css-transitions | deterministic | procedural | hover-state contract task required |
