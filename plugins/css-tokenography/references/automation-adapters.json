@@ -1,0 +1,20 @@
+[
+  {
+    "id": "lightningcss",
+    "role": "typed-css-parser-oracle",
+    "required": false,
+    "command": ["lightningcss", "--version"],
+    "license": "MPL-2.0",
+    "source": "https://github.com/parcel-bundler/lightningcss",
+    "adoption": "optional-dev-adapter"
+  },
+  {
+    "id": "passmark",
+    "role": "agentic-browser-regression",
+    "required": false,
+    "command": ["passmark", "--version"],
+    "license": "FSL-1.1-ALv2",
+    "source": "https://github.com/bug0inc/passmark",
+    "adoption": "blocked-pending-license-review"
+  }
+]
