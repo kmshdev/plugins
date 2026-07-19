@@ -70,22 +70,29 @@ def px_to_rem(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def transform(data: dict[str, Any]) -> dict[str, Any]:
-    fields = [
-        ("translate_x", "translateX"), ("translate_y", "translateY"), ("translate_z", "translateZ"),
-        ("rotate", "rotate"), ("rotate_x", "rotateX"), ("rotate_y", "rotateY"), ("rotate_z", "rotateZ"),
-        ("scale", "scale"), ("scale_x", "scaleX"), ("scale_y", "scaleY"),
-        ("skew_x", "skewX"), ("skew_y", "skewY"),
-    ]
-    functions = [f"{function}({css_value(data[key], key)})" for key, function in fields if key in data]
-    if not functions:
-        raise ToolInputError("Provide at least one supported transform component")
-    declarations = []
-    if "perspective" in data:
-        declarations.append(f"perspective: {css_value(data['perspective'], 'perspective')};")
-    declarations.append(f"transform: {' '.join(functions)};")
-    if "origin" in data:
-        declarations.append(f"transform-origin: {css_value(data['origin'], 'origin')};")
-    return {"css": "\n".join(declarations), "functions": functions}
+    owner_scripts = Path(__file__).resolve().parents[1] / "skills" / "css-transforms" / "scripts"
+    sys.path.insert(0, str(owner_scripts))
+    try:
+        from transform_model import build_transform_report
+        if "transform" in data:
+            return build_transform_report(data)
+        fields = [
+            ("translate_x", "translateX"), ("translate_y", "translateY"), ("translate_z", "translateZ"),
+            ("rotate", "rotate"), ("rotate_x", "rotateX"), ("rotate_y", "rotateY"), ("rotate_z", "rotateZ"),
+            ("scale", "scale"), ("scale_x", "scaleX"), ("scale_y", "scaleY"),
+            ("skew_x", "skewX"), ("skew_y", "skewY"),
+        ]
+        functions = [{"name": name, "args": [data[key]]} for key, name in fields if key in data]
+        if not functions:
+            raise ToolInputError("Provide transform.kind and functions, or at least one legacy component")
+        typed: dict[str, Any] = {"transform": {"kind": "list", "functions": functions}}
+        if "perspective" in data:
+            typed["ancestor"] = {"perspective": data["perspective"]}
+        if "origin" in data:
+            typed["transform_origin"] = data["origin"]
+        return build_transform_report(typed)
+    except (ImportError, ValueError) as error:
+        raise ToolInputError(str(error)) from error
 
 
 def cubic_bezier(data: dict[str, Any]) -> dict[str, Any]:

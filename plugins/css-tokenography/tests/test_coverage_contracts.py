@@ -78,6 +78,7 @@ class CoverageContractTests(unittest.TestCase):
             [row["url"] for row in rows],
             [
                 "https://design.dev/tools/color-contrast-checker/",
+                "https://design.dev/tools/css-transform-playground/",
                 "https://design.dev/tools/grid-area-mapper/",
                 "https://design.dev/tools/subgrid-visualizer/",
                 "https://design.dev/tools/z-index-visualizer/",

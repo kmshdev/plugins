@@ -21,3 +21,9 @@ The live **Nested Subgrid** preset used parent tracks `1fr 2fr 1fr`, one `1fr` r
 The live page also emitted an outdated comment claiming Chrome/Edge subgrid support was still in development. The plugin intentionally omits that frozen support table and directs agents to current platform data. It does not copy the page's generic fallback because a faithful fallback depends on the component's actual track and content contract.
 
 These comparisons establish semantic parity for the dependency-free models; they do not claim pixel parity with the live drag-and-click editors.
+
+## CSS transform playground
+
+The typed model preserves the transform-function order supplied by the caller and composes the corresponding 4x4 matrices in CSS list order. It keeps ancestor `perspective` separate from `perspective()` in the transform list and preserves the semantic distinction between `transform: none` and an identity-valued transform list.
+
+The output does not claim pixel parity, transformed-box geometry, browser hit testing, GPU acceleration, or compositor-layer promotion. Those require a concrete element, its containing layout, and runtime browser evidence.

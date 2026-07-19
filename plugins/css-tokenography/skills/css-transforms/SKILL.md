@@ -16,13 +16,16 @@ description: Compose, implement, or review CSS 2D and 3D transforms, transform o
 
 When diagnosing overlap, use the CSS Grid skill's `z_index_visualizer.py` with computed facts. Transform, individual translate/rotate/scale, perspective, and filter effects can create stacking contexts, but opacity and isolation do not establish fixed-position containing blocks. Always keep those trigger registries separate.
 
-## Deterministic model
+## Deterministic transform model
 
-Run `python3 scripts/design_tool.py --tool css-transform-playground --format json`. Input accepts ordered component fields such as `translate_x`, `rotate`, `scale`, `perspective`, and `origin`. Related semantic models cover backdrop filters, shadows, clip paths, filters, liquid-glass styling, and neumorphism; treat their visual result as browser-dependent.
+Run `python3 scripts/css_transform_playground.py --input transform.json --format json`. Set `transform.kind` to `none` or `list`; a list contains ordered objects such as `{"name":"rotateY","args":["25deg"]}`. Ancestor `perspective` and `perspective_origin` are separate from a `perspective()` function, and `transform_origin` is reported without pretending that element geometry is known.
+
+The CLI validates translate, scale, rotate, skew, `matrix()`, `matrix3d()`, and `perspective()` arity and units, preserves caller order, and computes a dependency-free 4x4 matrix. `none` is semantically different from an identity-valued list because only the latter creates stacking and containing blocks. Matrix output does not include origin or ancestor-perspective layout effects, which require box geometry and browser collection.
 
 ## Guardrails
 
 - Do not add `translateZ(0)` or `will-change` as a default optimization.
+- Never describe a transform as guaranteed GPU acceleration or compositor promotion; those are browser-dependent runtime decisions.
 - Keep essential content usable when transforms or filters are unsupported.
 - Avoid scaling interactive text to zero or moving focusable controls off-screen without updating interaction state.
 - Use individual transform properties only when their fixed translate-rotate-scale order matches the design.
