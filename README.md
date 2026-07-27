@@ -27,7 +27,9 @@ The plugin source is under [`plugins/docdev`](./plugins/docdev). The marketplace
 
 ### css-tokenography
 
-`css-tokenography` provides 17 independently triggerable CSS, typography, and web-performance skills for Codex, backed by standards research, source coverage records, and dependency-free developer-tool CLIs.
+`css-tokenography` provides one implicitly invokable orchestration router plus 17 explicitly invokable CSS, typography, and web-performance specialists for Codex. The suite is backed by standards research, source coverage records, and dependency-free developer-tool CLIs.
+
+Broad CSS requests route through `$css-tokenography`; explicit `$css-grid`, `$web-typography`, and other specialist invocations remain available. Every specialist disables implicit invocation so broad prompts have one deterministic entry point.
 
 Its deterministic tooling includes grid-area mapping, subgrid modeling, performance-budget analysis, WCAG contrast checks, OKLCH conversion, CSS specificity, fluid `clamp()` generation, transform composition, and cubic Bézier validation. Browser-, raster-, or codec-dependent tools have explicit procedural workflows instead of hidden omissions.
 
@@ -43,6 +45,7 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py plugins/
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py plugins/docdev/skills/docdev-site
 python3 ~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/css-tokenography
 python3 plugins/css-tokenography/scripts/validate_coverage.py --plugin plugins/css-tokenography
+python3 plugins/css-tokenography/skills/css-tokenography/scripts/validate_router.py --plugin plugins/css-tokenography
 python3 -m unittest discover -s plugins/css-tokenography/tests -v
 ```
 

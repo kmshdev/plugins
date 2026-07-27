@@ -2,3 +2,6 @@ interface:
   display_name: "Css Container Queries"
   short_description: "Apply current Css Container Queries guidance"
   default_prompt: "Use $css-container-queries to implement and review this task."
+
+policy:
+  allow_implicit_invocation: false

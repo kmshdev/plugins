@@ -1,0 +1,22 @@
+{
+  "layers": [
+    {
+      "id": "ambient",
+      "inset": false,
+      "offset_x": "0",
+      "offset_y": "1px",
+      "blur": "2px",
+      "spread": "0",
+      "color": "#0003"
+    },
+    {
+      "id": "key",
+      "inset": true,
+      "offset_x": "-2px",
+      "offset_y": "3px",
+      "blur": "4px",
+      "spread": "-1px",
+      "color": "rebeccapurple"
+    }
+  ]
+}

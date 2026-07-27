@@ -1,0 +1,15 @@
+{
+  "subject": "gradient",
+  "input": {
+    "kind": "linear",
+    "geometry": {"direction": "90deg"},
+    "stops": [
+      {"color": "#000000", "position": "50%"},
+      {"color": "#ffffff", "position": "50%"}
+    ]
+  },
+  "core": {
+    "value": "linear-gradient(90deg, #000000 50%, #ffffff 50%)"
+  },
+  "adapters": ["lightningcss"]
+}

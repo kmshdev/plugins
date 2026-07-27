@@ -2,3 +2,6 @@ interface:
   display_name: "Web Performance Optimization"
   short_description: "Apply current Web Performance Optimization guidance"
   default_prompt: "Use $web-performance-optimization to implement and review this task."
+
+policy:
+  allow_implicit_invocation: false

@@ -2,3 +2,6 @@ interface:
   display_name: "Css Centering"
   short_description: "Apply current Css Centering guidance"
   default_prompt: "Use $css-centering to implement and review this task."
+
+policy:
+  allow_implicit_invocation: false

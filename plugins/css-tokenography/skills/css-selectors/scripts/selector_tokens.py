@@ -2,7 +2,15 @@
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
+from pathlib import Path
+
+
+PLUGIN_SCRIPTS = Path(__file__).resolve().parents[3] / "scripts"
+sys.path.insert(0, str(PLUGIN_SCRIPTS))
+
+from css_tokenography_core import CSS_WHITESPACE
 
 
 class SelectorSyntaxError(ValueError):
@@ -47,7 +55,7 @@ def _consume_escape(source: str, index: int) -> int:
         while index < len(source) and consumed < 6 and source[index] in "0123456789abcdefABCDEF":
             index += 1
             consumed += 1
-        if index < len(source) and source[index].isspace():
+        if index < len(source) and source[index] in CSS_WHITESPACE:
             index += 1
         return index
     return index + 1
@@ -80,6 +88,11 @@ def _consume_name(source: str, index: int) -> int:
 def tokenize_selector(source: str) -> list[Token]:
     """Tokenize selector syntax while validating strings, comments, and delimiters."""
 
+    for index, character in enumerate(source):
+        codepoint = ord(character)
+        if (codepoint < 0x20 and character not in CSS_WHITESPACE) or codepoint == 0x7F:
+            raise SelectorSyntaxError(f"Invalid control character at offset {index}")
+
     tokens: list[Token] = []
     stack: list[tuple[str, int]] = []
     index = 0
@@ -87,9 +100,9 @@ def tokenize_selector(source: str) -> list[Token]:
         start = index
         character = source[index]
 
-        if character.isspace():
+        if character in CSS_WHITESPACE:
             index += 1
-            while index < len(source) and source[index].isspace():
+            while index < len(source) and source[index] in CSS_WHITESPACE:
                 index += 1
             tokens.append(Token("WHITESPACE", source[start:index], start, index))
             continue
@@ -182,7 +195,7 @@ def unescape_identifier(value: str) -> str:
         if index > start:
             codepoint = int(value[start:index], 16)
             output.append(chr(codepoint) if codepoint and codepoint <= 0x10FFFF else "\N{REPLACEMENT CHARACTER}")
-            if index < len(value) and value[index].isspace():
+            if index < len(value) and value[index] in CSS_WHITESPACE:
                 index += 1
         elif index < len(value):
             output.append(value[index])

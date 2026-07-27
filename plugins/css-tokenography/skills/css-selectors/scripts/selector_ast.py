@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 
 from selector_tokens import SelectorSyntaxError, Token, unescape_identifier
+from css_tokenography_core import AnPlusBError, parse_an_plus_b
 
 
 @dataclass(frozen=True, order=True)
@@ -121,12 +121,12 @@ def _nth_selector_arguments(tokens: list[Token], pseudo_name: str) -> tuple[Sele
         anb_parts.append(token.value)
         previous = token
     anb = "".join(anb_parts).strip()
-    if not re.fullmatch(
-        r"(?:odd|even|[+-]?\d+|[+-]?(?:\d+)?n(?:\s*[+-]\s*\d+)?)",
-        anb,
-        re.IGNORECASE,
-    ):
-        raise SelectorSyntaxError(f":{pseudo_name}() requires a valid An+B expression")
+    try:
+        parse_an_plus_b(anb)
+    except AnPlusBError as error:
+        raise SelectorSyntaxError(
+            f":{pseudo_name}() requires a valid An+B expression"
+        ) from error
     if of_index is None:
         return ()
     selectors = tokens[of_index + 1 :]

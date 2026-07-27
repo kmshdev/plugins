@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Preserve the 17 independently triggerable guide skills and the complete live design.dev tool inventory.
+- Preserve the 17 explicitly triggerable guide specialists, the css-tokenography orchestration router, and the complete live design.dev tool inventory.
 - Prefer W3C/CSSWG normative behavior over design.dev wording while retaining topic coverage.
 - Keep runtime CLIs deterministic, network-free, dependency-free, and explicit about browser-dependent results.
 - Do not copy APCA code into the MIT plugin or claim WCAG 3 compliance; record APCA as an intentional exclusion unless licensing and integration requirements are separately approved.
@@ -523,7 +523,7 @@ python3 plugins/css-tokenography/scripts/validate_coverage.py \
 
 Expected: all tests pass; the coverage report has 17 guides, 33 tools, 7 sources, zero errors, unique evidence, valid statuses, and no unused tracked fixtures.
 
-- [ ] **Step 3: Run all 17 skill validators**
+- [ ] **Step 3: Run all 18 skill validators**
 
 ```bash
 for skill in plugins/css-tokenography/skills/*; do

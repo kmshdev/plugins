@@ -2,3 +2,6 @@ interface:
   display_name: "Css Gradients"
   short_description: "Apply current Css Gradients guidance"
   default_prompt: "Use $css-gradients to implement and review this task."
+
+policy:
+  allow_implicit_invocation: false

@@ -20,6 +20,6 @@ description: Author, simplify, or diagnose CSS selectors, specificity, combinato
 ## Tools
 
 - Run `python3 scripts/specificity_calculator.py --format json` with `{"selector":"..."}` for per-member Selectors Level 4 tuples, half-open source spans, and standards notes. Malformed or unbalanced syntax exits nonzero.
-- Run `python3 scripts/design_tool.py --tool nth-child-selector --format json` with `expression` and optional `element` to validate An+B syntax.
+- Run `python3 scripts/nth_child_selector.py --format json` with `expression` and optional `element` to validate and normalize An+B syntax and generate a safe selector.
 
 Return the matched intent, each selector-list member and its specificity tuple, ownership/layer context, and resilience risks. Primary reference: https://www.w3.org/TR/selectors-4/#specificity-rules and topic source: https://design.dev/guides/css-selectors/.

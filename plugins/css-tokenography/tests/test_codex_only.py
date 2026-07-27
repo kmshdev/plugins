@@ -16,12 +16,17 @@ FORBIDDEN_TERMS = (
 
 
 class CodexOnlySurfaceTests(unittest.TestCase):
-    def test_guide_inventory_has_exactly_seventeen_skills_and_rows(self) -> None:
+    def test_inventory_has_one_router_and_seventeen_guide_specialists(self) -> None:
         skill_directories = sorted(path for path in SKILLS.iterdir() if path.is_dir())
         guide_rows = json.loads(GUIDE_COVERAGE.read_text(encoding="utf-8"))
 
-        self.assertEqual(len(skill_directories), 17)
+        self.assertEqual(len(skill_directories), 18)
         self.assertEqual(len(guide_rows), 17)
+        self.assertTrue((SKILLS / "css-tokenography").is_dir())
+        self.assertNotIn(
+            "css-tokenography",
+            {row["skill"] for row in guide_rows},
+        )
 
     def test_removed_agent_product_skill_is_absent(self) -> None:
         removed_skill = SKILLS / ("wind" + "surf-rules")
