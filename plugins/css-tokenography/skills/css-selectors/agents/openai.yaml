@@ -2,3 +2,6 @@ interface:
   display_name: "Css Selectors"
   short_description: "Apply current Css Selectors guidance"
   default_prompt: "Use $css-selectors to implement and review this task."
+
+policy:
+  allow_implicit_invocation: false

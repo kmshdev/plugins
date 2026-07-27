@@ -1,0 +1,58 @@
+[
+  {
+    "id": "grid-single-topic",
+    "mode": "implicit-router",
+    "prompt": "Create a named CSS Grid layout for a dashboard and validate that each named area is rectangular.",
+    "required_skills": ["css-grid"],
+    "forbidden_skills": ["css-flexbox"]
+  },
+  {
+    "id": "performance-single-topic",
+    "mode": "implicit-router",
+    "prompt": "Audit this Lighthouse JSON against Core Web Vitals and byte budgets, distinguishing missing metrics from passing metrics.",
+    "required_skills": ["web-performance-optimization"],
+    "forbidden_skills": ["css-grid"]
+  },
+  {
+    "id": "dark-mode-and-tokens",
+    "mode": "implicit-router",
+    "prompt": "Design semantic color tokens and a standards-based dark mode that respects user preferences.",
+    "required_skills": ["css-dark-mode", "css-variables"],
+    "forbidden_skills": ["css-transforms"]
+  },
+  {
+    "id": "transform-and-transition",
+    "mode": "implicit-router",
+    "prompt": "Implement a card hover effect using a safe transform and a deliberately chosen transition easing.",
+    "required_skills": ["css-transforms", "css-transitions"],
+    "forbidden_skills": ["css-grid"]
+  },
+  {
+    "id": "ambiguous-visual-polish",
+    "mode": "implicit-router",
+    "prompt": "Polish this interface so the visual system feels coherent and production-ready.",
+    "required_skills": ["css-grid", "css-variables", "web-typography"],
+    "forbidden_skills": ["css-tokenography"]
+  },
+  {
+    "id": "responsive-component-layout",
+    "mode": "implicit-router",
+    "prompt": "Build a responsive card collection using Grid for the collection and Flexbox inside each card; adapt the collection to component width and also change behavior at viewport breakpoints.",
+    "required_skills": ["css-grid", "css-flexbox", "css-media-queries", "css-container-queries"],
+    "forbidden_skills": ["css-scroll-driven-animations"]
+  },
+  {
+    "id": "explicit-css-selectors",
+    "mode": "explicit-specialist",
+    "prompt": "Use $css-selectors to calculate the specificity of :is(.card, #featured) > :where(button).",
+    "required_skills": ["css-selectors"],
+    "forbidden_skills": ["css-tokenography"]
+  },
+  {
+    "id": "explicit-web-typography",
+    "mode": "explicit-specialist",
+    "prompt": "Use $web-typography to audit font loading, fallback metrics, line length, and mobile input sizing.",
+    "required_skills": ["web-typography"],
+    "forbidden_skills": ["css-tokenography"]
+  }
+]

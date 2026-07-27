@@ -2,3 +2,6 @@ interface:
   display_name: "Css Grid"
   short_description: "Apply current Css Grid guidance"
   default_prompt: "Use $css-grid to implement and review this task."
+
+policy:
+  allow_implicit_invocation: false

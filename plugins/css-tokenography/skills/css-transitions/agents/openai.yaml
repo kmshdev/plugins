@@ -2,3 +2,6 @@ interface:
   display_name: "Css Transitions"
   short_description: "Apply current Css Transitions guidance"
   default_prompt: "Use $css-transitions to implement and review this task."
+
+policy:
+  allow_implicit_invocation: false

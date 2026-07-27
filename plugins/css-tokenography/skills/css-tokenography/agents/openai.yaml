@@ -1,0 +1,7 @@
+interface:
+  display_name: "CSS Tokenography"
+  short_description: "Route CSS work across specialist skills"
+  default_prompt: "Use $css-tokenography to route and coordinate this CSS, typography, or web-performance task."
+
+policy:
+  allow_implicit_invocation: true

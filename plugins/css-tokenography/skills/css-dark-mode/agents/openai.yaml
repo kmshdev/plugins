@@ -2,3 +2,6 @@ interface:
   display_name: "Css Dark Mode"
   short_description: "Apply current Css Dark Mode guidance"
   default_prompt: "Use $css-dark-mode to implement and review this task."
+
+policy:
+  allow_implicit_invocation: false

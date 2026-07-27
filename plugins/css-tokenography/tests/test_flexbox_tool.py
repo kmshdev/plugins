@@ -1,4 +1,5 @@
 import importlib.util
+import io
 import json
 import subprocess
 import sys
@@ -49,6 +50,17 @@ def run_fixture(script: Path, fixture: str) -> dict[str, object]:
     if result.returncode != 0:
         raise AssertionError(result.stderr)
     return json.loads(result.stdout)
+
+
+def load_flexbox_cli():
+    sys.path.insert(0, str(FLEX.parent))
+    spec = importlib.util.spec_from_file_location("flexbox_playground", FLEX)
+    if spec is None or spec.loader is None:
+        raise AssertionError("unable to load flexbox CLI")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 class FlexboxPlaygroundTests(unittest.TestCase):
@@ -268,6 +280,39 @@ class FlexboxPlaygroundTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("JSON nesting exceeds the supported parser depth", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_json_nesting_limit_accepts_256_and_rejects_257(self) -> None:
+        module = load_flexbox_cli()
+        at_limit = '{"items":' + "[" * 255 + "0" + "]" * 255 + "}"
+        over_limit = '{"items":' + "[" * 256 + "0" + "]" * 256 + "}"
+
+        parsed = module.read_json("-", io.StringIO(at_limit))
+        self.assertIn("items", parsed)
+
+        with self.assertRaisesRegex(
+            module.InputError, "JSON nesting exceeds the supported parser depth"
+        ):
+            module.read_json("-", io.StringIO(over_limit))
+
+    def test_json_depth_scanner_ignores_brackets_and_escaped_quotes_in_strings(self) -> None:
+        module = load_flexbox_cli()
+        raw = r'{"direction":"row","note":"[{\"]}] escaped brackets"}'
+
+        parsed = module.read_json("-", io.StringIO(raw))
+
+        self.assertEqual(parsed["note"], '[{"]}] escaped brackets')
+
+    def test_json_depth_limit_applies_to_file_input(self) -> None:
+        module = load_flexbox_cli()
+        over_limit = '{"items":' + "[" * 256 + "0" + "]" * 256 + "}"
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "nested.json"
+            path.write_text(over_limit, encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                module.InputError, "JSON nesting exceeds the supported parser depth"
+            ):
+                module.read_json(str(path), io.StringIO(""))
 
     def test_model_exposes_frozen_typed_item_records(self) -> None:
         spec = importlib.util.spec_from_file_location("flexbox_model", FLEX_MODEL)

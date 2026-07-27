@@ -18,6 +18,34 @@ from flexbox_model import Flexbox, InputError
 
 
 MAX_INPUT_BYTES = 65_536
+MAX_JSON_NESTING_DEPTH = 256
+
+
+def validate_json_depth(raw: str) -> None:
+    """Reject excessive JSON container depth without interpreting JSON syntax."""
+    depth = 0
+    in_string = False
+    escaped = False
+    for character in raw:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == '"':
+                in_string = False
+            continue
+        if character == '"':
+            in_string = True
+        elif character in "[{":
+            depth += 1
+            if depth > MAX_JSON_NESTING_DEPTH:
+                raise InputError(
+                    "Unable to read JSON input: "
+                    "JSON nesting exceeds the supported parser depth"
+                )
+        elif character in "]}":
+            depth -= 1
 
 
 def read_json(path: str, stdin: TextIO) -> dict[str, object]:
@@ -36,6 +64,7 @@ def read_json(path: str, stdin: TextIO) -> dict[str, object]:
                     f"JSON input must not exceed {MAX_INPUT_BYTES} UTF-8 bytes"
                 )
             raw = encoded.decode("utf-8")
+        validate_json_depth(raw)
         value = json.loads(raw)
     except RecursionError as error:
         raise InputError(

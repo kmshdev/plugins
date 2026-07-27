@@ -214,10 +214,10 @@ def validate(plugin: Path) -> dict[str, Any]:
 
     skill_directories = sorted(path.parent for path in (plugin / "skills").glob("*/SKILL.md"))
     agent_files = sorted((plugin / "skills").glob("*/agents/openai.yaml"))
-    if len(skill_directories) != 17:
-        errors.append("plugin must contain exactly 17 skill directories")
-    if len(agent_files) != 17:
-        errors.append("plugin must contain exactly 17 agents/openai.yaml files")
+    if len(skill_directories) != 18:
+        errors.append("plugin must contain exactly 18 skill directories: one router and 17 guide specialists")
+    if len(agent_files) != 18:
+        errors.append("plugin must contain exactly 18 agents/openai.yaml files")
 
     if not isinstance(tools, list) or len(tools) != 33:
         errors.append("tool-coverage.json must contain exactly 33 tool entries")
