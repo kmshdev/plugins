@@ -1,0 +1,16 @@
+{
+  "name": "css-tokenography-browser-laboratory",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private deterministic multi-engine CSS observation laboratory.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:browser": "playwright test",
+    "lab": "node src/run.mjs",
+    "serve": "node src/serve.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.0"
+  }
+}

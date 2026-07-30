@@ -90,8 +90,14 @@ EXPECTED_BASELINE_PROMOTIONS = {
         "skills/css-selectors/scripts/specificity_calculator.py",
     ),
 }
+EXPECTED_PHASE_THREE_PROMOTIONS = {
+    "feature-detection": (
+        "implemented-core",
+        "skills/css-media-queries/scripts/feature_detection.py",
+    ),
+}
 EXPECTED_STATUS_COUNTS = Counter(
-    {"implemented-full": 8, "implemented-core": 10, "procedural": 15}
+    {"implemented-full": 8, "implemented-core": 11, "procedural": 14}
 )
 
 
@@ -125,6 +131,7 @@ def assert_phase_two_inventory(
     ]
     expected_phase_two = expected_tuples(EXPECTED_PHASE_TWO_PROMOTIONS)
     expected_baseline = expected_tuples(EXPECTED_BASELINE_PROMOTIONS)
+    expected_phase_three = expected_tuples(EXPECTED_PHASE_THREE_PROMOTIONS)
     test_case.assertEqual(
         len(documented),
         10,
@@ -172,10 +179,24 @@ def assert_phase_two_inventory(
         "aggregate status totals must remain exact",
     )
 
+    phase_three_rows = [
+        inventory_tuple(row)
+        for row in rows
+        if slug(row) in EXPECTED_PHASE_THREE_PROMOTIONS
+    ]
+    test_case.assertEqual(
+        Counter(phase_three_rows),
+        expected_phase_three,
+        "Phase 3 inventory must contain the exact promoted tuple",
+    )
+
     promoted = Counter(
         inventory_tuple(row) for row in rows if row["status"] != "procedural"
     )
-    test_case.assertEqual(promoted, expected_phase_two + expected_baseline)
+    test_case.assertEqual(
+        promoted,
+        expected_phase_two + expected_baseline + expected_phase_three,
+    )
     test_case.assertTrue(
         all("design_tool.py" not in artifact for _, _, artifact in phase_two_rows)
     )

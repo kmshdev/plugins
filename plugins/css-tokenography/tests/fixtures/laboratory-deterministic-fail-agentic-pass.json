@@ -1,0 +1,15 @@
+{
+  "deterministic": {
+    "checks": ["manifest"],
+    "status": "fail"
+  },
+  "browser": {
+    "fixtures": [],
+    "status": "pass"
+  },
+  "agentic": {
+    "evaluations": ["grid-flow"],
+    "required": false,
+    "status": "pass"
+  }
+}

@@ -36,4 +36,10 @@ Non-`none` filter lists report their stacking and absolute/fixed containing-bloc
 - Avoid scaling interactive text to zero or moving focusable controls off-screen without updating interaction state.
 - Use individual transform properties only when their fixed translate-rotate-scale order matches the design.
 
+Use [the optional browser laboratory](../../references/browser-laboratory.md)
+for `transform-runtime`, `filter-runtime`, and `backdrop-filter-runtime` when
+the task depends on computed matrices, containing blocks, stacking behavior,
+runtime support, or pixels. Preserve per-engine disagreement; do not infer
+compositor promotion from a passing visual comparison.
+
 Report transform order, coordinate assumptions, accessibility effects, and measured performance evidence. Primary references: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transforms and https://design.dev/guides/css-transforms/.

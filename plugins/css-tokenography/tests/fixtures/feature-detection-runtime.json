@@ -1,0 +1,37 @@
+{
+  "features": [
+    "subgrid",
+    "container-queries",
+    "has-selector",
+    "backdrop-filter"
+  ],
+  "engines": [
+    {
+      "name": "chromium",
+      "support": {
+        "subgrid": true,
+        "container-queries": true,
+        "has-selector": true,
+        "backdrop-filter": true
+      }
+    },
+    {
+      "name": "firefox",
+      "support": {
+        "subgrid": true,
+        "container-queries": true,
+        "has-selector": true,
+        "backdrop-filter": false
+      }
+    },
+    {
+      "name": "webkit",
+      "support": {
+        "subgrid": true,
+        "container-queries": true,
+        "has-selector": true,
+        "backdrop-filter": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+[
+  {
+    "id": "gradient-runtime",
+    "owner": "css-gradients",
+    "tool_urls": ["https://design.dev/tools/gradient-mixer/"],
+    "claim_ids": ["gradient.computed-image", "gradient.stop-order"],
+    "fixture": "laboratory/browser/fixtures/gradient-runtime.html",
+    "collectors": ["computed-style", "bounding-box", "accessibility"],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://drafts.csswg.org/css-images-4/"]
+  },
+  {
+    "id": "transform-runtime",
+    "owner": "css-transforms",
+    "tool_urls": ["https://design.dev/tools/css-transform-playground/"],
+    "claim_ids": [
+      "transform.computed-matrix",
+      "transform.containing-block",
+      "transform.stacking-context"
+    ],
+    "fixture": "laboratory/browser/fixtures/transform-runtime.html",
+    "collectors": [
+      "computed-style",
+      "bounding-box",
+      "containing-block",
+      "accessibility"
+    ],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://drafts.csswg.org/css-transforms-2/"]
+  },
+  {
+    "id": "filter-runtime",
+    "owner": "css-transforms",
+    "tool_urls": ["https://design.dev/tools/css-filter-effects/"],
+    "claim_ids": [
+      "filter.computed-order",
+      "filter.containing-block",
+      "filter.stacking-context"
+    ],
+    "fixture": "laboratory/browser/fixtures/filter-runtime.html",
+    "collectors": [
+      "computed-style",
+      "bounding-box",
+      "containing-block",
+      "accessibility"
+    ],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://drafts.fxtf.org/filter-effects-1/"]
+  },
+  {
+    "id": "backdrop-filter-runtime",
+    "owner": "css-transforms",
+    "tool_urls": ["https://design.dev/tools/backdrop-filter-playground/"],
+    "claim_ids": [
+      "backdrop-filter.computed-value",
+      "backdrop-filter.runtime-support",
+      "backdrop-filter.visibility"
+    ],
+    "fixture": "laboratory/browser/fixtures/backdrop-filter-runtime.html",
+    "collectors": [
+      "computed-style",
+      "feature-support",
+      "bounding-box",
+      "accessibility"
+    ],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://drafts.fxtf.org/filter-effects-2/"]
+  },
+  {
+    "id": "grid-runtime",
+    "owner": "css-grid",
+    "tool_urls": ["https://design.dev/tools/grid-area-mapper/"],
+    "claim_ids": ["grid.named-areas", "grid.item-placement", "grid.track-geometry"],
+    "fixture": "laboratory/browser/fixtures/grid-runtime.html",
+    "collectors": ["computed-style", "bounding-box", "grid-placement", "accessibility"],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://drafts.csswg.org/css-grid-2/"]
+  },
+  {
+    "id": "subgrid-runtime",
+    "owner": "css-grid",
+    "tool_urls": ["https://design.dev/tools/subgrid-visualizer/"],
+    "claim_ids": [
+      "subgrid.runtime-support",
+      "subgrid.inherited-tracks",
+      "subgrid.gap-alignment"
+    ],
+    "fixture": "laboratory/browser/fixtures/subgrid-runtime.html",
+    "collectors": [
+      "computed-style",
+      "feature-support",
+      "bounding-box",
+      "grid-placement",
+      "accessibility"
+    ],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://drafts.csswg.org/css-grid-2/#subgrids"]
+  },
+  {
+    "id": "flexbox-runtime",
+    "owner": "css-flexbox",
+    "tool_urls": ["https://design.dev/tools/flexbox-playground/"],
+    "claim_ids": [
+      "flexbox.item-order",
+      "flexbox.wrap",
+      "flexbox.box-geometry"
+    ],
+    "fixture": "laboratory/browser/fixtures/flexbox-runtime.html",
+    "collectors": ["computed-style", "bounding-box", "flex-lines", "accessibility"],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://drafts.csswg.org/css-flexbox-1/"]
+  },
+  {
+    "id": "stacking-hit-test-runtime",
+    "owner": "css-grid",
+    "tool_urls": ["https://design.dev/tools/z-index-visualizer/"],
+    "claim_ids": [
+      "stacking.atomic-context",
+      "stacking.paint-order",
+      "stacking.hit-test"
+    ],
+    "fixture": "laboratory/browser/fixtures/stacking-hit-test-runtime.html",
+    "collectors": [
+      "computed-style",
+      "bounding-box",
+      "hit-test",
+      "accessibility"
+    ],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://drafts.csswg.org/css2/#z-index"]
+  },
+  {
+    "id": "selector-matching-runtime",
+    "owner": "css-selectors",
+    "tool_urls": [
+      "https://design.dev/tools/specificity-calculator/",
+      "https://design.dev/tools/nth-child-selector/"
+    ],
+    "claim_ids": [
+      "selector.matches",
+      "selector.has",
+      "selector.nth-child-of"
+    ],
+    "fixture": "laboratory/browser/fixtures/selector-matching-runtime.html",
+    "collectors": ["selector-matches", "computed-style", "accessibility"],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": ["https://www.w3.org/TR/selectors-4/"]
+  },
+  {
+    "id": "feature-detection-runtime",
+    "owner": "css-media-queries",
+    "tool_urls": ["https://design.dev/tools/feature-detection/"],
+    "claim_ids": [
+      "feature-detection.css-supports",
+      "feature-detection.runtime-apis"
+    ],
+    "fixture": "laboratory/browser/fixtures/feature-detection-runtime.html",
+    "collectors": ["feature-support", "computed-style", "accessibility"],
+    "required_engines": ["chromium", "firefox", "webkit"],
+    "visual_baseline": true,
+    "standards": [
+      "https://drafts.csswg.org/css-conditional-3/",
+      "https://drafts.csswg.org/cssom/"
+    ]
+  }
+]

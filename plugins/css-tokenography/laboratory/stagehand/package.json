@@ -1,0 +1,17 @@
+{
+  "name": "@kmshdev/css-tokenography-stagehand-laboratory",
+  "version": "0.0.0-experimental",
+  "private": true,
+  "type": "module",
+  "description": "Experimental Stagehand discovery isolated from CSS Tokenography release evidence.",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "test": "node --test test/**/*.test.mjs",
+    "discover": "node src/discover.mjs"
+  },
+  "dependencies": {
+    "@browserbasehq/stagehand": "3.7.1"
+  }
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/fixtures/lab.css">
+    <title>Transform transition</title>
+    <style>
+      #target {
+        background: rgb(105, 165, 225);
+        transform: translateX(0);
+        transition: transform 120ms linear;
+      }
+      #target.is-finished {
+        transform: translateX(80px) rotate(12deg);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="frame">
+      <button id="trigger" type="button">Run transition</button>
+      <div id="target" class="box">Target</div>
+      <output id="state" role="status">idle</output>
+    </main>
+    <script>
+      document.querySelector("#trigger").addEventListener("click", () => {
+        document.querySelector("#target").classList.add("is-finished");
+        document.querySelector("#state").value = "finished";
+      });
+    </script>
+  </body>
+</html>

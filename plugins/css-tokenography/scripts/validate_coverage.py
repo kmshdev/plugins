@@ -13,6 +13,7 @@ from typing import Any
 
 
 ALLOWED_TOOL_STATUSES = {"implemented-full", "implemented-core", "serializer-only", "procedural"}
+REQUIRED_BROWSER_ENGINES = {"chromium", "firefox", "webkit"}
 
 
 def load_json(path: Path) -> Any:
@@ -103,6 +104,100 @@ def non_empty_string_array(value: Any) -> bool:
     )
 
 
+def validate_browser_fixtures(
+    plugin: Path,
+    value: Any,
+    *,
+    guide_skills: list[Any],
+    tool_urls: list[Any],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    errors: list[str] = []
+    if not isinstance(value, list) or len(value) != 10:
+        return [], ["browser-fixtures.json must contain exactly 10 fixture entries"]
+
+    rows: list[dict[str, Any]] = []
+    fixture_ids: list[str] = []
+    for index, fixture in enumerate(value):
+        if not isinstance(fixture, dict):
+            errors.append(f"browser fixture {index} must be an object")
+            continue
+        rows.append(fixture)
+        fixture_id = fixture.get("id")
+        if not is_non_empty_string(fixture_id):
+            errors.append(f"browser fixture {index} id must be a non-empty string")
+            continue
+        assert isinstance(fixture_id, str)
+        fixture_ids.append(fixture_id)
+
+        owner = fixture.get("owner")
+        if owner not in guide_skills:
+            errors.append(f"browser fixture {fixture_id} has unknown owner {owner!r}")
+        urls = fixture.get("tool_urls")
+        if not non_empty_string_array(urls):
+            errors.append(f"browser fixture {fixture_id} tool_urls must be non-empty")
+        elif any(url not in tool_urls for url in urls):
+            errors.append(f"browser fixture {fixture_id} names an unknown tool URL")
+        if not non_empty_string_array(fixture.get("claim_ids")):
+            errors.append(f"browser fixture {fixture_id} claim_ids must be non-empty")
+        if not non_empty_string_array(fixture.get("collectors")):
+            errors.append(f"browser fixture {fixture_id} collectors must be non-empty")
+
+        engines = fixture.get("required_engines")
+        if (
+            not non_empty_string_array(engines)
+            or set(engines) != REQUIRED_BROWSER_ENGINES
+            or len(engines) != len(REQUIRED_BROWSER_ENGINES)
+        ):
+            errors.append(
+                f"browser fixture {fixture_id} must require chromium, firefox, and webkit exactly once"
+            )
+        if fixture.get("visual_baseline") is not True:
+            errors.append(
+                f"browser fixture {fixture_id} visual_baseline must be true"
+            )
+        standards = fixture.get("standards")
+        if not non_empty_string_array(standards) or any(
+            not url.startswith("https://") for url in standards
+        ):
+            errors.append(
+                f"browser fixture {fixture_id} standards must be HTTPS URLs"
+            )
+
+        fixture_path = fixture.get("fixture")
+        if not is_path_under(
+            plugin, fixture_path, plugin / "laboratory" / "browser" / "fixtures"
+        ):
+            errors.append(
+                f"browser fixture {fixture_id} path must be under laboratory/browser/fixtures"
+            )
+        elif not (plugin / fixture_path).is_file():
+            errors.append(f"browser fixture {fixture_id} file is missing")
+
+    if len(fixture_ids) != len(set(fixture_ids)):
+        errors.append("browser fixture ids must be unique")
+    return rows, errors
+
+
+def browser_evidence_errors(
+    value: Any, *, fixture_ids: set[str]
+) -> list[str]:
+    if not isinstance(value, dict):
+        return ["browser_evidence must be an object"]
+    if set(value) != {"protocol", "fixtures"}:
+        return ["browser_evidence keys must be exactly protocol and fixtures"]
+    if value.get("protocol") != "css-tokenography-browser-lab/v1":
+        return ["browser_evidence protocol must be css-tokenography-browser-lab/v1"]
+    fixtures = value.get("fixtures")
+    if not non_empty_string_array(fixtures):
+        return ["browser_evidence fixtures must be a non-empty array"]
+    if len(fixtures) != len(set(fixtures)):
+        return ["browser_evidence fixtures must not contain duplicates"]
+    unknown = sorted(set(fixtures) - fixture_ids)
+    if unknown:
+        return [f"browser_evidence names unknown fixtures: {', '.join(unknown)}"]
+    return []
+
+
 def coverage_gap_errors(plugin: Path, owner: Any, value: Any) -> list[str]:
     if not isinstance(value, dict):
         return ["requires a coverage_gap object"]
@@ -186,6 +281,7 @@ def validate(plugin: Path) -> dict[str, Any]:
     references = plugin / "references"
     guides = load_json(references / "guide-coverage.json")
     tools = load_json(references / "tool-coverage.json")
+    browser_fixtures_value = load_json(references / "browser-fixtures.json")
     sources = load_json(references / "source-inventory.json")
     migration = load_json(references / "source-migration.json")
 
@@ -247,7 +343,31 @@ def validate(plugin: Path) -> dict[str, Any]:
         "status",
         "reason",
         "coverage_gap",
+        "browser_evidence",
     }
+
+    browser_fixtures, browser_fixture_errors = validate_browser_fixtures(
+        plugin,
+        browser_fixtures_value,
+        guide_skills=guide_skills,
+        tool_urls=tool_urls,
+    )
+    errors.extend(browser_fixture_errors)
+    browser_fixture_ids = {
+        fixture_id
+        for fixture in browser_fixtures
+        if isinstance((fixture_id := fixture.get("id")), str)
+    }
+    fixture_ids_by_tool: dict[str, set[str]] = {}
+    for fixture in browser_fixtures:
+        fixture_id = fixture.get("id")
+        urls = fixture.get("tool_urls")
+        if not isinstance(fixture_id, str) or not isinstance(urls, list):
+            continue
+        for url in urls:
+            if isinstance(url, str):
+                fixture_ids_by_tool.setdefault(url, set()).add(fixture_id)
+
     for entry in tools:
         if not isinstance(entry, dict):
             errors.append("tool entries must be objects")
@@ -266,6 +386,33 @@ def validate(plugin: Path) -> dict[str, Any]:
             errors.append(f"tool {url} has unsupported status {status!r}")
         if not is_non_empty_string(entry.get("reason")):
             errors.append(f"tool {url} requires a coverage reason")
+
+        browser_evidence = entry.get("browser_evidence")
+        expected_browser_fixtures = fixture_ids_by_tool.get(str(url), set())
+        if browser_evidence is None:
+            if expected_browser_fixtures:
+                errors.append(f"tool {url} must declare browser_evidence")
+            if (
+                status != "procedural"
+                and entry.get("classification") == "browser-dependent"
+            ):
+                errors.append(
+                    f"implemented browser-dependent tool {url} requires browser_evidence"
+                )
+        else:
+            for browser_error in browser_evidence_errors(
+                browser_evidence, fixture_ids=browser_fixture_ids
+            ):
+                errors.append(f"tool {url} {browser_error}")
+            if isinstance(browser_evidence, dict):
+                declared_fixtures = browser_evidence.get("fixtures")
+                if (
+                    isinstance(declared_fixtures, list)
+                    and set(declared_fixtures) != expected_browser_fixtures
+                ):
+                    errors.append(
+                        f"tool {url} browser_evidence fixtures must match browser-fixtures.json ownership"
+                    )
 
         if status != "procedural":
             artifact = entry.get("implementation_artifact")
@@ -330,6 +477,7 @@ def validate(plugin: Path) -> dict[str, Any]:
         "sources": len(source_entries) if isinstance(source_entries, list) else 0,
         "skills": len(skill_directories),
         "agents": len(agent_files),
+        "browser_fixtures": len(browser_fixtures),
         "errors": errors,
     }
 
@@ -349,7 +497,8 @@ def main() -> int:
     else:
         print(
             f"guides={report['guides']} tools={report['tools']} sources={report['sources']} "
-            f"skills={report['skills']} agents={report['agents']}"
+            f"skills={report['skills']} agents={report['agents']} "
+            f"browser_fixtures={report['browser_fixtures']}"
         )
         for error in report["errors"]:
             print(f"ERROR {error}")

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/fixtures/lab.css">
+    <title>Dark-mode variables</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --surface: rgb(250, 250, 250);
+        --text: rgb(20, 20, 20);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --surface: rgb(20, 20, 20);
+          --text: rgb(245, 245, 245);
+        }
+      }
+      #target {
+        background-color: var(--surface);
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="frame">
+      <section id="target" class="box">
+        <h1>Theme tokens</h1>
+        <output role="status">Custom properties resolve from the active color scheme.</output>
+      </section>
+    </main>
+  </body>
+</html>

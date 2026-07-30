@@ -60,15 +60,21 @@ def load_registry() -> dict[str, dict[str, object]]:
         if not isinstance(row, dict):
             raise ValueError("automation adapter rows must be objects")
         adapter_id = row.get("id")
+        kind = row.get("kind")
         command = row.get("command")
         if not isinstance(adapter_id, str) or not adapter_id:
             raise ValueError("automation adapter id must be a non-empty string")
-        if (
-            not isinstance(command, list)
-            or not command
-            or not all(isinstance(item, str) and item for item in command)
-        ):
-            raise ValueError(f"adapter {adapter_id} command must be an argv array")
+        if kind == "executable":
+            if (
+                not isinstance(command, list)
+                or not command
+                or not all(isinstance(item, str) and item for item in command)
+            ):
+                raise ValueError(f"adapter {adapter_id} command must be an argv array")
+        elif kind != "node-package":
+            raise ValueError(
+                f"adapter {adapter_id} kind must be executable or node-package"
+            )
         registry[adapter_id] = row
     return registry
 
@@ -185,8 +191,11 @@ def run(payload: dict[str, object], overrides: dict[str, list[str]]) -> Evidence
             )
             continue
 
-        declared_command = row["command"]
-        assert isinstance(declared_command, list)
+        declared_command = row.get("command")
+        if not isinstance(declared_command, list):
+            raise ValueError(
+                f"adapter {adapter_id} is not an executable oracle; use its dedicated laboratory"
+            )
         if shutil.which(declared_command[0]) is None:
             envelope.add(OracleObservation(adapter_id, "unavailable", None))
             continue

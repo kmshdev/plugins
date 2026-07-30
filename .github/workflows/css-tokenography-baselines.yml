@@ -1,0 +1,36 @@
+name: CSS Tokenography Linux Baselines
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: plugins/css-tokenography/laboratory/browser/package-lock.json
+      - name: Install locked browser laboratory
+        run: npm --prefix plugins/css-tokenography/laboratory/browser ci --ignore-scripts
+      - name: Install pinned Playwright browsers
+        run: npx --prefix plugins/css-tokenography/laboratory/browser playwright install --with-deps chromium firefox webkit
+      - name: Generate Linux baselines
+        env:
+          CSS_TOKENOGRAPHY_BASELINE_GENERATION: "1"
+        run: npm --prefix plugins/css-tokenography/laboratory/browser run lab -- --engines chromium,firefox,webkit --format json --update-snapshots
+      - name: Verify baseline inventory
+        run: |
+          count="$(find plugins/css-tokenography/laboratory/browser/snapshots -type f -name '*.png' | wc -l)"
+          test "$count" -eq 30
+      - uses: actions/upload-artifact@v7
+        with:
+          name: css-tokenography-linux-baselines
+          path: plugins/css-tokenography/laboratory/browser/snapshots
+          if-no-files-found: error
+          retention-days: 7

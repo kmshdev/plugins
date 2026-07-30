@@ -22,4 +22,10 @@ description: Author, simplify, or diagnose CSS selectors, specificity, combinato
 - Run `python3 scripts/specificity_calculator.py --format json` with `{"selector":"..."}` for per-member Selectors Level 4 tuples, half-open source spans, and standards notes. Malformed or unbalanced syntax exits nonzero.
 - Run `python3 scripts/nth_child_selector.py --format json` with `expression` and optional `element` to validate and normalize An+B syntax and generate a safe selector.
 
+Run `selector-matching-runtime` through
+[the optional browser laboratory](../../references/browser-laboratory.md) when
+the review needs real `matches()`, `:has()`, or `:nth-child(... of S)`
+behavior. Runtime matching supplements the deterministic specificity tuple; it
+does not replace cascade analysis.
+
 Return the matched intent, each selector-list member and its specificity tuple, ownership/layer context, and resilience risks. Primary reference: https://www.w3.org/TR/selectors-4/#specificity-rules and topic source: https://design.dev/guides/css-selectors/.

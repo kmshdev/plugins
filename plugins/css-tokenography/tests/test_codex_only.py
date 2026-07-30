@@ -38,6 +38,8 @@ class CodexOnlySurfaceTests(unittest.TestCase):
         for path in sorted(PLUGIN.rglob("*")):
             if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
                 continue
+            if "node_modules" in path.parts:
+                continue
             text = path.read_text(encoding="utf-8").casefold()
             for term in FORBIDDEN_TERMS:
                 if term in text:

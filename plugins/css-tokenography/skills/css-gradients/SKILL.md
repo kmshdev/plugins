@@ -18,6 +18,11 @@ description: Design, implement, or audit CSS linear, radial, and conic gradients
 
 Run `python3 scripts/gradient_mixer.py --format json` with JSON containing `kind`, a kind-specific `geometry` object, and ordered `{color, position}` stops. The canonical generator validates linear, radial, and conic core syntax as data and preserves stop source order; its report names unsupported advanced grammar and does not claim browser rendering, gamut mapping, or contrast. Continue to use `design_tool.py` only for the still-procedural `css-background-generator` and `metallic-effect-generator` serializers.
 
+For computed-image and source-order evidence across Chromium, Firefox, and
+WebKit, run the `gradient-runtime` fixture through
+[the optional browser laboratory](../../references/browser-laboratory.md).
+Treat screenshots as secondary to the collected computed value.
+
 ## Guardrails
 
 - Avoid copied preset gradients when a small tokenized stop set expresses the intent.

@@ -1,0 +1,94 @@
+name: CSS Tokenography
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/css-tokenography*.yml"
+      - "plugins/css-tokenography/**"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/css-tokenography*.yml"
+      - "plugins/css-tokenography/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: css-tokenography-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Install validation dependency
+        run: python -m pip install PyYAML==6.0.3
+      - name: Run Python contracts
+        run: python -m unittest discover -s plugins/css-tokenography/tests -v
+      - name: Validate inventories and routing
+        run: |
+          python plugins/css-tokenography/scripts/validate_coverage.py --plugin plugins/css-tokenography
+          python plugins/css-tokenography/scripts/validate_adapters.py --plugin plugins/css-tokenography --format json
+          python plugins/css-tokenography/skills/css-tokenography/scripts/validate_router.py --plugin plugins/css-tokenography --format json
+
+  node-contracts:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace:
+          - browser
+          - passmark
+          - stagehand
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: plugins/css-tokenography/laboratory/${{ matrix.workspace }}/package-lock.json
+      - name: Install locked workspace
+        run: npm --prefix "plugins/css-tokenography/laboratory/${{ matrix.workspace }}" ci --ignore-scripts
+      - name: Run contract tests
+        run: npm --prefix "plugins/css-tokenography/laboratory/${{ matrix.workspace }}" test
+
+  browser-conformance:
+    needs:
+      - python-contracts
+      - node-contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: plugins/css-tokenography/laboratory/browser/package-lock.json
+      - name: Install locked browser laboratory
+        run: npm --prefix plugins/css-tokenography/laboratory/browser ci --ignore-scripts
+      - name: Install pinned Playwright browsers
+        run: npx --prefix plugins/css-tokenography/laboratory/browser playwright install --with-deps chromium firefox webkit
+      - name: Require reviewed Linux baselines
+        run: |
+          count="$(find plugins/css-tokenography/laboratory/browser/snapshots -type f -name '*.png' | wc -l)"
+          test "$count" -eq 30
+      - name: Compare computed evidence and screenshots
+        run: npm --prefix plugins/css-tokenography/laboratory/browser run test:browser
+      - name: Validate aggregate browser report
+        run: python plugins/css-tokenography/scripts/run_browser_lab.py --engines chromium,firefox,webkit --format json
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: css-tokenography-browser-failure
+          path: |
+            plugins/css-tokenography/laboratory/browser/playwright-report
+            plugins/css-tokenography/laboratory/browser/test-results
+          if-no-files-found: ignore
+          retention-days: 7

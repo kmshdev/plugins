@@ -30,15 +30,37 @@ columns are part of the aggregate inventory contract.
 | `flexbox-playground` | `implemented-core` | `skills/css-flexbox/scripts/flexbox_playground.py` |
 
 The eight tools that were already non-procedural at the baseline remain
-promoted with their existing canonical artifacts. The resulting 33-row
-inventory contains 8 `implemented-full`, 10 `implemented-core`, and 15
-`procedural` rows. None of the ten Phase 2 artifacts uses `design_tool.py`.
+promoted with their existing canonical artifacts. Phase 3 promotes Browser
+Feature Detection after adding an owner-local analyzer and a three-engine
+runtime fixture. The resulting 33-row inventory contains 8
+`implemented-full`, 11 `implemented-core`, and 14 `procedural` rows. None of
+the Phase 2 or Phase 3 artifacts uses `design_tool.py`.
 
 These promotions are backed by unique JSON fixtures and direct validation
 commands that execute the declared CLI and require a JSON object. They establish
 the bounded deterministic contracts named in `tool-coverage.json`; they do not
 establish browser rendering, interaction, pixel parity, or whole-page standards
 conformance.
+
+## Phase 3 browser evidence
+
+`browser-fixtures.json` declares ten fixture families and requires Chromium,
+Firefox, and WebKit for each. The fixtures cover gradients, transforms,
+filters, backdrop filters, Grid, subgrid, Flexbox, stacking and hit testing,
+selector matching, and feature detection. Eleven tool rows point to these ten
+fixtures because the selector fixture covers both specificity and
+`nth-child`.
+
+Browser reports use `css-tokenography-browser-lab/v1` and retain per-engine
+computed observations. Screenshots are secondary evidence when computed state
+is insufficient. Cross-engine disagreement blocks universal claims. Missing
+Node packages or browser binaries produce `unavailable`; the runner never
+downloads them.
+
+The Browser Feature Detection promotion is bounded: the owner-local CLI
+analyzes supplied, versioned browser observations. It does not collect browser
+data, infer support from user-agent strings, or claim that a lab observation
+proves all deployed clients.
 
 ## Evidence-envelope pilot
 

@@ -1,0 +1,86 @@
+name: CSS Tokenography Passmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      step_execution_model:
+        description: Provider-qualified model for step execution
+        required: true
+        type: string
+      assertion_primary_model:
+        description: Provider-qualified primary assertion model
+        required: true
+        type: string
+      assertion_secondary_model:
+        description: Provider-qualified secondary assertion model
+        required: true
+        type: string
+      utility_model:
+        description: Provider-qualified utility model
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  live-agentic-evaluation:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: |
+            plugins/css-tokenography/laboratory/browser/package-lock.json
+            plugins/css-tokenography/laboratory/passmark/package-lock.json
+      - name: Install locked laboratories
+        run: |
+          npm --prefix plugins/css-tokenography/laboratory/browser ci --ignore-scripts
+          npm --prefix plugins/css-tokenography/laboratory/passmark ci --ignore-scripts
+      - name: Install Chromium explicitly
+        run: npx --prefix plugins/css-tokenography/laboratory/passmark playwright install --with-deps chromium
+      - name: Start local synthetic fixture server
+        run: |
+          npm --prefix plugins/css-tokenography/laboratory/browser run serve > "$RUNNER_TEMP/css-tokenography-fixture-server.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/css-tokenography-fixture-server.pid"
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:4173/fixtures/grid-runtime.html >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          exit 1
+      - name: Run live Passmark evaluation
+        env:
+          AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
+          CSS_TOKENOGRAPHY_PASSMARK_LIVE: "1"
+          CSS_TOKENOGRAPHY_PASSMARK_GATEWAY: vercel
+          CSS_TOKENOGRAPHY_PASSMARK_REDIS_URL: redis://127.0.0.1:6379
+          CSS_TOKENOGRAPHY_PASSMARK_BASE_URL: http://127.0.0.1:4173
+          CSS_TOKENOGRAPHY_PASSMARK_STEP_EXECUTION_MODEL: ${{ inputs.step_execution_model }}
+          CSS_TOKENOGRAPHY_PASSMARK_ASSERTION_PRIMARY_MODEL: ${{ inputs.assertion_primary_model }}
+          CSS_TOKENOGRAPHY_PASSMARK_ASSERTION_SECONDARY_MODEL: ${{ inputs.assertion_secondary_model }}
+          CSS_TOKENOGRAPHY_PASSMARK_UTILITY_MODEL: ${{ inputs.utility_model }}
+        run: npm --prefix plugins/css-tokenography/laboratory/passmark run test:passmark:live
+      - name: Upload manual-review evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: css-tokenography-passmark-evidence
+          path: |
+            plugins/css-tokenography/laboratory/passmark/test-results
+            plugins/css-tokenography/laboratory/passmark/playwright-report
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,0 +1,15 @@
+{
+  "deterministic": {
+    "checks": ["manifest"],
+    "status": "pass"
+  },
+  "browser": {
+    "fixtures": [],
+    "status": "unavailable"
+  },
+  "agentic": {
+    "evaluations": [],
+    "required": false,
+    "status": "skipped"
+  }
+}

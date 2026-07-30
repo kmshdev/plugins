@@ -1,0 +1,19 @@
+{
+  "name": "@kmshdev/css-tokenography-passmark-laboratory",
+  "version": "0.0.0-experimental",
+  "private": true,
+  "type": "module",
+  "description": "Optional internal-only Passmark adapter for CSS Tokenography laboratory flows.",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/**/*.test.mjs",
+    "test:passmark:contract": "node --test test/**/*.test.mjs",
+    "test:passmark:live": "node src/preflight-live.mjs && playwright test test/live.passmark.spec.mjs"
+  },
+  "dependencies": {
+    "@playwright/test": "1.62.0",
+    "passmark": "1.0.16"
+  }
+}

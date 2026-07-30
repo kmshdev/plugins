@@ -14,19 +14,19 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | CSS Hover Effects Generator | Effects | css-transitions | deterministic | procedural | hover-state contract task required |
 | CSS Clip-Path Generator | Effects | css-transforms | deterministic | procedural | shape contract task required |
 | Neumorphism CSS Generator | Effects | css-transforms | deterministic | procedural | output and contrast task required |
-| CSS Filter Effects | Effects | css-transforms | deterministic | procedural | filter grammar task required |
-| CSS Backdrop Filter Generator | Effects | css-transforms | deterministic | procedural | backdrop semantics task required |
+| CSS Filter Effects | Effects | css-transforms | deterministic | implemented-core | `css_filter_effects.py` plus `filter-runtime` computed-style and containment probe |
+| CSS Backdrop Filter Generator | Effects | css-transforms | deterministic | implemented-core | `backdrop_filter_playground.py` plus `backdrop-filter-runtime` support and visibility probe |
 | CSS Border Radius Generator | Effects | css-functions | deterministic | implemented-core | `border_radius_playground.py` (one-to-four nonnegative horizontal radii; optional slash and vertical radii) |
 | CSS Tooltip Generator | Effects | css-transitions | deterministic | procedural | accessible interaction task required |
 | Custom CSS Cursor Generator | Effects | css-functions | deterministic | procedural | cursor grammar task required |
 | CSS Background Pattern Generator | Effects | css-gradients | deterministic | procedural | pattern contract task required |
-| CSS Transform Playground | Effects | css-transforms | deterministic | procedural | owner CLI and transform semantics task required |
+| CSS Transform Playground | Effects | css-transforms | deterministic | implemented-core | `css_transform_playground.py` plus `transform-runtime` matrix, containing-block, and stacking probe |
 | Cubic Bezier Generator | Effects | css-transitions | deterministic | implemented-full | `cubic_bezier_studio.py` (finite points; x constrained to `[0,1]`; y overshoot supported) |
 | CSS Loaders | Effects | css-animations | deterministic | procedural | loader model task required |
 | CSS Grid Area Mapper | Layout | css-grid | deterministic | implemented-full | `grid_area_mapper.py` |
 | CSS Subgrid Visualizer | Layout | css-grid | deterministic | implemented-full | `subgrid_visualizer.py` |
 | CSS Flexbox Playground | Layout | css-flexbox | deterministic | implemented-core | `flexbox_playground.py` (bounded container enums, logical axes, source/order-modified item order; no browser sizing prediction) |
-| Z-Index Visualizer | Layout | css-grid | deterministic | procedural | stacking-context task required |
+| Z-Index Visualizer | Layout | css-grid | deterministic | implemented-core | `z_index_visualizer.py` plus `stacking-hit-test-runtime` paint-order and hit-test probe |
 | CSS Clamp Generator | Typography | css-functions | deterministic | implemented-full | `clamp_generator.py` (finite endpoints, fluid slope/intercept, CSS) |
 | CSS Text Shadow Generator | Typography | web-typography | deterministic | procedural | shadow and legibility task required |
 | Metallic Text Effect Generator | Typography | css-gradients | deterministic | procedural | effect composition task required |
@@ -35,9 +35,15 @@ Coverage fails closed: a non-procedural tool must use a single-link, non-symlink
 | ASCII Code Generator | Utilities | css-functions | asset-dependent | procedural | source glyph task required |
 | CSS Specificity Calculator | Utilities | css-selectors | deterministic | implemented-core | `specificity_calculator.py` (per-member Selectors Level 4 tuples, spans, and notes) |
 | nth-child Selector Generator | Utilities | css-selectors | deterministic | implemented-full | `nth_child_selector.py` (token-boundary-aware An+B normalization and safe selector generation) |
-| Browser Feature Detection | Utilities | css-media-queries | browser-dependent | procedural | target-browser probe task required |
+| Browser Feature Detection | Utilities | css-media-queries | browser-dependent | implemented-core | `feature_detection.py` analyzes versioned observations from `feature-detection-runtime` |
 | Image Optimizer | Utilities | web-performance-optimization | codec-dependent | procedural | pinned codec task required |
 | Favicon Generator | Utilities | web-performance-optimization | codec-dependent | procedural | icon rendering task required |
 | Aspect Ratio Calculator | Utilities | css-functions | deterministic | implemented-full | `aspect_ratio_calculator.py` (exact integral reduction, normalized decimals) |
 
 `implemented-full` and `implemented-core` are executable-evidence claims. `serializer-only`, if used later, must satisfy the same executable contract and also name its limitations. `procedural` and `serializer-only` entries carry a structured `coverage_gap` with missing behaviors, an owner-bound restoration artifact, restoration tests, and observable acceptance outcomes. The validator checks schema and path ownership; it does not infer semantic quality from prose.
+
+Browser evidence is declared separately from canonical CLI evidence. Ten local
+fixtures run across Chromium, Firefox, and WebKit and emit
+`css-tokenography-browser-lab/v1`. A browser observation can reveal runtime
+divergence or support limits, but it cannot replace the owner-bound CLI,
+upgrade a procedural tool, or override a deterministic failure.

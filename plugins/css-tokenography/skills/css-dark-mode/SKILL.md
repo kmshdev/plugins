@@ -15,3 +15,8 @@ description: Implement or audit light/dark color schemes, color-scheme, prefers-
 6. Validate every state, illustration, chart, focus ring, scrollbar, and forced-colors behavior in both schemes.
 
 Use `light-dark()` when the support boundary and token architecture make it simpler; otherwise use scoped custom-property overrides. Return token changes, preference precedence, persistence behavior, first-paint behavior, and contrast results. Topic source: https://design.dev/guides/dark-mode-css/.
+
+For an approved end-to-end theme-toggle evaluation, use the optional Passmark
+flow described in
+[the browser laboratory reference](../../references/browser-laboratory.md)
+only after deterministic token and contrast checks pass.

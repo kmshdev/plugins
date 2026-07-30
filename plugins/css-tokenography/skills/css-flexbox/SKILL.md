@@ -29,4 +29,8 @@ Defaults apply only when a control key is absent; explicit JSON `null` is invali
 
 The report returns canonical container declarations, logical main/cross axes, source order, order-modified source order, and accessibility and fidelity limits. Reversed directions do not rewrite source order. The model does not predict wrapping, free-space distribution, or item sizes without container and item dimensions, and logical axes still depend on the document's writing mode and direction for physical orientation.
 
+When wrapping or box geometry matters, run `flexbox-runtime` through
+[the optional browser laboratory](../../references/browser-laboratory.md).
+Keep DOM order and browser layout observations separate in the review.
+
 Topic source: https://design.dev/guides/flexbox/.

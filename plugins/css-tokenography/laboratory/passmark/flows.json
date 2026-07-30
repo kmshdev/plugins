@@ -1,0 +1,99 @@
+{
+  "protocol": "css-tokenography-passmark-flows/v1",
+  "flows": [
+    {
+      "id": "named-grid-creation",
+      "fixture": "grid",
+      "path": "/fixtures/grid-runtime.html",
+      "userFlow": "Create a named CSS Grid area and place its child in that area.",
+      "steps": [
+        { "description": "Open the named-grid fixture." },
+        { "description": "Confirm the child is placed in the declared named grid area." }
+      ],
+      "assertions": [
+        { "assertion": "The displayed placement identifies the named grid area and the grid has connected cells." }
+      ]
+    },
+    {
+      "id": "disconnected-grid-rejection",
+      "fixture": "grid-disconnected",
+      "path": "/fixtures/grid-disconnected.html",
+      "userFlow": "Reject a disconnected CSS Grid named area.",
+      "steps": [
+        { "description": "Open the disconnected-grid fixture." },
+        { "description": "Inspect the validation result for the disconnected named area." }
+      ],
+      "assertions": [
+        { "assertion": "The disconnected area is rejected and no valid placement is claimed." }
+      ]
+    },
+    {
+      "id": "subgrid-placement",
+      "fixture": "subgrid",
+      "path": "/fixtures/subgrid-runtime.html",
+      "userFlow": "Place an item against inherited subgrid tracks.",
+      "steps": [
+        { "description": "Open the subgrid fixture." },
+        { "description": "Inspect the child placement relative to inherited tracks." }
+      ],
+      "assertions": [
+        { "assertion": "The child placement uses the parent track geometry when the engine supports subgrid." }
+      ]
+    },
+    {
+      "id": "responsive-flexbox",
+      "fixture": "flexbox",
+      "path": "/fixtures/flexbox-runtime.html",
+      "userFlow": "Verify responsive Flexbox wrapping.",
+      "steps": [
+        { "description": "Open the responsive Flexbox fixture." },
+        { "description": "Resize the viewport to the narrow layout." },
+        { "description": "Inspect the resulting wrapped item positions." }
+      ],
+      "assertions": [
+        { "assertion": "Items wrap at the narrow viewport without overlapping or disappearing." }
+      ]
+    },
+    {
+      "id": "transform-plus-transition",
+      "fixture": "transforms",
+      "path": "/fixtures/transform-transition.html",
+      "userFlow": "Verify a transformed element transitions to its final state.",
+      "steps": [
+        { "description": "Open the transform and transition fixture." },
+        { "description": "Trigger the documented transition." },
+        { "description": "Wait for the final transform state." }
+      ],
+      "assertions": [
+        { "assertion": "The element reaches the expected final transform and reports the configured transition." }
+      ]
+    },
+    {
+      "id": "dark-mode-variables",
+      "fixture": "dark-mode-variables",
+      "path": "/fixtures/dark-mode-variables.html",
+      "userFlow": "Verify dark-mode CSS custom-property resolution.",
+      "steps": [
+        { "description": "Open the dark-mode variable fixture." },
+        { "description": "Enable the dark color-scheme preference." },
+        { "description": "Inspect the resolved custom-property-backed colors." }
+      ],
+      "assertions": [
+        { "assertion": "The dark color-scheme uses the declared dark custom-property values." }
+      ]
+    },
+    {
+      "id": "selector-matching",
+      "fixture": "selectors",
+      "path": "/fixtures/selector-matching-runtime.html",
+      "userFlow": "Verify Selectors Level 4 matching results.",
+      "steps": [
+        { "description": "Open the selector matching fixture." },
+        { "description": "Inspect the documented matching and non-matching elements." }
+      ],
+      "assertions": [
+        { "assertion": "The fixture reports the expected matching elements and excludes the documented non-matches." }
+      ]
+    }
+  ]
+}

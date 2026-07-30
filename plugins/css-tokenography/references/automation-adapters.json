@@ -2,19 +2,66 @@
   {
     "id": "lightningcss",
     "role": "typed-css-parser-oracle",
+    "kind": "executable",
     "required": false,
     "command": ["lightningcss", "--version"],
     "license": "MPL-2.0",
+    "license_record": "references/licenses/lightningcss.md",
     "source": "https://github.com/parcel-bundler/lightningcss",
-    "adoption": "optional-dev-adapter"
+    "adoption": "optional-dev-adapter",
+    "activation": "explicit-only",
+    "network": "none",
+    "credentials": []
+  },
+  {
+    "id": "playwright",
+    "role": "deterministic-browser-conformance",
+    "kind": "node-package",
+    "required": false,
+    "package": "@playwright/test",
+    "version": "1.62.0",
+    "workspace": "laboratory/browser",
+    "license": "Apache-2.0",
+    "license_record": "references/licenses/playwright.md",
+    "source": "https://github.com/microsoft/playwright",
+    "adoption": "optional-dev-adapter",
+    "activation": "explicit-only",
+    "network": "none",
+    "credentials": []
   },
   {
     "id": "passmark",
     "role": "agentic-browser-regression",
+    "kind": "node-package",
     "required": false,
-    "command": ["passmark", "--version"],
+    "package": "passmark",
+    "version": "1.0.16",
+    "workspace": "laboratory/passmark",
     "license": "FSL-1.1-ALv2",
+    "license_record": "references/licenses/passmark.md",
     "source": "https://github.com/bug0inc/passmark",
-    "adoption": "blocked-pending-license-review"
+    "adoption": "approved-internal-use-only",
+    "activation": "manual-only",
+    "network": "required-live",
+    "credentials": [
+      "ANTHROPIC_API_KEY",
+      "GOOGLE_GENERATIVE_AI_API_KEY"
+    ]
+  },
+  {
+    "id": "stagehand",
+    "role": "experimental-flow-discovery",
+    "kind": "node-package",
+    "required": false,
+    "package": "@browserbasehq/stagehand",
+    "version": "3.7.1",
+    "workspace": "laboratory/stagehand",
+    "license": "MIT",
+    "license_record": "references/licenses/stagehand.md",
+    "source": "https://github.com/browserbase/stagehand",
+    "adoption": "experimental-discovery-only",
+    "activation": "manual-only",
+    "network": "optional",
+    "credentials": []
   }
 ]

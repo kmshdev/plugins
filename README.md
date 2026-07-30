@@ -27,13 +27,13 @@ The plugin source is under [`plugins/docdev`](./plugins/docdev). The marketplace
 
 ### css-tokenography
 
-`css-tokenography` provides one implicitly invokable orchestration router plus 17 explicitly invokable CSS, typography, and web-performance specialists for Codex. The suite is backed by standards research, source coverage records, and dependency-free developer-tool CLIs.
+`css-tokenography` provides one implicitly invokable orchestration router plus 17 explicitly invokable CSS, typography, and web-performance specialists for Codex. The suite is backed by standards research, source coverage records, dependency-free developer-tool CLIs, and an optional browser laboratory.
 
 Broad CSS requests route through `$css-tokenography`; explicit `$css-grid`, `$web-typography`, and other specialist invocations remain available. Every specialist disables implicit invocation so broad prompts have one deterministic entry point.
 
-Its deterministic tooling includes grid-area mapping, subgrid modeling, performance-budget analysis, WCAG contrast checks, OKLCH conversion, CSS specificity, fluid `clamp()` generation, transform composition, and cubic Bézier validation. Browser-, raster-, or codec-dependent tools have explicit procedural workflows instead of hidden omissions.
+Its deterministic tooling includes grid-area mapping, subgrid modeling, performance-budget analysis, WCAG contrast checks, OKLCH conversion, CSS specificity, fluid `clamp()` generation, transform composition, and cubic Bézier validation. The optional laboratory adds Chromium, Firefox, and WebKit runtime probes for ten browser-dependent fixture families. Passmark is an internal-use, opt-in workflow evaluator above the deterministic layer; Stagehand remains an experimental flow-discovery boundary.
 
-The plugin source is under [`plugins/css-tokenography`](./plugins/css-tokenography). Its guide, tool, and source-skill inventories are under [`plugins/css-tokenography/references`](./plugins/css-tokenography/references). The current semantic audit and next-phase implementation plan are [`standards-audit-2026-07-19.md`](./plugins/css-tokenography/references/standards-audit-2026-07-19.md) and [`standards-hardening-execplan.md`](./plugins/css-tokenography/references/standards-hardening-execplan.md).
+The plugin source is under [`plugins/css-tokenography`](./plugins/css-tokenography). Its guide, tool, source-skill, and browser-fixture inventories are under [`plugins/css-tokenography/references`](./plugins/css-tokenography/references). The semantic audit and browser-laboratory plan are [`standards-audit-2026-07-19.md`](./plugins/css-tokenography/references/standards-audit-2026-07-19.md) and [`browser-laboratory-execplan.md`](./plugins/css-tokenography/references/browser-laboratory-execplan.md).
 
 ## Validate locally
 
@@ -45,11 +45,22 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py plugins/
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py plugins/docdev/skills/docdev-site
 python3 ~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/css-tokenography
 python3 plugins/css-tokenography/scripts/validate_coverage.py --plugin plugins/css-tokenography
+python3 plugins/css-tokenography/scripts/validate_adapters.py --plugin plugins/css-tokenography --format json
 python3 plugins/css-tokenography/skills/css-tokenography/scripts/validate_router.py --plugin plugins/css-tokenography
 python3 -m unittest discover -s plugins/css-tokenography/tests -v
 ```
 
 The validators are bundled with Codex. The skill validator requires PyYAML.
+The optional browser laboratory is installed and run separately:
+
+```sh
+npm --prefix plugins/css-tokenography/laboratory/browser ci
+npx --prefix plugins/css-tokenography/laboratory/browser playwright install chromium firefox webkit
+python3 plugins/css-tokenography/scripts/run_browser_lab.py --engines chromium,firefox,webkit --format json
+```
+
+No plugin command implicitly installs Node packages, browsers, Redis, or model
+provider dependencies.
 
 ## License
 

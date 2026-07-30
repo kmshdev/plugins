@@ -10,5 +10,10 @@ node_modules/
 .astro/
 dist/
 .worktrees/
+plugins/css-tokenography/laboratory/**/.cache/
+plugins/css-tokenography/laboratory/**/artifacts/
+plugins/css-tokenography/laboratory/**/playwright-report/
+plugins/css-tokenography/laboratory/**/recordings/
+plugins/css-tokenography/laboratory/**/test-results/
 
 *.log

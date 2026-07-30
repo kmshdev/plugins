@@ -14,4 +14,14 @@ description: Design or audit CSS media queries for viewport/layout breakpoints, 
 5. Use print rules for printable information architecture, not a screenshot of the screen layout.
 6. Test zoom, orientation, split view, dynamic viewport units, and real target devices.
 
-Browser feature detection is intentionally procedural: use `@supports`, `CSS.supports()`, and target-browser tests rather than a static user-agent table. Return each query's observed trigger, fallback, overlap analysis, and accessibility effect. Primary reference: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries and topic source https://design.dev/guides/media-queries/.
+For collected runtime facts, run
+`python3 scripts/feature_detection.py --input observations.json --format json`.
+The analyzer accepts named engines and boolean feature observations, reports
+all/partial/none support, and never consults a user-agent table. Collect the
+facts with `feature-detection-runtime` in
+[the optional browser laboratory](../../references/browser-laboratory.md).
+
+Return each query's observed trigger, fallback, overlap analysis, and
+accessibility effect. Primary reference:
+https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries and topic
+source https://design.dev/guides/media-queries/.

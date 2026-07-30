@@ -94,6 +94,7 @@ class CoverageContractTests(unittest.TestCase):
                 "https://design.dev/tools/px-to-rem-converter/",
                 "https://design.dev/tools/specificity-calculator/",
                 "https://design.dev/tools/nth-child-selector/",
+                "https://design.dev/tools/feature-detection/",
                 "https://design.dev/tools/aspect-ratio-calculator/",
             ],
         )

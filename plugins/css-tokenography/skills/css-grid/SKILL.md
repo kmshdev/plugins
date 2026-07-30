@@ -27,3 +27,8 @@ Run `python3 scripts/subgrid_visualizer.py --input subgrid.json --format json`. 
 Run `python3 scripts/z_index_visualizer.py --input elements.json --format json`. Supply a DOM-like tree as explicit element IDs, parent IDs, unique document-order integers, computed-style subsets, and explicit layout, top-layer, and retained-animation facts. The model reports context triggers, nested atomic contexts, local negative/auto-zero/positive/top-layer paint phases, and separate absolute/fixed containing blocks.
 
 The CLI accepts only pre-collected facts. It does not parse HTML or stylesheets and cannot replace browser collection or visual verification. Primary references: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout and https://design.dev/guides/css-grid/.
+
+For rendered placement, inherited subgrid tracks, or hit-testing evidence, run
+`grid-runtime`, `subgrid-runtime`, or `stacking-hit-test-runtime` through
+[the optional browser laboratory](../../references/browser-laboratory.md).
+Compare collected boxes and hit-test order before inspecting screenshots.

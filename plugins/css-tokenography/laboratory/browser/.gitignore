@@ -1,0 +1,9 @@
+# Browsers are installed explicitly by the maintainer, never by this project.
+node_modules/
+
+# Disposable runtime and Playwright output. Reviewed snapshots stay tracked.
+artifacts/
+test-results/
+playwright-report/
+blob-report/
+.cache/

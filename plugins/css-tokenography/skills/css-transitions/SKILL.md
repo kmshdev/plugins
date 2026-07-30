@@ -21,3 +21,8 @@ Run `python3 scripts/cubic_bezier_studio.py --format json` with `x1`, `y1`, `x2`
 ## Review output
 
 Return the state pair, property list, timing/easing rationale, interruption behavior, reduced-motion behavior, and any layout/paint cost. Primary references: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transitions and https://design.dev/guides/css-transitions/.
+
+Use the optional transform-plus-transition Passmark flow from
+[the browser laboratory reference](../../references/browser-laboratory.md)
+only as workflow evidence. Property selection, reduced-motion behavior, and
+computed start/end states remain deterministic review requirements.
