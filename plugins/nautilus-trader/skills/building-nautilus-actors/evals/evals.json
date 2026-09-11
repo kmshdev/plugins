@@ -1,0 +1,40 @@
+{
+  "skill_name": "building-nautilus-actors",
+  "evals": [
+    {
+      "id": "actor-code",
+      "prompt": "For NautilusTrader Rust 0.63.0, write a minimal order-free actor receiving quotes and explain its construction and native registration. Include the macro, core accessor and callback signature. Do not connect any provider.",
+      "expected_output": "A native DataActor skeleton using the actor macro/core and fallible handler, with construction separated from runtime registration and no order submission.",
+      "assertions": [
+        "Uses nautilus_actor! with DataActorCore and implements the appropriate quote handler returning anyhow::Result<()>.",
+        "Leaves clock, Cache, component registration and lifecycle to the native engine or node.",
+        "Does not make the actor submit orders or start provider connections."
+      ],
+      "expected_skill": "building-nautilus-actors",
+      "files": []
+    },
+    {
+      "id": "inline-dispatch",
+      "prompt": "My native Nautilus Rust actor publishes a custom signal while holding a mutable state borrow; another subscriber synchronously calls back into the same actor. Also on_data returns an error but the publisher keeps running. Diagnose both behaviors and suggest the smallest safe design.",
+      "expected_output": "Explain inline owner-thread dispatch, the alias/reentrancy hazard and logged callback errors; remove recursive dispatch and release borrows without creating a second runtime.",
+      "assertions": [
+        "Identifies synchronous publication/reentrancy and avoids borrows across dispatch or self/cyclic mutable callbacks.",
+        "States that a logged handler error does not automatically fault the actor or propagate to the publisher.",
+        "Keeps owner-thread native bus/clock ownership rather than suggesting Send/Sync casts or application unsafe."
+      ],
+      "expected_skill": "building-nautilus-actors",
+      "files": []
+    },
+    {
+      "id": "negative-order-owner",
+      "prompt": "Should my Nautilus Rust market-data actor own bracket orders, capital reservations and protective exits? Give the architectural ownership decision, not a code implementation.",
+      "expected_output": "Route the order/risk job to Strategy, leaving the actor order-free; do not turn actor authoring into execution implementation.",
+      "assertions": [
+        "Assigns orders and strategy-specific risk/reservations to Strategy, not DataActor.",
+        "Leaves observation/transformation with the actor and native execution/risk engines in place."
+      ],
+      "expected_skill": null,
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "run_label": "configured-fx",
+  "venue": "FX_SIM",
+  "instrument": {
+    "kind": "fx",
+    "instrument_id": "AUD/USD.FX_SIM",
+    "raw_symbol": "AUD/USD",
+    "base_currency": "AUD",
+    "quote_currency": "USD",
+    "price_precision": 5,
+    "size_precision": 0,
+    "price_increment": "0.00001",
+    "size_increment": "1000",
+    "bid": "0.65000",
+    "ask": "0.65020",
+    "quote_quantity": "100000"
+  },
+  "entry": {
+    "strategy_id": "ONE-SHOT-FX",
+    "side": "buy",
+    "quantity": "2000"
+  }
+}

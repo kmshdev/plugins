@@ -1,0 +1,40 @@
+{
+  "skill_name": "integrating-nautilus-data",
+  "evals": [
+    {
+      "id": "databento-node-bars",
+      "prompt": "For Nautilus Rust 0.63.0 I need live five-minute Databento bars in an actor through a factory-backed node. Can I request ES.c.0 external bars because the direct client understands continuous symbology? Give the supported data path without making a connection.",
+      "expected_output": "Use qualified dated native identity and DataEngine internal aggregation over supported input; qualify node symbology and external bar limitations.",
+      "assertions": [
+        "Distinguishes direct-client symbology inference from factory-backed node subscriptions that omit stype_in.",
+        "Does not promise Databento node external-live-bar support.",
+        "Uses native INTERNAL aggregation over supported trades or quotes with correct instrument metadata; does not add an application bar builder."
+      ],
+      "expected_skill": "integrating-nautilus-data",
+      "files": []
+    },
+    {
+      "id": "provider-timestamps",
+      "prompt": "Our Nautilus Rust data merger treats every ts_init as transport arrival. It also maps a Databento continuous future straight to an IB order instrument and treats an empty historical response as no market activity. Review the data assumptions only.",
+      "expected_output": "Identify source-specific timestamps, explicit dated IB qualification and empty-response ambiguity.",
+      "assertions": [
+        "IB bars can set both timestamps to computed close, so ts_init is not universally receipt time.",
+        "Requires explicit dated signal-to-execution mapping including contract qualification; Databento identity is not IB conId metadata.",
+        "Empty historical response may represent a logged request error and does not establish complete empty coverage."
+      ],
+      "expected_skill": "integrating-nautilus-data",
+      "files": []
+    },
+    {
+      "id": "negative-order-lifecycle",
+      "prompt": "My data is already normalized. I need a Nautilus Strategy to handle partial fills, cancellation races and bracket capital reservations. Which workflow owns it?",
+      "expected_output": "Choose building-nautilus-strategies and avoid redoing ingestion.",
+      "assertions": [
+        "Assigns order lifecycle and capital reservations to Strategy authoring.",
+        "Does not substitute a data actor or provider ingestion adapter as the trading authority."
+      ],
+      "expected_skill": null,
+      "files": []
+    }
+  ]
+}

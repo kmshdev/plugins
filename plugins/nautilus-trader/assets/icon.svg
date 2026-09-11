@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
+  <title id="title">NautilusTrader Rust plugin</title><desc id="desc">A friendly coral chambered nautilus shell.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F4EEFF"/><stop offset="1" stop-color="#D8F6F2"/></linearGradient><radialGradient id="shell" cx="34%" cy="28%" r="76%"><stop stop-color="#FFD8C8"/><stop offset=".58" stop-color="#FF977D"/><stop offset="1" stop-color="#E66172"/></radialGradient></defs>
+  <rect width="400" height="400" rx="92" fill="url(#bg)"/>
+  <circle cx="200" cy="202" r="146" fill="#BDE9E5" opacity=".55"/>
+  <path d="M300 194c0 70-54 119-119 119-55 0-100-39-100-91 0-47 37-83 81-83 39 0 68 28 68 63 0 29-23 50-51 50-23 0-40-17-40-38 0-17 13-30 29-30 12 0 22 9 22 20" fill="none" stroke="url(#shell)" stroke-width="40" stroke-linecap="round"/>
+  <path d="M291 159c-20-38-57-59-98-55M255 125c-24 9-40 28-46 52M300 194c-15-19-38-30-63-29M277 265c-11-23-31-37-55-41M198 292c7-25 2-47-12-64M116 247c24-4 43-17 55-36M104 173c24 9 45 7 63-7" fill="none" stroke="#B35C83" stroke-width="9" stroke-linecap="round" opacity=".75"/>
+  <circle cx="159" cy="174" r="28" fill="#FFF9F2"/><circle cx="225" cy="174" r="28" fill="#FFF9F2"/><circle cx="165" cy="180" r="10" fill="#263B55"/><circle cx="231" cy="180" r="10" fill="#263B55"/><circle cx="168" cy="176" r="3" fill="white"/><circle cx="234" cy="176" r="3" fill="white"/>
+  <path d="M169 220c17 14 42 14 59 0" fill="none" stroke="#263B55" stroke-width="8" stroke-linecap="round"/>
+  <path d="M102 106l10 8m-1-19 1 13m-21-2 12 4" stroke="#8F76C7" stroke-width="7" stroke-linecap="round"/>
+</svg>

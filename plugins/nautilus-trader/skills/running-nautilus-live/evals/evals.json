@@ -1,0 +1,41 @@
+{
+  "skill_name": "running-nautilus-live",
+  "evals": [
+    {
+      "id": "construct-only",
+      "prompt": "Sketch construction-only Nautilus Rust 0.63.0 wiring for Databento data plus IB execution, with explicit typed configs supplied by the caller. Keep reconciliation enabled, risk bypass false, and do not start a connection. State what successful construction proves.",
+      "expected_output": "Native LiveNode factory/config routing with distinct data/execution routes, ending at build and stating qualification limits.",
+      "assertions": [
+        "Uses native DatabentoDataClientConfig/Factory and InteractiveBrokersExecutionClientConfig/Factory with LiveNode.",
+        "Allows independent data and execution default routes, enables reconciliation and keeps risk bypass false.",
+        "Does not call start/run or discover credentials; construction does not prove account mode, entitlement or protective-order acceptance."
+      ],
+      "expected_skill": "running-nautilus-live",
+      "files": []
+    },
+    {
+      "id": "missing-report",
+      "prompt": "My Nautilus live node started, Databento says connected, IB is on port 4002 and reconciliation is enabled. Mass status was missing but startup continued. May I admit new exposure? Explain the relevant Rust adapter evidence.",
+      "expected_output": "Withhold readiness claims until actual account, instruments, fresh data and sufficiently complete reports are demonstrated.",
+      "assertions": [
+        "Missing mass status can warn and continue; enabled reconciliation is not proof of external state completeness.",
+        "Databento connections are lazy/local flags and need correct definitions plus fresh expected input.",
+        "Port 4002 alone does not establish a paper account or authorization.",
+        "Distinguishes IB report existence from completeness, including open-order/synthetic-position and execution/commission limitations."
+      ],
+      "expected_skill": "running-nautilus-live",
+      "files": []
+    },
+    {
+      "id": "negative-observer",
+      "prompt": "I only need an order-free Nautilus actor that computes a rolling indicator and emits custom data. No node, deployment or reconnection work. Which workflow should I use?",
+      "expected_output": "Choose building-nautilus-actors without expanding into live operations.",
+      "assertions": [
+        "Routes to actor authoring and keeps the component order-free.",
+        "Does not introduce provider connections, secret discovery or infrastructure provisioning."
+      ],
+      "expected_skill": null,
+      "files": []
+    }
+  ]
+}

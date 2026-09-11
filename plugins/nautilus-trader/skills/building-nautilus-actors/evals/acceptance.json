@@ -1,0 +1,17 @@
+{
+  "skill_name": "building-nautilus-actors",
+  "evals": [
+    {
+      "id": "indicator-history-timer",
+      "prompt": "Review this Nautilus Rust 0.63.0 design: register an EMA, manually update it in on_bar, assume request_bars in a basic backtest warms it, and call TestClock.advance_time while holding the clock borrow through callbacks. Identify the corrections without adding a new framework.",
+      "expected_output": "Correct double indicator ownership, historical no-op assumptions and timer dispatch borrowing.",
+      "assertions": [
+        "Registered indicators update before user callbacks; remove the duplicate manual update or choose a wholly manual owner.",
+        "Basic backtest historical bar requests are no-ops; provide explicit prior replay/warm-up input.",
+        "Advance the TestClock and match returned events to handlers, then release the clock borrow before executing handlers."
+      ],
+      "expected_skill": "building-nautilus-actors",
+      "files": []
+    }
+  ]
+}
