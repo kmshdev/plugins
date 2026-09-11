@@ -1,6 +1,6 @@
 {
   "name": "nautilus-trader",
-  "version": "0.63.0+codex.20260911.1",
+  "version": "0.63.0+codex.20260911.2",
   "description": "Five self-contained Rust workflows for NautilusTrader actors, strategies, data, backtests and native nodes.",
   "author": {
     "name": "kmshdev",

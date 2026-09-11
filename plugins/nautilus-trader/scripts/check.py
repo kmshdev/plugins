@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 SOURCE = re.compile(r"`((?:crates/[^`:\s]+|Cargo\.toml)):(\d[^`]*)`")
 EXCLUDED = {"target", "__pycache__", "results"}
-PLUGIN_VERSION = "0.63.0+codex.20260911.1"
+PLUGIN_VERSION = "0.63.0+codex.20260911.2"
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
 

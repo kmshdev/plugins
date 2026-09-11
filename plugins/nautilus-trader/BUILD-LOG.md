@@ -101,3 +101,28 @@ The official Codex plugin validator passed after metadata correction.
 Independent post-implementation autoreview found no blocking issues in workflow
 boundaries, versioned API guidance, provider scope, metadata or independent
 resource closure. Live Codex discovery remains the next publication check.
+
+## 2026-09-11 — Publication and installed discovery
+
+Implementation checkpoint: commit `49b671e`, published as
+[plugins PR 3](https://github.com/kmshdev/plugins/pull/3).
+The relocated package again passed all 52 regressions and offline closure.
+Independent autoreview found no blocking findings. A nested historical patch's
+blank context and generated trailing blank lines were normalized before commit.
+
+Direct-main publication was rejected by automatic approval review. The user
+then authorized feature branches and PRs. The `kmshdev` Git marketplace now
+tracks `codex/nautilus-rust-workflows` while that PR awaits review. It retains
+its existing other plugins. Return its ref to main after the PR is merged.
+
+Codex installed version `0.63.0+codex.20260911.1` from that published source.
+The app-server config/read and skills/list calls proved user configuration false,
+project configuration true, exactly five enabled namespaced Nautilus skills in
+the requesting repository, zero in a neutral directory, and no loading errors.
+This verifies actual host discovery, not just manifest validation. A new thread
+is the boundary for loading the new skills into an existing conversation.
+
+The final receipt-only cache revision is `.2`; executable guidance and examples
+are unchanged. No provider connection was made. The application review passed
+make check and schema gates; its image gate was blocked by the unavailable local
+Dory daemon. Application details are recorded in that repository's evidence doc.
