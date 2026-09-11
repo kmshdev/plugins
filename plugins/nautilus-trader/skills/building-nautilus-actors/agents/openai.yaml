@@ -1,0 +1,9 @@
+interface:
+  display_name: "Nautilus Actors"
+  short_description: "Build order-free Rust observers and signals."
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.png"
+  brand_color: "#218C89"
+  default_prompt: "Use $building-nautilus-actors to help implement and verify this Nautilus Rust workflow."
+policy:
+  allow_implicit_invocation: true

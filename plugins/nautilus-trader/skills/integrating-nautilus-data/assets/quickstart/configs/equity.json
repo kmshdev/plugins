@@ -1,0 +1,21 @@
+{
+  "run_label": "configured-equity",
+  "venue": "EQUITY_SIM",
+  "instrument": {
+    "kind": "equity",
+    "instrument_id": "AAPL.EQUITY_SIM",
+    "raw_symbol": "AAPL",
+    "currency": "USD",
+    "price_precision": 2,
+    "price_increment": "0.01",
+    "lot_size": "1",
+    "bid": "180.00",
+    "ask": "180.05",
+    "quote_quantity": "100"
+  },
+  "entry": {
+    "strategy_id": "ONE-SHOT-EQUITY",
+    "side": "sell",
+    "quantity": "7"
+  }
+}

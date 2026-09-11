@@ -1,0 +1,31 @@
+{
+  "name": "nautilus-trader",
+  "version": "0.63.0+codex.20260911.1",
+  "description": "Five self-contained Rust workflows for NautilusTrader actors, strategies, data, backtests and native nodes.",
+  "author": {
+    "name": "kmshdev",
+    "url": "https://github.com/kmshdev"
+  },
+  "homepage": "https://github.com/kmshdev/plugins/tree/main/plugins/nautilus-trader",
+  "repository": "https://github.com/kmshdev/plugins",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Nautilus Trader",
+    "shortDescription": "Build and test native Rust trading systems.",
+    "longDescription": "Learn and implement NautilusTrader 0.63 Rust components with five portable skills, executable offline examples, source-qualified recipes, and Databento / Interactive Brokers integration guidance.",
+    "developerName": "kmshdev",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/kmshdev/plugins/tree/main/plugins/nautilus-trader",
+    "defaultPrompt": [
+      "Build a native Rust Nautilus strategy from my rules.",
+      "Run a reproducible offline backtest.",
+      "Compose Databento data and Interactive Brokers execution."
+    ],
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "skill_name": "backtesting-nautilus-strategies",
+  "evals": [
+    {
+      "id": "deterministic-replay",
+      "prompt": "Design a small deterministic offline Nautilus Rust 0.63.0 backtest for an actor signal and Strategy order. Specify native composition, input ordering, timer boundaries and stable outputs to compare. No real provider data or connections.",
+      "expected_output": "Native synthetic engine replay with registered actor/strategy, instrument/venue configuration and canonical economic output comparisons.",
+      "assertions": [
+        "Uses BacktestEngine or BacktestNode rather than an application-owned simulation engine.",
+        "Orders by ts_init with an explicit stable equal-time stream policy and controlled timer boundaries.",
+        "Compares canonical order/fill/position outcomes rather than volatile wall-clock or run identifiers.",
+        "Separates local simulation evidence from live provider or profitability claims."
+      ],
+      "expected_skill": "backtesting-nautilus-strategies",
+      "files": []
+    },
+    {
+      "id": "chunk-memory",
+      "prompt": "A Nautilus Rust BacktestNode uses several data configs and chunk_size=1000. I assume RAM is bounded to 1000 records and can add several run configs to sweep parameters in one node. Review this against 0.63.0.",
+      "expected_output": "Correct one-run and materialization assumptions; use separate runs and measured memory behavior.",
+      "assertions": [
+        "BacktestNode supports exactly one run config in the inspected implementation.",
+        "Multi-data-config replay can materialize data before chunking; chunk_size is not a hard RAM ceiling.",
+        "Equal-time groups may exceed the configured chunk size; preserve causal ordering instead of splitting blindly."
+      ],
+      "expected_skill": "backtesting-nautilus-strategies",
+      "files": []
+    },
+    {
+      "id": "negative-live",
+      "prompt": "I need to restore a Nautilus live node and reconcile IB open orders after Gateway restart, not replay a research backtest. Which workflow owns this?",
+      "expected_output": "Choose running-nautilus-live, explicitly avoiding backtest-as-broker-recovery claims.",
+      "assertions": [
+        "Assigns native restart/reconciliation to the live runtime workflow.",
+        "Does not treat a successful backtest or Cache reconstruction as complete broker reconciliation."
+      ],
+      "expected_skill": null,
+      "files": []
+    }
+  ]
+}

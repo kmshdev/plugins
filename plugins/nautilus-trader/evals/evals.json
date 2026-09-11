@@ -1,0 +1,135 @@
+{
+  "skill_name": "nautilus-trader",
+  "version": "0.63.0",
+  "evals": [
+    {
+      "id": "beginner-offline",
+      "prompt": "I am new to Nautilus Rust. Build a minimal offline strategy example with no Python, external data or live connection. Show that callbacks and one order really occurred.",
+      "references": ["references/getting-started.md", "examples/quickstart/README.md"],
+      "assertions": [
+        "Uses exact 0.63.0 dependencies and an independent Rust package, not host source or fixtures.",
+        "Uses native BacktestEngine with explicit venue/instrument/synthetic data.",
+        "Prevents submission on every quote and observes dispatch plus simulated order/position evidence.",
+        "Does not present this as profitable or production-qualified."
+      ]
+    },
+    {
+      "id": "actor-callback-error",
+      "prompt": "My Rust actor returns Err from on_data but keeps receiving input. Should I assume the engine faulted it? Show the appropriate authoring boundary.",
+      "references": ["references/actors.md"],
+      "assertions": [
+        "Explains that typed data dispatch logs callback errors rather than automatically faulting.",
+        "Uses DataActor facade and nautilus_actor invocation, with explicit fail-closed application state if required.",
+        "Does not put order submission in the actor."
+      ]
+    },
+    {
+      "id": "custom-routing",
+      "prompt": "Two Rust custom-data streams have the same type and metadata but different DataType identifiers. Why does a subscriber receive both? How do I serialize them correctly?",
+      "references": ["references/custom-data.md"],
+      "assertions": [
+        "Identifier is a persistence scope, not a subscription partition; normalized topic metadata must differ.",
+        "Uses CustomData::new(payload, data_type) and on_data(&CustomData).",
+        "Distinguishes local pub/sub from JSON registration and wrapper from payload JSON."
+      ]
+    },
+    {
+      "id": "bracket-protection",
+      "prompt": "Build a 0.63 Rust limit-entry bracket and explain whether manage_contingent_orders=true guarantees proportional live child protection after partial fills.",
+      "references": ["references/strategies.md", "references/execution.md"],
+      "assertions": [
+        "Finishes order().bracket() with call() returning Vec<OrderAny>; submits via submit_order_list.",
+        "Uses entry_price, sl_trigger_price and tp_price; records IDs before submit.",
+        "States entry/stop/target ordering, OUO default and no guarantee of atomic or proportional live protection.",
+        "Identifies the inspected strategy-manager limitation rather than repeating latest-doc promises."
+      ]
+    },
+    {
+      "id": "fill-accounting-stage",
+      "prompt": "Inside on_order_filled my cached position is updated but portfolio net_position looks old. Which should drive immediate exposure reconciliation?",
+      "references": ["references/execution.md", "references/risk.md"],
+      "assertions": [
+        "Explains cached order/position reduction before order-event publication and later position-event portfolio update.",
+        "Uses fresh Cache for immediate exposure and a position-event boundary for post-position accounting.",
+        "Does not maintain a second authoritative position engine."
+      ]
+    },
+    {
+      "id": "cancel-and-retry",
+      "prompt": "A submit returned Err and another order was canceled. Can I release all reservations, retry the first order and ignore later fills on the canceled order?",
+      "references": ["references/execution.md"],
+      "assertions": [
+        "Rejects no-send inference from Err because routing can precede GTD setup failure.",
+        "Preserves uncertainty until native facts reconcile it; cancellation does not prohibit late fills.",
+        "Distinguishes incremental fills, cumulative execution and pending command status."
+      ]
+    },
+    {
+      "id": "tick-grid",
+      "prompt": "My instrument tick is 0.25. Does converting 100.13 with try_make_price_from_decimal and risk bypass=false make the order valid?",
+      "references": ["references/risk.md"],
+      "assertions": [
+        "Distinguishes decimal precision from increment alignment and rejects that assumption.",
+        "Uses explicit rounding policy then normalization; does not rely on RiskEngine to repair the price."
+      ]
+    },
+    {
+      "id": "history-and-indicators",
+      "prompt": "My registered EMA warms up twice, and request_bars in a simple Rust BacktestEngine does not supply history. How should I structure warm-up?",
+      "references": ["references/actors.md", "references/market-data.md"],
+      "assertions": [
+        "Chooses one indicator update owner and notes registration is not subscription.",
+        "Explains built-in historical request no-ops and uses an explicit replay warm-up prefix.",
+        "Preserves readiness, reset and availability-time semantics."
+      ]
+    },
+    {
+      "id": "catalog-memory",
+      "prompt": "I have two large catalog feeds plus custom signals. Does BacktestNode chunk_size=10000 bound memory and accept an arbitrary custom type config?",
+      "references": ["references/market-data.md", "references/backtesting.md"],
+      "assertions": [
+        "Explains multi-config materialization and equal-ts_init chunk expansion.",
+        "States arbitrary custom types are not BacktestDataConfig variants; dynamic custom query materializes Vec<Data>.",
+        "Proposes the direct engine with causally merged inputs and an explicit memory policy, not an invented streaming guarantee."
+      ]
+    },
+    {
+      "id": "live-readiness",
+      "prompt": "The native LiveNode started successfully but the adapter returned no mass-status report. Is the account reconciled, and does enabling streaming record Feather?",
+      "references": ["references/live.md"],
+      "assertions": [
+        "Does not equate successful startup or an absent report with complete broker truth.",
+        "Defines readiness using actual account/order/position coverage and keeps reconciliation enabled.",
+        "States this snapshot rejects LiveNode streaming config and does not connect a live account."
+      ]
+    },
+    {
+      "id": "version-drift",
+      "prompt": "The latest guide says 0.62 and test-support, but my supplied source declares 0.63.0 and stubs. Which source should this skill trust?",
+      "references": ["references/pitfalls.md", "references/sources.md"],
+      "assertions": [
+        "Uses 0.63.0 source-qualified claims and reports the documented discrepancy without silently changing the pin.",
+        "Does not claim a source version label or parent Git SHA proves registry/upstream artifact identity.",
+        "Uses compiler-visible declarations for the target build."
+      ]
+    },
+    {
+      "id": "short-prompt-scope",
+      "prompt": "Fix the Rust on_quote_tick callback name in my existing actor. No other changes.",
+      "references": ["references/pitfalls.md"],
+      "assertions": [
+        "Changes to on_quote and a borrowed QuoteTick as appropriate without loading every reference or redesigning the strategy.",
+        "Does not add a plugin, live connection, new order owner or mandatory broad workflow."
+      ]
+    },
+    {
+      "id": "negative-python",
+      "prompt": "Implement a Python-only Nautilus strategy using Python callbacks, not Rust.",
+      "references": [],
+      "assertions": [
+        "Recognizes the request is outside this Rust skill rather than mixing Python and Rust APIs.",
+        "Does not impose this bundle's Rust implementation on the requested Python task."
+      ]
+    }
+  ]
+}

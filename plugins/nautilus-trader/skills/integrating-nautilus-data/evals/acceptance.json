@@ -1,0 +1,17 @@
+{
+  "skill_name": "integrating-nautilus-data",
+  "evals": [
+    {
+      "id": "custom-catalog",
+      "prompt": "For an original Rust custom payload in Nautilus 0.63.0, explain CustomData construction, JSON versus Arrow registration, and how to preserve per-feed identity when writing a catalog. Does a different DataType.identifier isolate the message topic?",
+      "expected_output": "Distinguish payload/envelope, serialization registries and persistence identity from topic identity.",
+      "assertions": [
+        "CustomData::new takes payload Arc first and DataType second; wrapper JSON is not payload-only JSON.",
+        "JSON ensure registration returns Result, Arrow ensure registration returns unit, and the process-global type name must remain schema compatible.",
+        "DataType.identifier is persistence scope, not topic isolation; preserve schema/type/feed identity and avoid relying on stringified metadata collisions."
+      ],
+      "expected_skill": "integrating-nautilus-data",
+      "files": []
+    }
+  ]
+}

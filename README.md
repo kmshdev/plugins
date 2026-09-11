@@ -8,6 +8,7 @@ Public Codex plugins maintained by [kmshdev](https://github.com/kmshdev).
 codex plugin marketplace add kmshdev/plugins --ref main
 codex plugin add docdev@kmshdev
 codex plugin add css-tokenography@kmshdev
+codex plugin add nautilus-trader@kmshdev
 ```
 
 Restart Codex if the newly installed plugin does not appear immediately.
@@ -34,6 +35,18 @@ Broad CSS requests route through `$css-tokenography`; explicit `$css-grid`, `$we
 Its deterministic tooling includes grid-area mapping, subgrid modeling, performance-budget analysis, WCAG contrast checks, OKLCH conversion, CSS specificity, fluid `clamp()` generation, transform composition, and cubic Bézier validation. Browser-, raster-, or codec-dependent tools have explicit procedural workflows instead of hidden omissions.
 
 The plugin source is under [`plugins/css-tokenography`](./plugins/css-tokenography). Its guide, tool, and source-skill inventories are under [`plugins/css-tokenography/references`](./plugins/css-tokenography/references). The current semantic audit and next-phase implementation plan are [`standards-audit-2026-07-19.md`](./plugins/css-tokenography/references/standards-audit-2026-07-19.md) and [`standards-hardening-execplan.md`](./plugins/css-tokenography/references/standards-hardening-execplan.md).
+
+### nautilus-trader
+
+`nautilus-trader` provides five independently usable skills for NautilusTrader
+0.63.0 Rust: actors, strategies, data integration, backtesting and live nodes.
+It includes configuration-driven FX/equity examples, construction-only Databento
+plus Interactive Brokers wiring, advanced order/composition guidance, replay,
+Rust test/simulation/benchmark recipes and original icons.
+
+See [the plugin guide](plugins/nautilus-trader/README.md) for installation,
+repository-only activation and runnable examples, and
+[the build log](plugins/nautilus-trader/BUILD-LOG.md) for verified scope.
 
 ## Validate locally
 

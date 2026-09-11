@@ -1,0 +1,22 @@
+diff --git a/skillevaluator/provider_config.py b/skillevaluator/provider_config.py
+--- a/skillevaluator/provider_config.py
++++ b/skillevaluator/provider_config.py
+@@ -65,5 +65,5 @@
+ def _supports_custom_temperature(model: str) -> bool:
+     """Return whether ``model`` accepts a non-default temperature value."""
+     leaf = _model_leaf(model)
+-    if leaf.startswith("gpt-5") or leaf in _NO_CUSTOM_TEMPERATURE_MODEL_IDS:
++    if leaf.startswith(("gpt-5", "gpt-6")) or leaf in _NO_CUSTOM_TEMPERATURE_MODEL_IDS:
+         return False
+diff --git a/skillevaluator/tier3/harbor/templates/eval.py b/skillevaluator/tier3/harbor/templates/eval.py
+--- a/skillevaluator/tier3/harbor/templates/eval.py
++++ b/skillevaluator/tier3/harbor/templates/eval.py
+@@ -1163,7 +1163,7 @@
+ def _supports_custom_temperature(model):
+     # Keep in sync with skillevaluator.tier3.eval_core.llm_judge (drift test).
+     leaf = _model_leaf(model)
+-    if leaf.startswith("gpt-5") or leaf == "claude-mythos-preview":
++    if leaf.startswith(("gpt-5", "gpt-6")) or leaf == "claude-mythos-preview":
+         return False
+     match = re.fullmatch(
+         r"claude-[a-z][a-z-]*-(?P<major>\d+)"

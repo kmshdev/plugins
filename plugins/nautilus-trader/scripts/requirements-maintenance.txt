@@ -1,0 +1,2 @@
+# Used only by scripts/run_skill_eval.py and its maintenance regressions.
+PyYAML==6.0.3

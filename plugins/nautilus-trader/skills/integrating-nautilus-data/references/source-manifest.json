@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "framework_version": "0.63.0",
+  "rust_version": "1.98.0",
+  "edition": "2024",
+  "research_date": "2026-09-09",
+  "source_identity": "unversioned-source-snapshot",
+  "upstream_revision": null,
+  "scope": "Hashes identify cited files, not an entire release or registry artifact.",
+  "files": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "3153b6abec1fa7acd241f768ea6a674406637692401aeabbe8edf4dba690d2de"
+    },
+    {
+      "path": "crates/adapters/databento/src/data.rs",
+      "sha256": "71dd3b1fc09f75daeaee4966cfefe365ebee8df3d70b6f6afaa91be5cc54f923"
+    },
+    {
+      "path": "crates/adapters/databento/src/decode/market_data.rs",
+      "sha256": "880e1e302a2e8d745d274a2f51fbfb9257628bd9df4e69f88c4715e2efde4bd4"
+    },
+    {
+      "path": "crates/adapters/databento/src/factories.rs",
+      "sha256": "3c201855fe74d7d81de2756bd456ada5ff25d37b1cc0a053397ff9404cf845cf"
+    },
+    {
+      "path": "crates/adapters/databento/src/historical.rs",
+      "sha256": "0ef3a738f3a2fb017add4d7e02f13b93f58ed23d3fde62337f048da488c22949"
+    },
+    {
+      "path": "crates/adapters/databento/src/live.rs",
+      "sha256": "cb3c4a7f130cd1f34564bbfb9aa479c13622883676fdb475066c195f187a7802"
+    },
+    {
+      "path": "crates/adapters/databento/src/loader.rs",
+      "sha256": "9bd489f89bca732775ac0804ec30eb224d3839b136fedc92b5c88a708106411a"
+    },
+    {
+      "path": "crates/adapters/databento/src/symbology.rs",
+      "sha256": "78b83e769da896d3b3f2ab6ebe911d822d258090659d31c851466a042b85d73e"
+    },
+    {
+      "path": "crates/adapters/interactive_brokers/src/config.rs",
+      "sha256": "262aa42098af97f81cd22438f744fde82be7d18935d3b811d96643099409155f"
+    },
+    {
+      "path": "crates/adapters/interactive_brokers/src/data/convert.rs",
+      "sha256": "2f87c9e51cb1673c2ed0fb02f9a46af144ffc1b75ff705fc01f082d856762db3"
+    },
+    {
+      "path": "crates/adapters/interactive_brokers/src/data/core.rs",
+      "sha256": "a9be75c068d8ecaf54e24d12fd62b0184a46867602360b1bf635f57f4d614eb4"
+    },
+    {
+      "path": "crates/adapters/interactive_brokers/src/data/core_streams.rs",
+      "sha256": "3ebe48a8366b0ee901d5ca1b5eb9d4703f8017eb9900e85f518d0116dc387abb"
+    },
+    {
+      "path": "crates/adapters/interactive_brokers/src/historical/client.rs",
+      "sha256": "5de217a21dfbcd55aa2dd38bd6d2220c0238dc631843778d55e277453f8cfda5"
+    },
+    {
+      "path": "crates/adapters/interactive_brokers/src/providers/instruments.rs",
+      "sha256": "d38ef5c85c808cdad36d6e3e624d3083623a62103edb15f2e564c975d5d42eb3"
+    },
+    {
+      "path": "crates/backtest/Cargo.toml",
+      "sha256": "cda9805d199c74f748e67182e4fb2e4c1867153c25715017aeeea17cadda375a"
+    },
+    {
+      "path": "crates/backtest/src/data_client.rs",
+      "sha256": "6f78ba474352771f97fc52954b715828731b3dcffb8c586b10d0d3b5647864c9"
+    },
+    {
+      "path": "crates/backtest/src/data_iterator.rs",
+      "sha256": "0631c3c18ccc2cd1f131f6f14291cee4c8587a96c28a4486257ea7e542030ddb"
+    },
+    {
+      "path": "crates/backtest/src/engine.rs",
+      "sha256": "025cc6ca75290505ff267e19657224c19eadb62aeb1250cac1174b126d91469a"
+    },
+    {
+      "path": "crates/backtest/src/node.rs",
+      "sha256": "aa5e9ab7f8c2ef8f9cb9647a424010f95db68acfdf1e3060317c8468037df229"
+    },
+    {
+      "path": "crates/backtest/src/result.rs",
+      "sha256": "72e6fca0d28942dec35e531a5a226d2a1e670617bc2a22e9d137e8931f7758bb"
+    },
+    {
+      "path": "crates/common/Cargo.toml",
+      "sha256": "8157f28dcbf677f2bdd9ea0d365e46dbf5cca799fc8668d7c7a146da86acb236"
+    },
+    {
+      "path": "crates/common/src/actor/data_actor.rs",
+      "sha256": "677b379c5da1776c8bf82ee98362210660fa5509bc095f74e68cbd424123b6e9"
+    },
+    {
+      "path": "crates/common/src/actor/indicators.rs",
+      "sha256": "5766e09d50a4866e7e150851766c3da01ffccde39e02fec7a26174f3acf2b9e9"
+    },
+    {
+      "path": "crates/common/src/actor/registry.rs",
+      "sha256": "93acc42f8d4b8c0a3c1a455757f9bc4cbd304637e1f9444a257f94ce492b9940"
+    },
+    {
+      "path": "crates/common/src/actor/tests.rs",
+      "sha256": "1892b05f64a24a57b858e51481b92aef0b3ebb00dd985f0ebc39b929fde8cff7"
+    },
+    {
+      "path": "crates/common/src/clients/data.rs",
+      "sha256": "2a1f507bcd05ddce5e32d819f1f00567f681266d03f76cbf08966f4bd3cb2333"
+    },
+    {
+      "path": "crates/common/src/clock.rs",
+      "sha256": "fbe04b510d05cc1b6c80bdb87887adc6314848875aef653ee11fd431a3525c36"
+    },
+    {
+      "path": "crates/common/src/component.rs",
+      "sha256": "cca7d2f701a3fa30242c6ca18655ce9d056537cb28b030efffb9ba2d95616a05"
+    },
+    {
+      "path": "crates/common/src/live/dst.rs",
+      "sha256": "467432576b8796cf6915116c9c1513a2555d1570c5fd9d90a95426d90398c3aa"
+    },
+    {
+      "path": "crates/common/src/msgbus/api.rs",
+      "sha256": "3debe4981ffabb34abc8a12b6f841c6f9246869a8ef184dab69e82f3c775805e"
+    },
+    {
+      "path": "crates/common/src/runner.rs",
+      "sha256": "8c97f8e42092665146c4e0ff976ee9e49a766cf003229b46de8131953000a845"
+    },
+    {
+      "path": "crates/data/src/engine/config.rs",
+      "sha256": "6beb61e94557146947016e49710d74a8ca2150b69e5255e4d5719f413ac183b4"
+    },
+    {
+      "path": "crates/data/src/engine/mod.rs",
+      "sha256": "d2e811793eec2e30d0dfdea51f68fdcbc3b631d5d7ffe42df1602a9daeb5db04"
+    },
+    {
+      "path": "crates/event_store/src/replay.rs",
+      "sha256": "205794794085af2dbf9986552aaabc63ae89c9adf830bf4f9c07356b165d9ad8"
+    },
+    {
+      "path": "crates/event_store/src/replay/catalog.rs",
+      "sha256": "a68223490342e9b8579bfe55f7dd82ab9fcae51e5395d20e0b51a249fcd035a7"
+    },
+    {
+      "path": "crates/execution/Cargo.toml",
+      "sha256": "26751bffef0619e4abbd8636a65345156c55ee3552cd8e3d5ccff78ee3a7bffb"
+    },
+    {
+      "path": "crates/execution/src/reconciliation/proptests.rs",
+      "sha256": "26c1d5876d67de90169e9b8e9955ad7e25bf59cd6b07a05acefd1d81119ae232"
+    },
+    {
+      "path": "crates/indicators/src/average/ema.rs",
+      "sha256": "bb23c6c675132b277ecfcb4e6d4f309fd876b89cd4f81e8802f671074fcfae80"
+    },
+    {
+      "path": "crates/live/Cargo.toml",
+      "sha256": "bed00ae5485c79337e461bcfb42a9d467da601e98b91825ecd5b0d8f570be6bd"
+    },
+    {
+      "path": "crates/live/tests/stress.rs",
+      "sha256": "46c47c9753e6cb6fd33aa2daf2075e84fa8d92d6215078cef87bf2cf478e9faf"
+    },
+    {
+      "path": "crates/model/Cargo.toml",
+      "sha256": "0b757c4ea04ca7c3472b17be8d7d24f6a469e1de702c8d1ab5fa25f3ffa469e0"
+    },
+    {
+      "path": "crates/model/src/data/custom.rs",
+      "sha256": "182ff805eec278f8f8ed5ec46b4f5d03491eea331fef52406ba69e824716bdd0"
+    },
+    {
+      "path": "crates/model/src/data/mod.rs",
+      "sha256": "f34e48e3cca1ee5c5cb248a5cde1b172eff6faa7941fec239b4b0ee5e056ca3d"
+    },
+    {
+      "path": "crates/model/src/data/registry.rs",
+      "sha256": "0cd0d1360f4e165ff7cf7306ae29575a58a5a40ab729e460db7455de533c23e9"
+    },
+    {
+      "path": "crates/model/src/instruments/currency_pair.rs",
+      "sha256": "8d6208b7fb74900a50f3a6324272d526b658790dba2c9553403a1230b71251b4"
+    },
+    {
+      "path": "crates/model/src/instruments/equity.rs",
+      "sha256": "c60eda2e1ff9cf0a9a4605f1cf683ec17d43cccc3d38d990a57457c28f0fc755"
+    },
+    {
+      "path": "crates/model/src/orders/list.rs",
+      "sha256": "491552c05cfbb4b6fc66783c49ef8135319419ea038e8bc0f038f8b41488156c"
+    },
+    {
+      "path": "crates/network/Cargo.toml",
+      "sha256": "8826d23f45c8b2ee781371060a9b4cf8f404ad3d2a53af19069454b568f39037"
+    },
+    {
+      "path": "crates/network/tests/common/turmoil.rs",
+      "sha256": "52ac3ad62ba4f290bce671e61209ec8311b2367ee5296df5e919008a3a163a15"
+    },
+    {
+      "path": "crates/network/tests/turmoil_websocket.rs",
+      "sha256": "340c46c2f028f5144bcd80a304fcbb3007f9a48418885ffdbe4b561521613ec0"
+    },
+    {
+      "path": "crates/persistence/macros/src/custom.rs",
+      "sha256": "458fdf4264346b568f59321e83192a4b64af19c96979af2747db6c19a51d8add"
+    },
+    {
+      "path": "crates/persistence/src/backend/catalog.rs",
+      "sha256": "75cb0a762676e01e608554f48632f54ebbe3e47fadf648335cb44c63e07631a0"
+    },
+    {
+      "path": "crates/persistence/src/backend/feather.rs",
+      "sha256": "719bcb301799ad148b98bac7ab4dbe54aa476777a7606eacab7e7bf08d828bdd"
+    },
+    {
+      "path": "crates/serialization/Cargo.toml",
+      "sha256": "9f5a8a2d9d5790222a5f74ca039507bd745e7c9a72a7df850f71f1bf20d0fa57"
+    },
+    {
+      "path": "crates/serialization/src/arrow/custom.rs",
+      "sha256": "7d03b0a02904558add7ea1b339733f9ac6879578c635d32cea3e3bc661a3dc8f"
+    },
+    {
+      "path": "crates/system/src/event_store.rs",
+      "sha256": "9c65e984a097f74b02e0558ea349326fe80527217aa05260dd6b524514afc459"
+    },
+    {
+      "path": "crates/system/src/kernel.rs",
+      "sha256": "4d5807b5f095069aac9facb28b6369c8e3a9856daa843ed5ba507c3aca7d3495"
+    },
+    {
+      "path": "crates/trading/src/examples/strategies/composite_market_maker/config.rs",
+      "sha256": "ea4fcc5e39c448cf8bd21c7a84943c04d6b32d3d02a17922d4769ce7255e842c"
+    },
+    {
+      "path": "crates/trading/src/examples/strategies/grid_mm/config.rs",
+      "sha256": "0bdec464e7d8a7f10d012721c4a42fbd3fd116b7a03d6f994869985e3f0d874a"
+    }
+  ]
+}

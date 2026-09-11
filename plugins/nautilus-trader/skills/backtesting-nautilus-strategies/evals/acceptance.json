@@ -1,0 +1,17 @@
+{
+  "skill_name": "backtesting-nautilus-strategies",
+  "evals": [
+    {
+      "id": "mixed-custom-history",
+      "prompt": "My Nautilus 0.63.0 replay batches mix data kinds, assuming add_data validates every item. I also plan to configure any custom payload through BacktestDataConfig, and to warm indicators through basic backtest historical requests. What must change?",
+      "expected_output": "Enforce homogeneous validated batches, use the actual custom-data ingestion path and supply warm-up records explicitly.",
+      "assertions": [
+        "add_data checks the first item and assumes homogeneity; validate or partition the whole batch.",
+        "Arbitrary custom types are not BacktestDataConfig variants; use explicit custom ingestion and recognize dynamic query materialization.",
+        "Basic historical quote/trade/bar backtest request methods are no-ops, so warm-up requires explicit available prior input."
+      ],
+      "expected_skill": "backtesting-nautilus-strategies",
+      "files": []
+    }
+  ]
+}

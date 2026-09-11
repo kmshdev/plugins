@@ -1,0 +1,41 @@
+{
+  "skill_name": "building-nautilus-strategies",
+  "evals": [
+    {
+      "id": "native-bracket",
+      "prompt": "Show the native Nautilus Rust 0.63.0 bracket-order creation and submission sequence for a Strategy. Explain leg types and contingent defaults. When must local IDs and possible-send state be recorded? Do not connect or place a real order.",
+      "expected_output": "A source-compatible order().bracket().call() and submit_order_list sequence, with pre-submit bookkeeping and qualified contingent semantics.",
+      "assertions": [
+        "Uses order().bracket() and submit_order_list, recognizing call() returns Vec<OrderAny> ordered entry, stop-loss, take-profit.",
+        "Records leg IDs and possible-send/reservation bookkeeping before submission because dispatch can be synchronous.",
+        "Identifies OTO entry, reduce-only exits and default OUO, not default OCO; does not claim universal broker protection.",
+        "Keeps risk bypass false and does not treat a submit error as proof of no send."
+      ],
+      "expected_skill": "building-nautilus-strategies",
+      "files": []
+    },
+    {
+      "id": "cancel-fill-race",
+      "prompt": "A Nautilus Rust order is pending cancel when a partial fill arrives. Later a cancellation event is followed by another fill. I want to release all reserved capital when I request cancel, and read final Portfolio totals in on_order_filled. Is that sound?",
+      "expected_output": "Reject premature release and final-Portfolio assumptions; derive state from native fills and confirmed remaining exposure.",
+      "assertions": [
+        "Pending cancel/update can coexist with partial fills and canceled orders can receive late fills.",
+        "Does not release all reservation merely on a cancellation request or assume a canceled status excludes later fills.",
+        "Distinguishes updated Cache order/position state from Portfolio aggregation that follows position-event handling."
+      ],
+      "expected_skill": "building-nautilus-strategies",
+      "files": []
+    },
+    {
+      "id": "negative-ingestion",
+      "prompt": "I only need to load Databento historical bars into a Nautilus catalog, with symbol and timestamp normalization. No strategy or orders. Which workflow should own the task?",
+      "expected_output": "Choose integrating-nautilus-data, without expanding into strategy risk or order implementation.",
+      "assertions": [
+        "Assigns ingestion, catalog and identity/timestamp work to the data integration workflow.",
+        "Does not introduce Strategy, orders or broker execution for this data-only task."
+      ],
+      "expected_skill": null,
+      "files": []
+    }
+  ]
+}

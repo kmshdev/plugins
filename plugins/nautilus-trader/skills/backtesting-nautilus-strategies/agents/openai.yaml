@@ -1,0 +1,9 @@
+interface:
+  display_name: "Nautilus Backtests"
+  short_description: "Run reproducible native Rust experiments."
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.png"
+  brand_color: "#218C89"
+  default_prompt: "Use $backtesting-nautilus-strategies to help implement and verify this Nautilus Rust workflow."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,17 @@
+{
+  "skill_name": "running-nautilus-live",
+  "evals": [
+    {
+      "id": "restart-continuity",
+      "prompt": "After restart I restored Cache from the event store and Databento resubscribed, so I plan to skip broker reconciliation and assume no feed gaps. I also enabled LiveNode streaming for automatic durable recording. Review this for Rust 0.63.0.",
+      "expected_output": "Separate Cache reconstruction, strategy replay, broker reconciliation, feed continuity and supported recording.",
+      "assertions": [
+        "Event-store replay reconstructs Cache and skips normal startup; it is not strategy replay or broker reconciliation.",
+        "Databento reconnection strips replay start anchors; restored subscriptions do not prove backfill or gap closure.",
+        "The inspected Rust live streaming config is rejected; a blocking/logging Feather subscriber does not provide automatic fail-closed durable recording."
+      ],
+      "expected_skill": "running-nautilus-live",
+      "files": []
+    }
+  ]
+}
