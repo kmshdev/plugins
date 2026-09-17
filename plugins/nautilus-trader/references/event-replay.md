@@ -30,7 +30,7 @@ strategy experiment use different entry points in Rust 0.64.0.
    families with actual coverage before calling the audit complete.
 
 The inspected `EventStoreConfig` defaults include channel capacity 10,000,
-maximum batch 100, batch latency 5 ms and stall timeout 250 ms. These are knobs,
+maximum batch 100, batch latency 5 ms and `halt_threshold` 250 ms. These are knobs,
 not measured latency or losslessness guarantees. Choose bounded settings from
 actual input rate and storage behavior; validate capture under failure pressure.
 

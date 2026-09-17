@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": "custom-catalog",
-      "prompt": "For an original Rust custom payload in Nautilus 0.63.0, explain CustomData construction, JSON versus Arrow registration, and how to preserve per-feed identity when writing a catalog. Does a different DataType.identifier isolate the message topic?",
+      "prompt": "For an original Rust custom payload in Nautilus 0.64.0, explain CustomData construction, JSON versus Arrow registration, and how to preserve per-feed identity when writing a catalog. Does a different DataType.identifier isolate the message topic?",
       "expected_output": "Distinguish payload/envelope, serialization registries and persistence identity from topic identity.",
       "assertions": [
         "CustomData::new takes payload Arc first and DataType second; wrapper JSON is not payload-only JSON.",

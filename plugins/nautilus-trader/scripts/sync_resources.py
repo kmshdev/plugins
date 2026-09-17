@@ -42,7 +42,7 @@ def generated_files(root: Path) -> dict[Path, bytes]:
         raise ValueError("Connection recipes must contain exactly C1 through C8")
     introduction = connections[:matches[0].start()]
     generated: dict[Path, bytes] = {}
-    shared_guides = ("configuration.md", "composition.md", "rust-testing.md", "event-replay.md", "adapter-development.md")
+    shared_guides = ("configuration.md", "composition.md", "rust-testing.md", "event-replay.md", "adapter-development.md", "version-and-integration.md")
     for name, prefixes in ANCHORS.items():
         skill = root / "skills" / name
         for guide in shared_guides:

@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": "databento-node-bars",
-      "prompt": "For Nautilus Rust 0.63.0 I need live five-minute Databento bars in an actor through a factory-backed node. Can I request ES.c.0 external bars because the direct client understands continuous symbology? Give the supported data path without making a connection.",
+      "prompt": "For Nautilus Rust 0.64.0 I need live five-minute Databento bars in an actor through a factory-backed node. Can I request ES.c.0 external bars because the direct client understands continuous symbology? Give the supported data path without making a connection.",
       "expected_output": "Use qualified dated native identity and DataEngine internal aggregation over supported input; qualify node symbology and external bar limitations.",
       "assertions": [
         "Distinguishes direct-client symbology inference from factory-backed node subscriptions that omit stype_in.",

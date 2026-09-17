@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": "actor-code",
-      "prompt": "For NautilusTrader Rust 0.63.0, write a minimal order-free actor receiving quotes and explain its construction and native registration. Include the macro, core accessor and callback signature. Do not connect any provider.",
+      "prompt": "For NautilusTrader Rust 0.64.0, write a minimal order-free actor receiving quotes and explain its construction and native registration. Include the macro, core accessor and callback signature. Do not connect any provider.",
       "expected_output": "A native DataActor skeleton using the actor macro/core and fallible handler, with construction separated from runtime registration and no order submission.",
       "assertions": [
         "Uses nautilus_actor! with DataActorCore and implements the appropriate quote handler returning anyhow::Result<()>.",

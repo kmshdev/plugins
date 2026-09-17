@@ -1,6 +1,6 @@
 ---
 name: integrating-nautilus-data
-description: Integrate Nautilus Rust market and custom data, subscriptions, historical requests, live delivery, schemas and catalogs. Provider recipes cover Databento and IBKR. Not trading rules or order execution.
+description: Implement, diagnose, or review Nautilus Rust ingestion, instrument identity, subscriptions, history, codecs, and catalogs. Databento and IBKR recipes; excludes trading rules.
 metadata:
   author: kmshdev
   version: "0.64.0"
@@ -12,7 +12,10 @@ metadata:
 consumption mode. **Output:** correctly identified, causally timestamped native
 data and a supported ingestion/subscription path, with explicit coverage limits.
 
-For compilation, use Rust 1.98.1+ and locked `=0.64.0` crates. Obtain the
+Bundled examples use `=0.64.0` and Rust 1.98.1+. Existing applications retain
+their lockfile, features and source overrides unless an upgrade is requested.
+For upgrades or framework workarounds, use
+[version and integration](references/version-and-integration.md). Obtain the
 input's instrument definitions and timestamp semantics before translating it.
 
 ## Instructions

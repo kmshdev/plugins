@@ -70,6 +70,7 @@ profitable trading, full durable-log acceptance, network soaks or benchmark resu
 | [Event replay](references/event-replay.md) | Durable capture, state reconstruction and strategy reruns |
 | [Connection recipes](references/connections.md) | Eight coupled runtime paths |
 | [Source ledger](references/sources.md) and [hash inventory](source-manifest.json) | Official docs first, version-qualified source evidence |
+| [Version and integration](references/version-and-integration.md) | Upgrade dependencies or qualify a native alternative before a framework workaround |
 
 Read only the guide relevant to the work. Each child carries its own referenced
 resources. The evidence targets upstream Rust 0.64.0 at commit
@@ -95,6 +96,12 @@ SkillEvaluator wrapper uses POSIX locking and is Unix-only; it is not required
 to use the skills, run the Rust examples or check offline portability. Evaluation
 services/toolchains have separate prerequisites documented in [evals](evals/README.md).
 Historical model grades are not results for this revision.
+
+The five `agents/openai.yaml` files configure skill discovery and appearance;
+they are not custom subagents. Implicit invocation permits selection, not a
+mandatory runtime hook. Choose the workflow for the affected owner and reuse
+sufficient inherited guidance across delegated work. No root router, subagent
+pipeline or all-reference reading requirement is needed.
 
 After changing canonical guides/examples/evals, regenerate resources and check
 for drift with `python3 scripts/sync_resources.py --check`. Individual routers and

@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": "construct-only",
-      "prompt": "Sketch construction-only Nautilus Rust 0.63.0 wiring for Databento data plus IB execution, with explicit typed configs supplied by the caller. Keep reconciliation enabled, risk bypass false, and do not start a connection. State what successful construction proves.",
+      "prompt": "Sketch construction-only Nautilus Rust 0.64.0 wiring for Databento data plus IB execution, with explicit typed configs supplied by the caller. Keep reconciliation enabled, risk bypass false, and do not start a connection. State what successful construction proves.",
       "expected_output": "Native LiveNode factory/config routing with distinct data/execution routes, ending at build and stating qualification limits.",
       "assertions": [
         "Uses native DatabentoDataClientConfig/Factory and InteractiveBrokersExecutionClientConfig/Factory with LiveNode.",

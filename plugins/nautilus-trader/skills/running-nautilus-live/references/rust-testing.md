@@ -51,8 +51,8 @@ mean an unbounded loop in the inspected helper. Preserve failing seed and fault
 schedule. A transport must actually be injected through turmoil for its network
 faults to matter; enabling a feature does not intercept all sockets.
 
-Runtime DST requires both the package's `simulation` feature and
-`RUSTFLAGS="--cfg madsim"`. The common runtime facade substitutes time, task,
+Runtime DST requires the package's `simulation` feature and prepending the cfg
+to existing flags: `RUSTFLAGS="--cfg madsim ${RUSTFLAGS:-}"`. The common runtime facade substitutes time, task,
 runtime and signal pieces. Some sync/I/O/network operations remain Tokio and
 transitive clients are not automatically virtualized. Build the selected test
 under those flags, record the selected harness seed, and

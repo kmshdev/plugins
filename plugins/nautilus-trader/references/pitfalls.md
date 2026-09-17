@@ -5,7 +5,7 @@ about every future `latest` page or every artifact declaring that version.
 
 | Tempting assumption | Pinned Rust contract |
 | --- | --- |
-| Copy `0.62` from the latest Rust setup page | Exact `=0.64.0`; compare compiler source on disagreement |
+| Copy a dependency version from moving docs | Examples use `=0.64.0`; preserve existing application pins unless an upgrade is requested |
 | All 0.64.0 trees are identical | Snapshot hashes identify the evidence; a version alone does not |
 | Copy a fixture feature from an older snapshot | The published 0.64.0 model feature is `test-support`; inspect the locked manifest |
 | `#[nautilus_actor]`, `@strategy` | Invocation `nautilus_actor!(Type)` / `nautilus_strategy!(Type)` |

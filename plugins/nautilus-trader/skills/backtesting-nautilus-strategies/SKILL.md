@@ -1,6 +1,6 @@
 ---
 name: backtesting-nautilus-strategies
-description: Run or diagnose reproducible Nautilus Rust backtests, replay ordering, catalog chunking, fill assumptions, and result comparisons. Not live account operations.
+description: Implement, diagnose, or review Nautilus Rust backtests, replay chronology, fill assumptions, and economic comparisons. Excludes broker operations and generic test-tooling fixes.
 metadata:
   author: kmshdev
   version: "0.64.0"
@@ -12,7 +12,10 @@ metadata:
 experiment question. **Output:** a reproducible native run and results labeled
 with the simulation assumptions and evidence limitations.
 
-For compilation, use Rust 1.98.1+ and locked `=0.64.0` crates. Require admitted
+Bundled examples use `=0.64.0` and Rust 1.98.1+. Existing applications retain
+their lockfile, features and source overrides unless an upgrade is requested.
+For upgrades or framework workarounds, use
+[version and integration](references/version-and-integration.md). Require admitted
 input and instrument definitions, not a provider credential for synthetic replay.
 
 ## Instructions

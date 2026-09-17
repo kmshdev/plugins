@@ -65,7 +65,7 @@ def check_skill(root: Path) -> list[str]:
                 errors.append(f"Actor example contains order authority: {source.relative_to(root)}")
     if len(entry.split()) > 400:
         errors.append(f"Workflow router exceeds 400-word budget: {name}")
-    if 'version: "0.64.0"' not in entry:
+    if f'version: "{FRAMEWORK_VERSION}"' not in entry:
         errors.append(f"Wrong workflow version: {name}")
     ids: set[str] = set()
     prompts: set[str] = set()
@@ -91,7 +91,7 @@ def check_skill(root: Path) -> list[str]:
             if case.get("files") != []:
                 errors.append(f"Unexpected evaluator staging: {name}/{case.get('id')}")
     evidence = json.loads((root / "references/source-manifest.json").read_text())
-    if evidence.get("framework_version") != "0.64.0" or not evidence.get("files"):
+    if evidence.get("framework_version") != FRAMEWORK_VERSION or not evidence.get("files"):
         errors.append(f"Missing workflow source evidence: {name}")
     if evidence.get("rust_version") != RUST_VERSION or evidence.get("upstream_revision") != SOURCE_REVISION:
         errors.append(f"Wrong workflow source toolchain or revision: {name}")
@@ -180,7 +180,7 @@ def check_bundle() -> list[str]:
     if (ROOT / "plugin.json").exists():
         errors.append("Legacy root plugin.json must not be shipped")
     manifest = json.loads((ROOT / "source-manifest.json").read_text(encoding="utf-8"))
-    if manifest["framework_version"] != "0.64.0":
+    if manifest["framework_version"] != FRAMEWORK_VERSION:
         errors.append("Wrong manifest framework pin")
     if manifest.get("rust_version") != RUST_VERSION or manifest.get("upstream_revision") != SOURCE_REVISION:
         errors.append("Wrong source toolchain or upstream revision")
@@ -202,7 +202,7 @@ def check_bundle() -> list[str]:
         for name, dependency in cargo.get("dependencies", {}).items():
             if not name.startswith("nautilus-"):
                 continue
-            if not isinstance(dependency, dict) or dependency.get("version") != "=0.64.0":
+            if not isinstance(dependency, dict) or dependency.get("version") != f"={FRAMEWORK_VERSION}":
                 errors.append(f"Unpinned framework dependency: {relative}: {name}")
                 continue
             if any(key in dependency for key in ("path", "git", "branch")):
@@ -302,8 +302,8 @@ def main() -> int:
     if args.record_source:
         manifest = {
             "schema_version": 1,
-            "framework_version": "0.64.0",
-            "rust_version": "1.98.1",
+            "framework_version": FRAMEWORK_VERSION,
+            "rust_version": RUST_VERSION,
             "edition": "2024",
             "research_date": datetime.now(UTC).date().isoformat(),
             "source_identity": "pinned-upstream-commit",

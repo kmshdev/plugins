@@ -3,7 +3,7 @@
     "working": [
       {
         "id": "actor-code",
-        "prompt": "For NautilusTrader Rust 0.64.0, write a minimal order-free actor receiving quotes and explain its construction and native registration. Include the macro, core accessor and callback signature. Do not connect any provider.",
+        "prompt": "For NautilusTrader Rust 0.63.0, write a minimal order-free actor receiving quotes and explain its construction and native registration. Include the macro, core accessor and callback signature. Do not connect any provider.",
         "expected_output": "A native DataActor skeleton using the actor macro/core and fallible handler, with construction separated from runtime registration and no order submission.",
         "assertions": ["Uses nautilus_actor! with DataActorCore and implements the appropriate quote handler returning anyhow::Result<()>.", "Leaves clock, Cache, component registration and lifecycle to the native engine or node.", "Does not make the actor submit orders or start provider connections."]
       },
@@ -24,7 +24,7 @@
     "acceptance": [
       {
         "id": "indicator-history-timer",
-        "prompt": "Review this Nautilus Rust 0.64.0 design: register an EMA, manually update it in on_bar, assume request_bars in a basic backtest warms it, and call TestClock.advance_time while holding the clock borrow through callbacks. Identify the corrections without adding a new framework.",
+        "prompt": "Review this Nautilus Rust 0.63.0 design: register an EMA, manually update it in on_bar, assume request_bars in a basic backtest warms it, and call TestClock.advance_time while holding the clock borrow through callbacks. Identify the corrections without adding a new framework.",
         "expected_output": "Correct double indicator ownership, historical no-op assumptions and timer dispatch borrowing.",
         "assertions": ["Registered indicators update before user callbacks; remove the duplicate manual update or choose a wholly manual owner.", "Basic backtest historical bar requests are no-ops; provide explicit prior replay/warm-up input.", "Advance the TestClock and match returned events to handlers, then release the clock borrow before executing handlers."]
       }
@@ -34,7 +34,7 @@
     "working": [
       {
         "id": "native-bracket",
-        "prompt": "Show the native Nautilus Rust 0.64.0 bracket-order creation and submission sequence for a Strategy. Explain leg types and contingent defaults. When must local IDs and possible-send state be recorded? Do not connect or place a real order.",
+        "prompt": "Show the native Nautilus Rust 0.63.0 bracket-order creation and submission sequence for a Strategy. Explain leg types and contingent defaults. When must local IDs and possible-send state be recorded? Do not connect or place a real order.",
         "expected_output": "A source-compatible order().bracket().call() and submit_order_list sequence, with pre-submit bookkeeping and qualified contingent semantics.",
         "assertions": ["Uses order().bracket() and submit_order_list, recognizing call() returns Vec<OrderAny> ordered entry, stop-loss, take-profit.", "Records leg IDs and possible-send/reservation bookkeeping before submission because dispatch can be synchronous.", "Identifies OTO entry, reduce-only exits and default OUO, not default OCO; does not claim universal broker protection.", "Keeps risk bypass false and does not treat a submit error as proof of no send."]
       },
@@ -55,7 +55,7 @@
     "acceptance": [
       {
         "id": "gtd-error-grid",
-        "prompt": "In Rust Nautilus 0.64.0, a GTD submission returned Err. My retry code assumes no command was sent. Prices have the correct decimal precision but may miss the tick increment. Can I retry now and rely on RiskEngine for account readiness?",
+        "prompt": "In Rust Nautilus 0.63.0, a GTD submission returned Err. My retry code assumes no command was sent. Prices have the correct decimal precision but may miss the tick increment. Can I retry now and rely on RiskEngine for account readiness?",
         "expected_output": "Treat the submit as ambiguous, reconcile before retry, validate tick grids and independently gate account readiness.",
         "assertions": ["A GTD timer setup failure can occur after routing; preserve possible-send state and reconcile before retry.", "Decimal precision is not tick/lot alignment; normalize and validate using instrument increments.", "RiskEngine does not establish every application readiness or missing-account policy; retain explicit admission checks without bypass."]
       }
@@ -65,7 +65,7 @@
     "working": [
       {
         "id": "databento-node-bars",
-        "prompt": "For Nautilus Rust 0.64.0 I need live five-minute Databento bars in an actor through a factory-backed node. Can I request ES.c.0 external bars because the direct client understands continuous symbology? Give the supported data path without making a connection.",
+        "prompt": "For Nautilus Rust 0.63.0 I need live five-minute Databento bars in an actor through a factory-backed node. Can I request ES.c.0 external bars because the direct client understands continuous symbology? Give the supported data path without making a connection.",
         "expected_output": "Use qualified dated native identity and DataEngine internal aggregation over supported input; qualify node symbology and external bar limitations.",
         "assertions": ["Distinguishes direct-client symbology inference from factory-backed node subscriptions that omit stype_in.", "Does not promise Databento node external-live-bar support.", "Uses native INTERNAL aggregation over supported trades or quotes with correct instrument metadata; does not add an application bar builder."]
       },
@@ -86,7 +86,7 @@
     "acceptance": [
       {
         "id": "custom-catalog",
-        "prompt": "For an original Rust custom payload in Nautilus 0.64.0, explain CustomData construction, JSON versus Arrow registration, and how to preserve per-feed identity when writing a catalog. Does a different DataType.identifier isolate the message topic?",
+        "prompt": "For an original Rust custom payload in Nautilus 0.63.0, explain CustomData construction, JSON versus Arrow registration, and how to preserve per-feed identity when writing a catalog. Does a different DataType.identifier isolate the message topic?",
         "expected_output": "Distinguish payload/envelope, serialization registries and persistence identity from topic identity.",
         "assertions": ["CustomData::new takes payload Arc first and DataType second; wrapper JSON is not payload-only JSON.", "JSON ensure registration returns Result, Arrow ensure registration returns unit, and the process-global type name must remain schema compatible.", "DataType.identifier is persistence scope, not topic isolation; preserve schema/type/feed identity and avoid relying on stringified metadata collisions."]
       }
@@ -96,13 +96,13 @@
     "working": [
       {
         "id": "deterministic-replay",
-        "prompt": "Design a small deterministic offline Nautilus Rust 0.64.0 backtest for an actor signal and Strategy order. Specify native composition, input ordering, timer boundaries and stable outputs to compare. No real provider data or connections.",
+        "prompt": "Design a small deterministic offline Nautilus Rust 0.63.0 backtest for an actor signal and Strategy order. Specify native composition, input ordering, timer boundaries and stable outputs to compare. No real provider data or connections.",
         "expected_output": "Native synthetic engine replay with registered actor/strategy, instrument/venue configuration and canonical economic output comparisons.",
         "assertions": ["Uses BacktestEngine or BacktestNode rather than an application-owned simulation engine.", "Orders by ts_init with an explicit stable equal-time stream policy and controlled timer boundaries.", "Compares canonical order/fill/position outcomes rather than volatile wall-clock or run identifiers.", "Separates local simulation evidence from live provider or profitability claims."]
       },
       {
         "id": "chunk-memory",
-        "prompt": "A Nautilus Rust BacktestNode uses several data configs and chunk_size=1000. I assume RAM is bounded to 1000 records and can add several run configs to sweep parameters in one node. Review this against 0.64.0.",
+        "prompt": "A Nautilus Rust BacktestNode uses several data configs and chunk_size=1000. I assume RAM is bounded to 1000 records and can add several run configs to sweep parameters in one node. Review this against 0.63.0.",
         "expected_output": "Correct one-run and materialization assumptions; use separate runs and measured memory behavior.",
         "assertions": ["BacktestNode supports exactly one run config in the inspected implementation.", "Multi-data-config replay can materialize data before chunking; chunk_size is not a hard RAM ceiling.", "Equal-time groups may exceed the configured chunk size; preserve causal ordering instead of splitting blindly."]
       },
@@ -117,7 +117,7 @@
     "acceptance": [
       {
         "id": "mixed-custom-history",
-        "prompt": "My Nautilus 0.64.0 replay batches mix data kinds, assuming add_data validates every item. I also plan to configure any custom payload through BacktestDataConfig, and to warm indicators through basic backtest historical requests. What must change?",
+        "prompt": "My Nautilus 0.63.0 replay batches mix data kinds, assuming add_data validates every item. I also plan to configure any custom payload through BacktestDataConfig, and to warm indicators through basic backtest historical requests. What must change?",
         "expected_output": "Enforce homogeneous validated batches, use the actual custom-data ingestion path and supply warm-up records explicitly.",
         "assertions": ["add_data checks the first item and assumes homogeneity; validate or partition the whole batch.", "Arbitrary custom types are not BacktestDataConfig variants; use explicit custom ingestion and recognize dynamic query materialization.", "Basic historical quote/trade/bar backtest request methods are no-ops, so warm-up requires explicit available prior input."]
       }
@@ -127,7 +127,7 @@
     "working": [
       {
         "id": "construct-only",
-        "prompt": "Sketch construction-only Nautilus Rust 0.64.0 wiring for Databento data plus IB execution, with explicit typed configs supplied by the caller. Keep reconciliation enabled, risk bypass false, and do not start a connection. State what successful construction proves.",
+        "prompt": "Sketch construction-only Nautilus Rust 0.63.0 wiring for Databento data plus IB execution, with explicit typed configs supplied by the caller. Keep reconciliation enabled, risk bypass false, and do not start a connection. State what successful construction proves.",
         "expected_output": "Native LiveNode factory/config routing with distinct data/execution routes, ending at build and stating qualification limits.",
         "assertions": ["Uses native DatabentoDataClientConfig/Factory and InteractiveBrokersExecutionClientConfig/Factory with LiveNode.", "Allows independent data and execution default routes, enables reconciliation and keeps risk bypass false.", "Does not call start/run or discover credentials; construction does not prove account mode, entitlement or protective-order acceptance."]
       },
@@ -148,7 +148,7 @@
     "acceptance": [
       {
         "id": "restart-continuity",
-        "prompt": "After restart I restored Cache from the event store and Databento resubscribed, so I plan to skip broker reconciliation and assume no feed gaps. I also enabled LiveNode streaming for automatic durable recording. Review this for Rust 0.64.0.",
+        "prompt": "After restart I restored Cache from the event store and Databento resubscribed, so I plan to skip broker reconciliation and assume no feed gaps. I also enabled LiveNode streaming for automatic durable recording. Review this for Rust 0.63.0.",
         "expected_output": "Separate Cache reconstruction, strategy replay, broker reconciliation, feed continuity and supported recording.",
         "assertions": ["Event-store replay reconstructs Cache and skips normal startup; it is not strategy replay or broker reconciliation.", "Databento reconnection strips replay start anchors; restored subscriptions do not prove backfill or gap closure.", "The inspected Rust live streaming config is rejected; a blocking/logging Feather subscriber does not provide automatic fail-closed durable recording."]
       }

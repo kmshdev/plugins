@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": "native-bracket",
-      "prompt": "Show the native Nautilus Rust 0.63.0 bracket-order creation and submission sequence for a Strategy. Explain leg types and contingent defaults. When must local IDs and possible-send state be recorded? Do not connect or place a real order.",
+      "prompt": "Show the native Nautilus Rust 0.64.0 bracket-order creation and submission sequence for a Strategy. Explain leg types and contingent defaults. When must local IDs and possible-send state be recorded? Do not connect or place a real order.",
       "expected_output": "A source-compatible order().bracket().call() and submit_order_list sequence, with pre-submit bookkeeping and qualified contingent semantics.",
       "assertions": [
         "Uses order().bracket() and submit_order_list, recognizing call() returns Vec<OrderAny> ordered entry, stop-loss, take-profit.",

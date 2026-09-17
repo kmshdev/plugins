@@ -1,6 +1,6 @@
 ---
 name: running-nautilus-live
-description: Compose or diagnose native Nautilus Rust nodes using Databento and IBKR, including sandbox routing, readiness, reconciliation, recovery, and shutdown. Not strategy design.
+description: Compose, diagnose, or review native Nautilus Rust nodes, routing, readiness, persistence, reconciliation, recovery, and shutdown. Databento and IBKR recipes; excludes strategy rules and infrastructure-only deployment.
 metadata:
   author: kmshdev
   version: "0.64.0"
@@ -12,8 +12,12 @@ metadata:
 recovery/readiness requirements. **Output:** supported native composition and
 an evidence-based readiness or failure assessment.
 
-Use Rust 1.98.1+, locked `=0.64.0` crates and `nautilus-live/node` for
-compilation. Accept explicit typed config; never discover account credentials.
+Bundled examples use `=0.64.0` and Rust 1.98.1+. Existing applications retain
+their lockfile, features and source overrides unless an upgrade is requested.
+For upgrades or framework workarounds, use
+[version and integration](references/version-and-integration.md).
+
+Native node compilation needs `nautilus-live/node`. Accept explicit typed config; never discover account credentials.
 
 ## Instructions
 

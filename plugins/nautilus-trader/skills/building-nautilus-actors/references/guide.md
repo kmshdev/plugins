@@ -40,8 +40,10 @@ explicitly when silent continuation would be unsafe.
 ## Timers
 
 ```rust
+use nautilus_core::DurationNanos;
+
 self.clock().set_timer_ns(
-    "actor-heartbeat", 1_000_000_000, None, None, None, Some(false), Some(false),
+    "actor-heartbeat", DurationNanos::from_secs(1), None, None, None, Some(false), Some(false),
 )?;
 ```
 

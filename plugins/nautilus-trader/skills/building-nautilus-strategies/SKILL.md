@@ -1,6 +1,6 @@
 ---
 name: building-nautilus-strategies
-description: Implement or repair Nautilus Rust trading rules, sizing, brackets, order and position callbacks, and execution races. Not data ingestion or node operations.
+description: Implement, diagnose, or review Nautilus Rust strategy rules, sizing, orders, execution callbacks, and order-lifecycle races. Excludes data ingestion and infrastructure deployment.
 metadata:
   author: kmshdev
   version: "0.64.0"
@@ -12,7 +12,10 @@ metadata:
 existing strategy code when present. **Output:** a native strategy whose order
 intent and lifecycle match those rules, with focused execution evidence.
 
-For compilation, use Rust 1.98.1+ and locked `=0.64.0` crates.
+Bundled examples use `=0.64.0` and Rust 1.98.1+. Existing applications retain
+their lockfile, features and source overrides unless an upgrade is requested.
+For upgrades or framework workarounds, use
+[version and integration](references/version-and-integration.md).
 
 ## Instructions
 

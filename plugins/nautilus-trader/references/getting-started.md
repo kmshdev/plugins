@@ -37,7 +37,7 @@ nautilus-trading = { version = "=0.64.0", default-features = false }
 nautilus-backtest = { version = "=0.64.0", default-features = false }
 ```
 
-Use Rust 1.98.1 or newer with edition 2024. Resolve and retain `Cargo.lock` for
+These standalone examples need Rust 1.98.1 or newer with edition 2024. Resolve and retain `Cargo.lock` for
 executables; use `cargo check --locked` / `cargo test --locked` after initial
 resolution. Keep all Nautilus crates on one version and source. If using source,
 pin a verified full upstream revision consistently; do not use a moving branch
