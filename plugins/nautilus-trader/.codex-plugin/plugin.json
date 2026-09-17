@@ -1,12 +1,12 @@
 {
   "name": "nautilus-trader",
-  "version": "0.64.0+codex.20260917134102",
+  "version": "0.64.0+codex.20260917161414",
   "description": "Five self-contained Rust workflows for NautilusTrader actors, strategies, data, backtests and native nodes.",
   "author": {
     "name": "kmshdev",
     "url": "https://github.com/kmshdev"
   },
-  "homepage": "https://github.com/kmshdev/plugins/tree/codex/nautilus-rust-workflows/plugins/nautilus-trader",
+  "homepage": "https://github.com/kmshdev/plugins/tree/main/plugins/nautilus-trader",
   "repository": "https://github.com/kmshdev/plugins",
   "skills": "./skills/",
   "interface": {
@@ -19,7 +19,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/kmshdev/plugins/tree/codex/nautilus-rust-workflows/plugins/nautilus-trader",
+    "websiteURL": "https://github.com/kmshdev/plugins/tree/main/plugins/nautilus-trader",
     "defaultPrompt": [
       "Build a native Rust Nautilus strategy from my rules.",
       "Run a reproducible offline backtest.",
