@@ -8,11 +8,16 @@ directory, so inspect and merge files into an existing project deliberately.
 
 ```sh
 python3 scripts/scaffold.py init --output ./run-delivery --package my-strategy --binary my-runner
-python3 scripts/scaffold.py plan --output ./run-plan.json --mode backtest --image registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa --catalog-uri /data/input --artifact-root /data/output
+python3 scripts/scaffold.py plan --output ./run-delivery/run-plan.json --mode backtest --image registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa --config-digest bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb --catalog-uri /data/input --artifact-root /data/output
 ```
 
-The example digest illustrates syntax, not an existing/published image. Use the
-actual built image digest before execution. Planning allocates a fresh run and
+Both example digests illustrate syntax, not a published image or actual config.
+Supply the built image digest and SHA-256 of the effective application config
+before execution. The application must verify that config digest against the
+configuration it actually loads and persist it as `run_control.runs.config_digest`;
+the helper cannot infer application defaults, overrides or secret references.
+Keep the plan inside the overlay so Compose's relative bind mount finds it.
+Planning allocates a fresh run and
 attempt UUID and writes no database, bucket or infrastructure. Its JSON must be
 mapped by the application as described in [run architecture](guide.md).
 
@@ -22,6 +27,9 @@ The binary/manifest/feature choices must match the target package. The workflow
 tests and builds; it does **not** push images or deploy. Review any copied workflow
 before enabling it in a repository. A Docker build still executes the target
 package's build scripts and may fetch dependencies.
+Pass the same Cargo features supplied to the reusable workflow into image builds:
+`docker build --build-arg CARGO_FEATURES="your-feature-list" -t nautilus-runner:local .`.
+Both paths retain default features; an empty feature list adds no extra features.
 
 The Compose file is a local integration fixture, not a managed-cloud deployment.
 It publishes no database ports and isolates storage on a private network. Redis

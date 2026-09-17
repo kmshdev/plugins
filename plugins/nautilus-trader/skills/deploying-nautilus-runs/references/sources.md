@@ -1,6 +1,6 @@
 # Deployment source evidence
 
-Qualified against Rust 0.64.0 at
+Qualified against NautilusTrader 0.64.0 at
 `1b0a49d2792a9432a3aca3fcb617ce7a630d905e`, with Rust 1.98.1.
 [Hashes](source-manifest.json) identify reviewed source files, not a requirement
 to open a hidden checkout or a proof of cloud execution.
@@ -24,6 +24,6 @@ Moving documentation is qualified by these pinned declarations and callers.
 | DP6 | `crates/live/src/node/builder.rs:139-192,206-216,306-328,344-356,744-766`, `crates/live/src/node/mod.rs:491-574,2578-2588`, `crates/backtest/src/node.rs:137-181,311-318`: one run per node, Cache factory startup ownership and native shutdown |
 | DP7 | `crates/live/src/node/config.rs:1278-1312`, `crates/live/src/node/mod.rs:990-1050`, `crates/persistence/src/backend/feather.rs:654-746,1004-1258,1770-1785`, `crates/common/src/msgbus/api.rs:1042-1049`: live config rejection, async callback restrictions, native writer subscription/close and quote publication |
 
-Source tests were inspected, not all executed. An offline quickstart demonstrates
-local composition only; it cannot prove provider entitlement, broker state,
-profitability, production recovery or live protective-order behavior.
+Source tests were inspected, not all executed. The local storage smoke verifies
+Feather/Parquet/DataFusion readback only; it does not qualify PostgreSQL/Redis
+durability, cloud readback, provider connectivity or live recovery.

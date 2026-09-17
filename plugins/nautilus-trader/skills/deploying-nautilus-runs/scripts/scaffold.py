@@ -52,9 +52,13 @@ def initialize(output: Path, package: str, binary: str) -> None:
         target.write_text(text.replace("@@PACKAGE@@", package).replace("@@BINARY@@", binary))
 
 
-def plan(output: Path, image: str, mode: str, catalog_uri: str, artifact_root: str) -> dict:
+def plan(output: Path, image: str, mode: str, catalog_uri: str, artifact_root: str, *, config_digest: str) -> dict:
     if not IMAGE.fullmatch(image):
         raise ValueError("Use the actual OCI image reference with an immutable sha256 digest")
+    if mode not in {"backtest", "sandbox", "live"}:
+        raise ValueError("Use one of: backtest, sandbox, live")
+    if not re.fullmatch(r"[0-9a-f]{64}", config_digest):
+        raise ValueError("Use the effective application configuration SHA-256 digest (64 lowercase hex characters)")
     source = storage_uri(catalog_uri, writable=False)
     destination = storage_uri(artifact_root, writable=True)
     if mode == "backtest" and urlsplit(destination).scheme == "az":
@@ -71,6 +75,7 @@ def plan(output: Path, image: str, mode: str, catalog_uri: str, artifact_root: s
         "instance_id": run_id,
         "mode": mode,
         "image_digest": image,
+        "config_digest": config_digest,
         "framework_version": "0.64.0",
         "node_processes": 1,
         "automatic_retries": 0,
@@ -105,6 +110,7 @@ def main() -> int:
     plan_parser = commands.add_parser("plan", help="Write a new run plan without executing it")
     plan_parser.add_argument("--output", type=Path, required=True)
     plan_parser.add_argument("--image", required=True)
+    plan_parser.add_argument("--config-digest", required=True, help="SHA-256 of the effective application configuration")
     plan_parser.add_argument("--mode", choices=("backtest", "sandbox", "live"), required=True)
     plan_parser.add_argument("--catalog-uri", required=True)
     plan_parser.add_argument("--artifact-root", required=True)
@@ -114,7 +120,7 @@ def main() -> int:
             initialize(args.output, args.package, args.binary)
             print(f"Generated deployment overlay: {args.output}; nothing started or deployed")
         else:
-            record = plan(args.output, args.image, args.mode, args.catalog_uri, args.artifact_root)
+            record = plan(args.output, args.image, args.mode, args.catalog_uri, args.artifact_root, config_digest=args.config_digest)
             print(f"Planned run {record['run_id']}: {args.output}; nothing executed")
     except (ValueError, OSError) as error:
         parser.exit(2, f"{error}\n")

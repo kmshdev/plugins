@@ -15,7 +15,7 @@ and evidence distinguishing scaffolding from deployed behavior.
 Bundled contracts target Rust 1.98.1+ and NautilusTrader 0.64.0. Preserve existing
 application pins unless upgrading is requested. This skill packages an existing
 runner; it does not invent trading rules or automatically operate infrastructure.
-Rust 0.64 rejects `LiveNodeConfig.streaming`: live capture needs the explicit
+NautilusTrader 0.64 rejects `LiveNodeConfig.streaming`: live capture needs the explicit
 async native writer integration below, not removal of the runtime guard.
 
 ## Workflow

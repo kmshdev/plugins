@@ -27,9 +27,12 @@ use nautilus_system::config::{RotationConfig, StreamingConfig};
 fn round_trip(root: &Path) -> anyhow::Result<(UUID4, PathBuf)> {
     let instance_id = UUID4::new();
     let directory = root.join(instance_id.to_string());
+    let directory_text = directory
+        .to_str()
+        .ok_or_else(|| anyhow::anyhow!("Storage paths must be UTF-8"))?;
     std::fs::create_dir_all(&directory)?;
     let streaming = StreamingConfig::new(
-        directory.to_string_lossy().into_owned(),
+        directory_text.to_owned(),
         "file".to_owned(),
         1000,
         false,
@@ -56,10 +59,7 @@ fn round_trip(root: &Path) -> anyhow::Result<(UUID4, PathBuf)> {
         }))
         .build()?;
     let writer = Rc::new(RefCell::new(FeatherWriter::from_uri(
-        &directory
-            .join("sandbox")
-            .join(instance_id.to_string())
-            .to_string_lossy(),
+        &format!("{directory_text}/sandbox/{instance_id}"),
         None,
         node.kernel().clock(),
         WriterRotationConfig::NoRotation,
@@ -85,8 +85,7 @@ fn round_trip(root: &Path) -> anyhow::Result<(UUID4, PathBuf)> {
         .map_err(|error| anyhow::anyhow!(error.to_string()));
     node.dispose();
     flush_result?;
-    let mut catalog =
-        ParquetDataCatalog::from_uri(&directory.to_string_lossy(), None, None, None, None)?;
+    let mut catalog = ParquetDataCatalog::from_uri(directory_text, None, None, None, None)?;
     catalog.convert_stream_to_data(
         &instance_id.to_string(),
         "quotes",
@@ -124,6 +123,21 @@ fn main() -> anyhow::Result<()> {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(unix)]
+    #[test]
+    fn invalid_utf8_path_is_rejected_before_creating_artifacts() -> anyhow::Result<()> {
+        use std::os::unix::ffi::OsStringExt;
+        let directory = tempfile::tempdir()?;
+        let invalid = directory
+            .path()
+            .join(std::ffi::OsString::from_vec(vec![0xff]));
+        let error =
+            super::round_trip(&invalid).expect_err("Non-UTF-8 storage root must be rejected");
+        assert!(error.to_string().contains("UTF-8"));
+        assert_eq!(std::fs::read_dir(directory.path())?.count(), 0);
+        Ok(())
+    }
+
     #[test]
     fn builtin_writer_subscriber_rejects_async_callback_context() -> anyhow::Result<()> {
         let directory = tempfile::tempdir()?;

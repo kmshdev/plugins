@@ -96,7 +96,7 @@ is `test-support`; enable it only when fixtures require it.
         if name == "deploying-nautilus-runs":
             sources = f"""# Deployment source evidence
 
-Qualified against Rust {manifest['framework_version']} at
+Qualified against NautilusTrader {manifest['framework_version']} at
 `{manifest['upstream_revision']}`, with Rust {manifest['rust_version']}.
 [Hashes](source-manifest.json) identify reviewed source files, not a requirement
 to open a hidden checkout or a proof of cloud execution.
@@ -109,14 +109,20 @@ Moving documentation is qualified by these pinned declarations and callers.
 | ID | Snapshot coordinates and connected symbols |
 | --- | --- |
 """
-        generated[skill / "references/sources.md"] = (
-            sources + "\n".join(selected) + """
+        qualification = """
 
 Source tests were inspected, not all executed. An offline quickstart demonstrates
 local composition only; it cannot prove provider entitlement, broker state,
 profitability, production recovery or live protective-order behavior.
 """
-        ).encode()
+        if name == "deploying-nautilus-runs":
+            qualification = """
+
+Source tests were inspected, not all executed. The local storage smoke verifies
+Feather/Parquet/DataFusion readback only; it does not qualify PostgreSQL/Redis
+durability, cloud readback, provider connectivity or live recovery.
+"""
+        generated[skill / "references/sources.md"] = (sources + "\n".join(selected) + qualification).encode()
         adapter = {
             "integrating-nautilus-data": "adapter-data.md",
             "running-nautilus-live": "adapter-runtime.md",

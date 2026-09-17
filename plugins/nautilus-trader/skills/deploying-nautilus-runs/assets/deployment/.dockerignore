@@ -3,6 +3,10 @@
 target
 .env
 .env.*
-**/credentials*
+**/.aws
+**/.azure
+**/.config/gcloud
+**/credentials
+**/credentials.json
 **/*.pem
 **/*.key

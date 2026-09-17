@@ -1,6 +1,6 @@
 {
   "name": "nautilus-trader",
-  "version": "0.64.0+codex.20260917170553",
+  "version": "0.64.0+codex.20260917204048",
   "description": "Six self-contained Rust workflows for NautilusTrader components, replay, live nodes and persistent run delivery.",
   "author": {
     "name": "kmshdev",

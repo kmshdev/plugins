@@ -4,7 +4,7 @@
 
 One independent run owns one native node/kernel in one process/container.
 For backtests, construct a fresh `BacktestNode` with one `BacktestRunConfig`;
-register the actual components before running. Rust 0.64 rejects multiple run
+register the actual components before running. NautilusTrader 0.64 rejects multiple run
 configs per node because the kernel MessageBus is thread-local. Do not use a
 web worker's shared node as a concurrent multi-tenant experiment service.
 A direct `BacktestEngine` is appropriate for an existing in-memory harness,
@@ -55,7 +55,7 @@ a framework feature or persists a run.
   through `BacktestEngineConfig.streaming`.
   The template uses positive flush latency, `replace_existing=false`, and no
   rotation; choose bounded rotation/flush values for the actual volume.
-- Rust 0.64 **rejects** non-empty `LiveNodeConfig.streaming`, even with the Cargo
+- NautilusTrader 0.64 **rejects** non-empty `LiveNodeConfig.streaming`, even with the Cargo
   feature enabled and a builder setter available. For sandbox/live capture, use
   native `FeatherWriter` with application-owned async integration; leave the
   unsupported config unset. The smoke's `subscribe_builtin_to_message_bus`

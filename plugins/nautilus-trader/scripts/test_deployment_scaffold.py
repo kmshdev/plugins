@@ -11,14 +11,15 @@ SPEC = importlib.util.spec_from_file_location("deployment_scaffold", SCRIPT)
 scaffold = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(scaffold)
 IMAGE = "registry.example/runner@sha256:" + "a" * 64
+CONFIG_DIGEST = "b" * 64
 
 
 class DeploymentScaffoldTests(unittest.TestCase):
     def test_independent_run_plans_are_isolated_without_execution(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            first = scaffold.plan(root / "first.json", IMAGE, "backtest", "s3://input/catalog", "s3://output/artifacts")
-            second = scaffold.plan(root / "second.json", IMAGE, "backtest", "s3://input/catalog", "s3://output/artifacts")
+            first = scaffold.plan(root / "first.json", IMAGE, "backtest", "s3://input/catalog", "s3://output/artifacts", config_digest=CONFIG_DIGEST)
+            second = scaffold.plan(root / "second.json", IMAGE, "backtest", "s3://input/catalog", "s3://output/artifacts", config_digest=CONFIG_DIGEST)
             self.assertNotEqual(first["run_id"], second["run_id"])
             self.assertNotEqual(first["artifact_prefix"], second["artifact_prefix"])
             self.assertEqual(str(UUID(first["instance_id"])), first["run_id"])
@@ -26,6 +27,7 @@ class DeploymentScaffoldTests(unittest.TestCase):
             self.assertEqual(first["automatic_retries"], 0)
             self.assertFalse(first["cache"]["flush_on_start"])
             self.assertFalse(first["streaming"]["replace_existing"])
+            self.assertEqual(first["config_digest"], CONFIG_DIGEST)
             self.assertEqual({item.name for item in root.iterdir()}, {"first.json", "second.json"})
 
     def test_existing_plan_and_overlay_are_not_overwritten(self) -> None:
@@ -34,11 +36,19 @@ class DeploymentScaffoldTests(unittest.TestCase):
             destination = root / "plan.json"
             destination.write_text("preserve")
             with self.assertRaises(FileExistsError):
-                scaffold.plan(destination, IMAGE, "live", "file:///input", "file:///output")
+                scaffold.plan(destination, IMAGE, "live", "file:///input", "file:///output", config_digest=CONFIG_DIGEST)
             self.assertEqual(destination.read_text(), "preserve")
             with self.assertRaises(FileExistsError):
                 scaffold.initialize(root, "strategy", "runner")
             self.assertEqual(list(root.iterdir()), [destination])
+
+    def test_invalid_mode_or_config_digest_produces_no_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory) / "uncreated" / "plan.json"
+            for mode, digest in (("paper", CONFIG_DIGEST), ("backtest", ""), ("live", "not-a-digest")):
+                with self.subTest(mode=mode, digest=digest), self.assertRaises(ValueError):
+                    scaffold.plan(destination, IMAGE, mode, "/input", "/output", config_digest=digest)
+                self.assertFalse(destination.parent.exists())
 
     def test_secret_uris_and_unqualified_output_are_rejected(self) -> None:
         for uri in ("s3://user:secret@bucket/path", "az://container/data?sig=secret", "https://host/path"):
@@ -62,14 +72,14 @@ class DeploymentScaffoldTests(unittest.TestCase):
             root = Path(directory)
             for mode in ("backtest", "sandbox", "live"):
                 with self.subTest(mode=mode):
-                    record = scaffold.plan(root / f"{mode}.json", IMAGE, mode, "file:///", "file:///")
+                    record = scaffold.plan(root / f"{mode}.json", IMAGE, mode, "file:///", "file:///", config_digest=CONFIG_DIGEST)
                     self.assertEqual(record["input_catalog_uri"], "/")
                     self.assertEqual(record["artifact_prefix"], f"/runs/{record['run_id']}")
                     self.assertEqual(record["streaming"]["fs_protocol"], "file")
                     expected = "kernel-streaming-config" if mode == "backtest" else "explicit-native-writer"
                     self.assertEqual(record["capture_integration"], expected)
             with self.assertRaises(ValueError):
-                scaffold.plan(root / "mutable.json", "runner:latest", "backtest", "/input", "/output")
+                scaffold.plan(root / "mutable.json", "runner:latest", "backtest", "/input", "/output", config_digest=CONFIG_DIGEST)
             self.assertFalse((root / "mutable.json").exists())
 
     def test_native_local_paths_preserve_special_characters(self) -> None:
@@ -83,9 +93,9 @@ class DeploymentScaffoldTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             destination = Path(directory) / "plan.json"
             with self.assertRaisesRegex(ValueError, "account_name"):
-                scaffold.plan(destination, IMAGE, "backtest", "https://host/input", "az://container/output")
+                scaffold.plan(destination, IMAGE, "backtest", "https://host/input", "az://container/output", config_digest=CONFIG_DIGEST)
             self.assertFalse(destination.exists())
-            record = scaffold.plan(destination, IMAGE, "backtest", "https://host/input", "abfs://container@account.dfs.core.windows.net/output")
+            record = scaffold.plan(destination, IMAGE, "backtest", "https://host/input", "abfs://container@account.dfs.core.windows.net/output", config_digest=CONFIG_DIGEST)
             self.assertEqual(record["streaming"]["fs_protocol"], "abfs")
             with self.assertRaises(ValueError):
                 scaffold.storage_uri("abfs://container@/output", writable=True)

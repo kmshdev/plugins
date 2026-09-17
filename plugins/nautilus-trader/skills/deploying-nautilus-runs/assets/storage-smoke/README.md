@@ -15,7 +15,7 @@ the node, explicitly converts
 `quotes` to Parquet and reads it through DataFusion. It asserts the complete
 quote, including instrument identity, values and distinct event/availability times.
 It writes under a fresh UUID directory and leaves executable-run artifacts for inspection.
-Rust 0.64 rejects `LiveNodeConfig.streaming`; a second regression verifies that
+NautilusTrader 0.64 rejects `LiveNodeConfig.streaming`; a second regression verifies that
 guard. The tested composition uses public `FeatherWriter` subscription/lifecycle
 APIs instead, with the native streaming/cloud dependencies enabled. It does not
 remove the guard or claim the kernel automatically owns this explicit writer.

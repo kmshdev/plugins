@@ -259,3 +259,25 @@ No PostgreSQL/Redis service, cloud job, migration, registry publication or broke
 connection was executed. Cloud durability, a complete strategy runner and actual
 live async capture/shutdown remain application integration requirements, not
 claims established by scaffold generation or successful local compilation.
+
+## 2026-09-18 — PR #5 review corrections
+
+Addressed eight inline comments and the deployment-footer review note:
+Docker builds accept the CI Cargo feature list; run plans require an explicit
+configuration SHA-256 and validate mode for programmatic callers; the documented
+plan path matches Compose's bind mount; Docker excludes known credential files
+and directories without dropping Rust credential modules. The native storage
+smoke rejects non-UTF-8 paths before creating artifacts. Framework/toolchain
+labels and the generated deployment-specific qualification footer are corrected.
+
+62 maintenance tests and four native storage tests passed, including invalid
+mode/digest no-write behavior and non-UTF-8 path rejection. A freshly generated
+CLI overlay/plan passed Compose configuration validation: the resolved mount
+contained the plan JSON and its digest matched the fixture config bytes.
+Source/resource closure, official plugin/skill validators and diff checks passed.
+Azure-profile static autoreview found no actionable regressions. Receipts are
+under the existing ignored deployment evidence directory (`pr5-*`). No container
+image build, service startup or cloud/broker operation was performed. The remote
+Clippy timeout and advisory docstring-coverage warning are not passing checks;
+this correction does not add unrelated documentation boilerplate to satisfy a
+percentage target.
