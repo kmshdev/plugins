@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-bookworm
+    environment:
+      POSTGRES_USER: nautilus
+      POSTGRES_DB: nautilus
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?provide a local database secret}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks: [storage]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U nautilus -d nautilus"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  redis:
+    image: redis:7.4-bookworm
+    command: [redis-server, --appendonly, "yes"]
+    volumes:
+      - redis-data:/data
+    networks: [storage]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  runner:
+    profiles: [run]
+    image: ${RUN_IMAGE:-nautilus-runner:local}
+    init: true
+    restart: "no"
+    stop_grace_period: 60s
+    environment:
+      RUN_PLAN_PATH: /run-config/run-plan.json
+    volumes:
+      - ./run-plan.json:/run-config/run-plan.json:ro
+      - artifacts:/data
+    networks: [storage, egress]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+networks:
+  storage:
+    internal: true
+  egress: {}
+volumes:
+  postgres-data: {}
+  redis-data: {}
+  artifacts: {}

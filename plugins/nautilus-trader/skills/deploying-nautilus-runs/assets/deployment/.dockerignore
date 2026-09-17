@@ -1,0 +1,12 @@
+.git
+.agent
+target
+.env
+.env.*
+**/.aws
+**/.azure
+**/.config/gcloud
+**/credentials
+**/credentials.json
+**/*.pem
+**/*.key

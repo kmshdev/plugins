@@ -9,6 +9,7 @@
     {"id": "actor-upgrade", "request": "Upgrade an existing Nautilus Rust actor application to crates 0.64.0; check features and native APIs before proposing a framework fork.", "expected_skill": "building-nautilus-actors"},
     {"id": "prose-typo", "request": "Correct a spelling error in a project README without changing behavior or dependencies.", "expected_skill": null},
     {"id": "coverage-tool", "request": "Fix incompatible cargo-llvm-cov command-line flags in a CI script; no Nautilus behavior changes.", "expected_skill": null},
-    {"id": "dashboard-style", "request": "Adjust a dashboard card's CSS spacing and visually inspect it; the Rust backend and trading behavior are unchanged.", "expected_skill": null}
+    {"id": "dashboard-style", "request": "Adjust a dashboard card's CSS spacing and visually inspect it; the Rust backend and trading behavior are unchanged.", "expected_skill": null},
+    {"id":"run-delivery","request":"Scaffold reusable CI and isolated Nautilus Rust run jobs with PostgreSQL metadata, Redis Cache, streaming capture and Azure/S3 Parquet storage. Do not deploy.","expected_skill":"deploying-nautilus-runs"}
   ]
 }

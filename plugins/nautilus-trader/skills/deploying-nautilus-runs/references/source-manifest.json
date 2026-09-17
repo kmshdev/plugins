@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "framework_version": "0.64.0",
+  "rust_version": "1.98.1",
+  "edition": "2024",
+  "research_date": "2026-09-17",
+  "source_identity": "pinned-upstream-commit",
+  "upstream_revision": "1b0a49d2792a9432a3aca3fcb617ce7a630d905e",
+  "scope": "Hashes identify cited files, not an entire release or registry artifact.",
+  "files": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "e5338bb3f4f918147dbc92cfbffeaa8b3f8586bcbf8af2e3785ec4ce6f806130"
+    },
+    {
+      "path": "crates/backtest/Cargo.toml",
+      "sha256": "88c133db4b06b5573683a163498da16d3b2509be3e4f9f0c1a9b79882cd90bc4"
+    },
+    {
+      "path": "crates/backtest/src/node.rs",
+      "sha256": "e647553b888cebb1339126f7f97d711df87df8cbb5f2010faeeb7ca5dd1c223d"
+    },
+    {
+      "path": "crates/cli/Cargo.toml",
+      "sha256": "c1367b5110f238eb2ff70d0a41dca3aab3369ced06a7b6a79b5cbd8d37fccbfc"
+    },
+    {
+      "path": "crates/cli/src/database/postgres.rs",
+      "sha256": "4df0ac791b93b8e2897f17c32f86e5b193cbd982ab5db76da363ea700c68acbf"
+    },
+    {
+      "path": "crates/cli/src/opt.rs",
+      "sha256": "ba984477340089c22d8335df87adf4caed052ea4de4e897f353106eb91f8bf84"
+    },
+    {
+      "path": "crates/common/Cargo.toml",
+      "sha256": "bb579d2b1d236c385a3edb8e7b4846e7b57cf45cc18eb74046f79ad353b50f9f"
+    },
+    {
+      "path": "crates/common/src/cache/config.rs",
+      "sha256": "8074ebc41614c752a47f7bc79596d6f72e18840ce06723b369c14ec5abe82b6e"
+    },
+    {
+      "path": "crates/common/src/cache/database.rs",
+      "sha256": "007f802c6b7dab64e7d51d94b534629539107dae4149451df3cfabb7036466c7"
+    },
+    {
+      "path": "crates/common/src/msgbus/api.rs",
+      "sha256": "80e968fc0aa7bf638fb08cd190e0fd3b107a5686762fb05d6d9e97e7cc346988"
+    },
+    {
+      "path": "crates/event_store/src/replay.rs",
+      "sha256": "ed05a903273ab86c0a52679ce8facdcbb5b8696c83a4656789b483c104d71083"
+    },
+    {
+      "path": "crates/event_store/src/replay/catalog.rs",
+      "sha256": "a68223490342e9b8579bfe55f7dd82ab9fcae51e5395d20e0b51a249fcd035a7"
+    },
+    {
+      "path": "crates/infrastructure/Cargo.toml",
+      "sha256": "2f47e340df596f4480ea11701490a9bd7036d3c2c6a7eaa256debd681906dbc6"
+    },
+    {
+      "path": "crates/infrastructure/src/redis/cache.rs",
+      "sha256": "213007f997193e72bc9846319b98a1d67e83645ecde5ac6e642708cb38aa7628"
+    },
+    {
+      "path": "crates/infrastructure/src/sql/cache.rs",
+      "sha256": "a95566fe4c6bfe6350265ba80741ce0958cbd02f770dd4034ab41a625195adb4"
+    },
+    {
+      "path": "crates/infrastructure/src/sql/pg.rs",
+      "sha256": "7f4f7e8a62764f2d88ea200a77b6c1f72d66a693667a6d1d98658dd4892fb048"
+    },
+    {
+      "path": "crates/live/Cargo.toml",
+      "sha256": "512ea5ea37e14f982e66ff5f694fe88452f41f1d0eda0f120f0fd819c48d0453"
+    },
+    {
+      "path": "crates/live/src/node/builder.rs",
+      "sha256": "b6e1ff1375fabcfa548b184ba836b937578a994c8336ac17d330dc4d12bcca62"
+    },
+    {
+      "path": "crates/live/src/node/config.rs",
+      "sha256": "8140e8cad3d6e742c3304f58b9a1648890ed222cb77bf6233656b572707443ca"
+    },
+    {
+      "path": "crates/live/src/node/mod.rs",
+      "sha256": "1d10ca30ca525d878ea27560770caca304665d00fecf9129edfdda0f282749a8"
+    },
+    {
+      "path": "crates/model/Cargo.toml",
+      "sha256": "8f8a9f9ec8fb458e9e0eb1afefbe5b674cd3c442e74c8ae1faa30da5b843da2c"
+    },
+    {
+      "path": "crates/persistence/Cargo.toml",
+      "sha256": "f97ebc962afeae4cb6846a640b6971649915d9eba435ddee625ac1c5c861df2b"
+    },
+    {
+      "path": "crates/persistence/src/backend/catalog.rs",
+      "sha256": "0eb49b000280b8f956a801e70ab3b269e4f59bb08e23e5d193187fb2301f06be"
+    },
+    {
+      "path": "crates/persistence/src/backend/feather.rs",
+      "sha256": "9e8f999b88d74ea9c3152a835b0e7df5e6afcd9a57fe0e5dda70bd4a64a1f279"
+    },
+    {
+      "path": "crates/persistence/src/backend/session.rs",
+      "sha256": "9c394fe6d5df5585409496d71b635c6268f6feefdf00e73b481a377db1168f3c"
+    },
+    {
+      "path": "crates/persistence/src/parquet.rs",
+      "sha256": "3bde5b1b5d509424678f8be7890ec08095f2cc606df7d20d71e757f149a2fe9a"
+    },
+    {
+      "path": "crates/system/Cargo.toml",
+      "sha256": "742c25bdfe2aa5f5fd07ec94fac215a6d364f994389da0d735bc3dc10be8e489"
+    },
+    {
+      "path": "crates/system/src/config.rs",
+      "sha256": "7ae6034d75b71b755578996911c2db82cd2201295d01492bcb2ea1779abdec46"
+    },
+    {
+      "path": "crates/system/src/event_store.rs",
+      "sha256": "9c65e984a097f74b02e0558ea349326fe80527217aa05260dd6b524514afc459"
+    },
+    {
+      "path": "crates/system/src/kernel.rs",
+      "sha256": "4669f2751d3dc80b8b163af4b5b4ca9d53c04946e5f77c47094561eaf1cd6d3d"
+    },
+    {
+      "path": "schema/sql/functions.sql",
+      "sha256": "6d878138fde61e960487b15e5902b91cb9c6113db2182281cc717bb91125b836"
+    },
+    {
+      "path": "schema/sql/partitions.sql",
+      "sha256": "ffd5fa154dab333d1ebbc4ef98f02275e254d83c92857208a20a14f35f818c7c"
+    },
+    {
+      "path": "schema/sql/tables.sql",
+      "sha256": "7cb67b500797e2fdf2777e1616d3eabacee900d394d1a21e0c1da1d7c4df8e51"
+    },
+    {
+      "path": "schema/sql/types.sql",
+      "sha256": "99f13db3c0ffcaec7fc3300b538bb846c9f5300b4dec5feccfdce5d9c9ef5d10"
+    }
+  ]
+}
