@@ -17,6 +17,7 @@ IMAGE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:/-]*@sha256:[0-9a-f]{64}\Z")
 
 
 def storage_uri(value: str, *, writable: bool) -> str:
+    """Validate and normalize a storage URI for catalog input or artifact output."""
     parsed = urlsplit(value)
     if not parsed.scheme:
         return str(Path(value).resolve())
@@ -39,6 +40,7 @@ def storage_uri(value: str, *, writable: bool) -> str:
 
 
 def initialize(output: Path, package: str, binary: str) -> None:
+    """Create deployment overlay files from templates without starting execution."""
     if not IDENTIFIER.fullmatch(package) or not IDENTIFIER.fullmatch(binary):
         raise ValueError("Package and binary must be Cargo-style identifiers")
     templates = {
@@ -53,6 +55,7 @@ def initialize(output: Path, package: str, binary: str) -> None:
 
 
 def plan(output: Path, image: str, mode: str, catalog_uri: str, artifact_root: str, *, config_digest: str) -> dict:
+    """Generate an isolated run plan with unique identifiers without executing the run."""
     if not IMAGE.fullmatch(image):
         raise ValueError("Use the actual OCI image reference with an immutable sha256 digest")
     if mode not in {"backtest", "sandbox", "live"}:
@@ -101,6 +104,7 @@ def plan(output: Path, image: str, mode: str, catalog_uri: str, artifact_root: s
 
 
 def main() -> int:
+    """Process command-line arguments and execute the requested scaffold operation."""
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     initialize_parser = commands.add_parser("init", help="Create a reviewable overlay in a new directory")

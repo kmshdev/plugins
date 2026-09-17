@@ -16,6 +16,7 @@ CONFIG_DIGEST = "b" * 64
 
 class DeploymentScaffoldTests(unittest.TestCase):
     def test_independent_run_plans_are_isolated_without_execution(self) -> None:
+        """Verify that multiple run plans generate unique IDs and remain isolated."""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             first = scaffold.plan(root / "first.json", IMAGE, "backtest", "s3://input/catalog", "s3://output/artifacts", config_digest=CONFIG_DIGEST)
@@ -31,6 +32,7 @@ class DeploymentScaffoldTests(unittest.TestCase):
             self.assertEqual({item.name for item in root.iterdir()}, {"first.json", "second.json"})
 
     def test_existing_plan_and_overlay_are_not_overwritten(self) -> None:
+        """Verify that scaffold operations fail safely when target files exist."""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             destination = root / "plan.json"
@@ -43,6 +45,7 @@ class DeploymentScaffoldTests(unittest.TestCase):
             self.assertEqual(list(root.iterdir()), [destination])
 
     def test_invalid_mode_or_config_digest_produces_no_artifacts(self) -> None:
+        """Verify that invalid mode or config digest values prevent artifact creation."""
         with tempfile.TemporaryDirectory() as directory:
             destination = Path(directory) / "uncreated" / "plan.json"
             for mode, digest in (("paper", CONFIG_DIGEST), ("backtest", ""), ("live", "not-a-digest")):
@@ -51,6 +54,7 @@ class DeploymentScaffoldTests(unittest.TestCase):
                 self.assertFalse(destination.parent.exists())
 
     def test_secret_uris_and_unqualified_output_are_rejected(self) -> None:
+        """Verify that URIs with embedded credentials or invalid schemes are rejected."""
         for uri in ("s3://user:secret@bucket/path", "az://container/data?sig=secret", "https://host/path"):
             with self.subTest(uri=uri), self.assertRaises(ValueError):
                 scaffold.storage_uri(uri, writable=True)
@@ -58,6 +62,7 @@ class DeploymentScaffoldTests(unittest.TestCase):
         self.assertEqual(scaffold.storage_uri("abfs://container@account.dfs.core.windows.net/data", writable=True), "abfs://container@account.dfs.core.windows.net/data")
 
     def test_scaffold_identifiers_cannot_inject_build_commands(self) -> None:
+        """Verify that package and binary identifiers are validated to prevent injection."""
         with tempfile.TemporaryDirectory() as directory:
             destination = Path(directory) / "overlay"
             with self.assertRaises(ValueError):
@@ -68,6 +73,7 @@ class DeploymentScaffoldTests(unittest.TestCase):
             self.assertFalse(any("@@" in item.read_text() for item in destination.rglob("*") if item.is_file()))
 
     def test_local_root_and_mode_specific_capture(self) -> None:
+        """Verify local filesystem URIs and mode-specific capture integration settings."""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             for mode in ("backtest", "sandbox", "live"):
@@ -83,6 +89,7 @@ class DeploymentScaffoldTests(unittest.TestCase):
             self.assertFalse((root / "mutable.json").exists())
 
     def test_native_local_paths_preserve_special_characters(self) -> None:
+        """Verify that local file paths with special characters are handled correctly."""
         with tempfile.TemporaryDirectory() as directory:
             location = Path(directory).resolve() / "my catalog 100% café"
             self.assertEqual(scaffold.storage_uri(str(location), writable=True), str(location))
@@ -90,6 +97,7 @@ class DeploymentScaffoldTests(unittest.TestCase):
             self.assertEqual(scaffold.storage_uri("file://localhost/data/catalog", writable=False), "/data/catalog")
 
     def test_azure_kernel_streaming_requires_account_addressing(self) -> None:
+        """Verify that Azure Blob storage requires properly qualified account addressing."""
         with tempfile.TemporaryDirectory() as directory:
             destination = Path(directory) / "plan.json"
             with self.assertRaisesRegex(ValueError, "account_name"):

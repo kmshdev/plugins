@@ -31,6 +31,7 @@ class BundleContractTests(unittest.TestCase):
         self.addCleanup(root_patch.stop)
 
     def append_link(self, target: str) -> None:
+        """Append a markdown link to the test bundle's README for validation testing."""
         path = self.root / "README.md"
         path.write_text(
             path.read_text(encoding="utf-8") + f"\n[fixture]({target})\n",
@@ -159,6 +160,7 @@ class BundleContractTests(unittest.TestCase):
         self.assertTrue(any("Incomplete evaluator case" in error for error in check.check_bundle()))
 
     def test_unregistered_workflow_rejected(self) -> None:
+        """Verify that extra undeclared workflow directories are rejected."""
         (self.root / "skills/extra").mkdir()
         self.assertTrue(any("exactly the six" in error for error in check.check_bundle()))
 
