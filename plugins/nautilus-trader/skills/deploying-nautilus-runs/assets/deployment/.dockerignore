@@ -1,0 +1,8 @@
+.git
+.agent
+target
+.env
+.env.*
+**/credentials*
+**/*.pem
+**/*.key

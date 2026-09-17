@@ -37,14 +37,16 @@ The plugin source is under [`plugins/css-tokenography`](./plugins/css-tokenograp
 
 ### nautilus-trader
 
-`nautilus-trader` provides five independently usable skills for NautilusTrader
-0.64.0 Rust: actors, strategies, data integration, backtesting and live nodes.
+`nautilus-trader` provides six independently usable skills for NautilusTrader
+0.64.0 Rust: actors, strategies, data integration, backtesting, live nodes and
+persistent run delivery with CI/CD scaffolds, PostgreSQL, Redis and cloud catalogs.
 It includes configuration-driven FX/equity examples, construction-only Databento
 plus Interactive Brokers wiring, advanced order/composition guidance, replay,
 Rust test/simulation/benchmark recipes and original icons.
 
-Released installs use `main`. While this 0.64 update is still unmerged, replace
-`--ref main` below with `--ref codex/nautilus-rust-workflows` to test the candidate:
+Released installs use `main` for the five existing 0.64 workflows. To test the
+new run-delivery skill before its merge, replace `--ref main` below with
+`--ref codex/nautilus-rust-workflows`:
 
 ```sh
 codex plugin marketplace add kmshdev/plugins --ref main

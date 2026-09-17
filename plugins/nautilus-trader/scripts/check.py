@@ -18,7 +18,7 @@ import sync_resources
 
 ROOT = Path(__file__).resolve().parent.parent
 LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
-SOURCE = re.compile(r"`((?:crates/[^`:\s]+|Cargo\.toml)):(\d[^`]*)`")
+SOURCE = re.compile(r"`((?:crates/[^`:\s]+|schema/sql/[^`:\s]+|Cargo\.toml)):(\d[^`]*)`")
 EXCLUDED = {"target", "__pycache__", "results"}
 FRAMEWORK_VERSION = "0.64.0"
 RUST_VERSION = "1.98.1"
@@ -248,7 +248,7 @@ def check_bundle() -> list[str]:
             errors.append(f"Invalid plugin icon: {icon.relative_to(ROOT)}")
     discovered = {path.name for path in (ROOT / "skills").iterdir() if path.is_dir()}
     if discovered != set(sync_resources.ANCHORS):
-        errors.append("Plugin must discover exactly the five workflow skills")
+        errors.append("Plugin must discover exactly the six workflow skills")
     for name in sorted(discovered & set(sync_resources.ANCHORS)):
         skill_root = ROOT / "skills" / name
         errors.extend(check_skill(skill_root))

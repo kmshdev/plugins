@@ -157,6 +157,18 @@
       "sha256": "2787fdf873a1531090e75c2193620b26e8243e1eacf2cc192073c3079410eca1"
     },
     {
+      "path": "crates/cli/Cargo.toml",
+      "sha256": "c1367b5110f238eb2ff70d0a41dca3aab3369ced06a7b6a79b5cbd8d37fccbfc"
+    },
+    {
+      "path": "crates/cli/src/database/postgres.rs",
+      "sha256": "4df0ac791b93b8e2897f17c32f86e5b193cbd982ab5db76da363ea700c68acbf"
+    },
+    {
+      "path": "crates/cli/src/opt.rs",
+      "sha256": "ba984477340089c22d8335df87adf4caed052ea4de4e897f353106eb91f8bf84"
+    },
+    {
       "path": "crates/common/Cargo.toml",
       "sha256": "bb579d2b1d236c385a3edb8e7b4846e7b57cf45cc18eb74046f79ad353b50f9f"
     },
@@ -175,6 +187,14 @@
     {
       "path": "crates/common/src/actor/tests.rs",
       "sha256": "128c48cfad7c2143a130593a243894b778127de201d4d58e3779ed518c4cdbda"
+    },
+    {
+      "path": "crates/common/src/cache/config.rs",
+      "sha256": "8074ebc41614c752a47f7bc79596d6f72e18840ce06723b369c14ec5abe82b6e"
+    },
+    {
+      "path": "crates/common/src/cache/database.rs",
+      "sha256": "007f802c6b7dab64e7d51d94b534629539107dae4149451df3cfabb7036466c7"
     },
     {
       "path": "crates/common/src/cache/mod.rs",
@@ -261,6 +281,22 @@
       "sha256": "7ea51983aa7bb462b05c7b06856b6e14ce9fdd6cdd07cac010e9a3bb87ba1496"
     },
     {
+      "path": "crates/infrastructure/Cargo.toml",
+      "sha256": "2f47e340df596f4480ea11701490a9bd7036d3c2c6a7eaa256debd681906dbc6"
+    },
+    {
+      "path": "crates/infrastructure/src/redis/cache.rs",
+      "sha256": "213007f997193e72bc9846319b98a1d67e83645ecde5ac6e642708cb38aa7628"
+    },
+    {
+      "path": "crates/infrastructure/src/sql/cache.rs",
+      "sha256": "a95566fe4c6bfe6350265ba80741ce0958cbd02f770dd4034ab41a625195adb4"
+    },
+    {
+      "path": "crates/infrastructure/src/sql/pg.rs",
+      "sha256": "7f4f7e8a62764f2d88ea200a77b6c1f72d66a693667a6d1d98658dd4892fb048"
+    },
+    {
       "path": "crates/live/Cargo.toml",
       "sha256": "512ea5ea37e14f982e66ff5f694fe88452f41f1d0eda0f120f0fd819c48d0453"
     },
@@ -333,6 +369,10 @@
       "sha256": "4b73018e570bdc9d176cd5c7158bea662f74eea0f52da828a8d349a8ecfe418d"
     },
     {
+      "path": "crates/persistence/Cargo.toml",
+      "sha256": "f97ebc962afeae4cb6846a640b6971649915d9eba435ddee625ac1c5c861df2b"
+    },
+    {
       "path": "crates/persistence/macros/src/custom.rs",
       "sha256": "f0568b3ab3f98b558b0d1b9f754acdfbcf545efa8e2bcc9e763902cbfac680e9"
     },
@@ -343,6 +383,14 @@
     {
       "path": "crates/persistence/src/backend/feather.rs",
       "sha256": "9e8f999b88d74ea9c3152a835b0e7df5e6afcd9a57fe0e5dda70bd4a64a1f279"
+    },
+    {
+      "path": "crates/persistence/src/backend/session.rs",
+      "sha256": "9c394fe6d5df5585409496d71b635c6268f6feefdf00e73b481a377db1168f3c"
+    },
+    {
+      "path": "crates/persistence/src/parquet.rs",
+      "sha256": "3bde5b1b5d509424678f8be7890ec08095f2cc606df7d20d71e757f149a2fe9a"
     },
     {
       "path": "crates/portfolio/src/portfolio.rs",
@@ -367,6 +415,14 @@
     {
       "path": "crates/serialization/src/arrow/custom.rs",
       "sha256": "b33594930fc0e3b374cb9c8433f0797da86d7f5118751256bf9d00f33e9baddb"
+    },
+    {
+      "path": "crates/system/Cargo.toml",
+      "sha256": "742c25bdfe2aa5f5fd07ec94fac215a6d364f994389da0d735bc3dc10be8e489"
+    },
+    {
+      "path": "crates/system/src/config.rs",
+      "sha256": "7ae6034d75b71b755578996911c2db82cd2201295d01492bcb2ea1779abdec46"
     },
     {
       "path": "crates/system/src/event_store.rs",
@@ -419,6 +475,22 @@
     {
       "path": "crates/trading/src/strategy/mod.rs",
       "sha256": "3244ea43665cf9c66d88db0debd3546a8ee3adca6d8cbe9a6ad00b4f817b502c"
+    },
+    {
+      "path": "schema/sql/functions.sql",
+      "sha256": "6d878138fde61e960487b15e5902b91cb9c6113db2182281cc717bb91125b836"
+    },
+    {
+      "path": "schema/sql/partitions.sql",
+      "sha256": "ffd5fa154dab333d1ebbc4ef98f02275e254d83c92857208a20a14f35f818c7c"
+    },
+    {
+      "path": "schema/sql/tables.sql",
+      "sha256": "7cb67b500797e2fdf2777e1616d3eabacee900d394d1a21e0c1da1d7c4df8e51"
+    },
+    {
+      "path": "schema/sql/types.sql",
+      "sha256": "99f13db3c0ffcaec7fc3300b538bb846c9f5300b4dec5feccfdce5d9c9ef5d10"
     }
   ]
 }

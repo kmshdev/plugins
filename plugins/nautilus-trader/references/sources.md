@@ -15,6 +15,11 @@ the separately resolved registry artifacts; a source hash is not a crate checksu
 The [example qualification](../evals/qualification.md) separately records
 compilation against resolved registry packages. Passing it does not establish
 byte identity between those packages and every source file below.
+
+Deployment qualification additionally follows the supplied
+[Parquet/DataFusion backend](https://nautechsystems.github.io/nautilus_docs/rust-api-latest/nautilus_persistence/backend/index.html)
+and [live crate](https://nautechsystems.github.io/nautilus_docs/rust-api-latest/nautilus_live/index.html)
+documentation into the DP source chains below.
 Upstream source navigation is available at the
 [Nautilus repository](https://github.com/nautechsystems/nautilus_trader);
 `develop` is navigation, not immutable evidence.
@@ -109,6 +114,13 @@ behavior from a single config field. Line ranges are snapshot coordinates.
 | RP2 | `crates/event_store/src/replay.rs:16-22,815-974`: sealed reconstruction, forensics and catalog replay input helpers |
 | RP3 | `crates/event_store/src/replay/catalog.rs:40-108`: catalog query type coverage |
 | AX1 | `crates/common/src/clients/data.rs:150-222`, `crates/adapters/databento/src/data.rs:1120-1160`: default methods and implemented node request surface |
+| DP1 | `crates/live/Cargo.toml:29-105`, `crates/backtest/Cargo.toml:28-58`, `crates/system/Cargo.toml:28-47`, `crates/persistence/Cargo.toml:28-56`, `crates/infrastructure/Cargo.toml:24-45`: node/streaming, cloud and database feature boundaries |
+| DP2 | `crates/system/src/config.rs:267-359`, `crates/system/src/kernel.rs:378-416,984-1045`, `crates/persistence/src/backend/feather.rs:280-338,1004-1258`: native Feather configuration, built-in subscriptions, flush and disposal |
+| DP3 | `crates/persistence/src/backend/catalog.rs:306-342,580-627,1650-1698,1833-1864,3926-3971,4198-4248`, `crates/persistence/src/backend/session.rs:101-139,164-205`, `crates/persistence/src/parquet.rs:501-517,667-977`: Parquet/DataFusion, explicit stream conversion, object-store clients and HTTP limits |
+| DP4 | `crates/common/src/cache/config.rs:37-80`, `crates/common/src/cache/database.rs:59-87`, `crates/infrastructure/src/redis/cache.rs:144-211,1307-1334`, `crates/infrastructure/src/sql/cache.rs:81-178`: Cache factory ownership, namespaces and destructive Redis flush semantics |
+| DP5 | `crates/cli/Cargo.toml:24-53`, `crates/cli/src/opt.rs:26-73`, `crates/cli/src/database/postgres.rs:28-82`, `crates/infrastructure/src/sql/pg.rs:156-350`, `schema/sql/types.sql:1-30`, `schema/sql/tables.sql:1-393`, `schema/sql/functions.sql:1-50`, `schema/sql/partitions.sql:1-85`: CLI executable, explicit schema path, ownership/role mutations and upstream SQL files |
+| DP6 | `crates/live/src/node/builder.rs:139-192,206-216,306-328,344-356,744-766`, `crates/live/src/node/mod.rs:491-574,2578-2588`, `crates/backtest/src/node.rs:137-181,311-318`: one run per node, Cache factory startup ownership and native shutdown |
+| DP7 | `crates/live/src/node/config.rs:1278-1312`, `crates/live/src/node/mod.rs:990-1050`, `crates/persistence/src/backend/feather.rs:654-746,1004-1258,1770-1785`, `crates/common/src/msgbus/api.rs:1042-1049`: live config rejection, async callback restrictions, native writer subscription/close and quote publication |
 
 ## Material documentation/source differences
 
@@ -123,6 +135,6 @@ behavior from a single config field. Line ranges are snapshot coordinates.
 | Catalog/recording fields suggest broad streaming | Explicit node memory and live recording limits |
 
 Source tests in this ledger were **inspected**, not all executed. The local
-quickstart and bundle checks are recorded separately. No broker/provider path,
-performance claim, no-Python Arrow round trip, or exhaustive adapter matrix was
-qualified by this research.
+quickstart, local storage readback and bundle checks are recorded separately.
+No database/cloud/provider operation, performance claim or exhaustive adapter
+matrix is qualified by source inspection alone.

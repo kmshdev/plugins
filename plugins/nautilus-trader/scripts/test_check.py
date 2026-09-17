@@ -158,9 +158,9 @@ class BundleContractTests(unittest.TestCase):
         path.write_text(json.dumps(data))
         self.assertTrue(any("Incomplete evaluator case" in error for error in check.check_bundle()))
 
-    def test_sixth_workflow_rejected(self) -> None:
+    def test_unregistered_workflow_rejected(self) -> None:
         (self.root / "skills/extra").mkdir()
-        self.assertTrue(any("exactly the five" in error for error in check.check_bundle()))
+        self.assertTrue(any("exactly the six" in error for error in check.check_bundle()))
 
     def test_plugin_version_is_exact_release_identity(self) -> None:
         path = self.root / ".codex-plugin/plugin.json"

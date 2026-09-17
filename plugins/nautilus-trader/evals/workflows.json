@@ -153,5 +153,54 @@
         "assertions": ["Event-store replay reconstructs Cache and skips normal startup; it is not strategy replay or broker reconciliation.", "Databento reconnection strips replay start anchors; restored subscriptions do not prove backfill or gap closure.", "The inspected Rust live streaming config is rejected; a blocking/logging Feather subscriber does not provide automatic fail-closed durable recording."]
       }
     ]
+  },
+  "deploying-nautilus-runs": {
+    "working": [
+      {
+        "id": "persistent-scaffold",
+        "prompt": "Scaffold reusable CI and cloud-run delivery for an existing Nautilus Rust 0.64 strategy with PostgreSQL, Redis Cache and S3 Parquet artifacts. Keep each experiment isolated; do not start infrastructure.",
+        "expected_output": "A non-executing deployment overlay and run plan, separate persistence roles, native feature/config wiring and explicit acceptance gaps.",
+        "assertions": [
+          "Enables live/backtest streaming and persistence cloud at the appropriate Cargo boundaries and configures native streaming rather than relying on environment names alone.",
+          "Separates PostgreSQL run metadata, Redis Cache, Feather capture and Parquet/DataFusion; assigns one node/process and unique IDs/prefixes per independent run.",
+          "Does not execute migrations, image publication, cloud jobs or broker connections without authorization.",
+          "Rust 0.64 rejects LiveNodeConfig.streaming; sandbox/live capture requires async native writer integration, not the blocking built-in subscriber copied into the event loop."
+        ]
+      },
+      {
+        "id": "streaming-parquet",
+        "prompt": "My Nautilus Rust node has streaming enabled but I cannot find Parquet for this run. Can I call CacheDatabaseAdapter::flush to make it durable and upload every event to an HTTP URL?",
+        "expected_output": "Explain Feather capture, explicit supported conversion/readback, destructive Redis flush semantics, and HTTP write limitations.",
+        "assertions": [
+          "Identifies native Feather output and explicit convert_stream_to_data with a supported data name such as quotes, preserving ts_init.",
+          "Warns that Redis CacheDatabaseAdapter::flush delegates to destructive database flushing, not a buffered-write drain.",
+          "Does not assume HTTP is a writable durable sink or that all event families/custom payloads were captured."
+        ]
+      },
+      {
+        "id": "negative-generic-ci",
+        "kind": "negative",
+        "prompt": "Fix a generic GitHub Actions YAML formatting error in a documentation-only repository with no Nautilus application.",
+        "expected_output": "Handle as generic CI formatting without selecting deployment or adding trading infrastructure.",
+        "assertions": [
+          "Does not scaffold databases, object storage or a node.",
+          "Does not load Nautilus implementation guides for unrelated formatting."
+        ]
+      }
+    ],
+    "acceptance": [
+      {
+        "id": "azure-schema-recovery",
+        "prompt": "Prepare, but do not deploy, an Azure job for my existing Nautilus 0.64 runner. It reads an HTTP catalog and writes Azure Blob artifacts. I installed nautilus-cli but database init cannot find the SQL files. A live retry must recover pending orders rather than silently start clean.",
+        "expected_output": "A reviewable plan that separates read/write backends, stages pinned SQL explicitly, preserves recovery identity/exclusive ownership and lists approval/verification requirements.",
+        "assertions": [
+          "Allows HTTP inputs but requires qualified writable Azure storage; never embeds SAS tokens or keys in artifacts.",
+          "Explains the executable is nautilus and schema/sql files must be staged explicitly for --schema; treats initialization/ownership changes as an authorized administrative migration.",
+          "Distinguishes new run identity from Cache recovery and retains reconciliation; PostgreSQL Cache ignores UUID namespacing and needs a separate database per independent namespace.",
+          "Does not prescribe az output for backtest kernel streaming without account options; uses qualified ABFS or explicit publication instead.",
+          "Keeps infrastructure/job/broker actions unexecuted and states scaffold/compile checks do not establish cloud durability."
+        ]
+      }
+    ]
   }
 }

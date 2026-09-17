@@ -206,3 +206,56 @@ Current regression datasets target 0.64; original 0.63 prompts are preserved in
 Receipts remain under ignored `.agent/codex-nautilus-rust-workflows/` at the
 repository root. Publication and installed-cache refresh are separate from these
 local commits and checks; a new thread must load the refreshed plugin afterwards.
+
+## 2026-09-18 — Persistent run delivery skill
+
+Added `deploying-nautilus-runs` as a sixth independently portable workflow.
+It supplies an existing-runner delivery overlay (Dockerfile, private local
+PostgreSQL/Redis Compose fixture, reusable GitHub Actions build, application run
+registry schema) and non-executing isolated run-plan generation. No root router,
+deployment hook, provider-specific orchestrator or new agent pipeline was added.
+
+Research followed the requested live and persistence Rust API pages into pinned
+0.64 source at `1b0a49d2792a9432a3aca3fcb617ce7a630d905e`. DP1–DP7 record
+feature gates, Cache factories, native Feather/Parquet/DataFusion, object-store
+construction, CLI schema ownership and node lifecycle. Important qualifications:
+
+- Rust 0.64 rejects `LiveNodeConfig.streaming`. The built-in Feather subscriber
+  also panics inside Tokio callbacks; it is not a drop-in live recording solution.
+  The skill requires application-owned async native writer integration for live
+  runners. The sample demonstrates synchronous API behavior, not a running node.
+- Redis Cache flush is destructive. PostgreSQL Cache ignores instance/trader
+  namespacing and needs a separate database per independent Cache namespace.
+- Native streaming captures Feather; Parquet conversion and decoded readback
+  are explicit. Converter success alone is insufficient acceptance evidence.
+- Kernel streaming cannot supply the account options required for Azure `az`
+  addressing; plans reject that backtest combination. ABFS still requires actual
+  identity/write qualification. Local paths preserve spaces, percent signs and
+  Unicode rather than feeding encoded filenames to the native path converter.
+
+Executed checks on Rust 1.98.1:
+
+- Three native tests passed: exact quote/timestamp Feather-to-Parquet/DataFusion
+  round trip, live-config rejection, and the async subscriber panic boundary.
+  The executable separately wrote/read one quote under a unique artifact prefix.
+- 61 maintenance tests passed, including seven scaffold regressions for isolation,
+  overwrite protection, URI handling, mode-specific capture and command inputs.
+- Source/hash and generated-resource closure, official plugin/skill validators,
+  rustfmt, Compose configuration validation and whitespace checks passed.
+- Fresh signed-out local-marketplace installation discovered six enabled skills
+  with no loading errors. The installed skill generated an overlay and sandbox
+  plan, and its Compose configuration validated without starting services.
+- An independent forward-test produced an HTTP-input/Azure-output delivery plan
+  using only the skill. That pre-review exercise was planning evidence, not a
+  deployment or qualification of the later async integration corrections.
+- Azure-profile read-only autoreview identified four actionable issues: async
+  subscriber context, PostgreSQL isolation, Azure kernel account options and
+  encoded local paths. All were addressed with source-qualified guidance and
+  focused regressions where executable locally. A second Azure static review
+  confirmed the four fixes and found no actionable regressions in scope.
+
+Receipts are under ignored `.agent/codex-nautilus-rust-workflows/deployment/`.
+No PostgreSQL/Redis service, cloud job, migration, registry publication or broker
+connection was executed. Cloud durability, a complete strategy runner and actual
+live async capture/shutdown remain application integration requirements, not
+claims established by scaffold generation or successful local compilation.

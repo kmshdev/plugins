@@ -1,0 +1,30 @@
+name: Reusable Nautilus build
+on:
+  workflow_call:
+    inputs:
+      package:
+        type: string
+        default: "@@PACKAGE@@"
+      binary:
+        type: string
+        default: "@@BINARY@@"
+      features:
+        type: string
+        default: ""
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      CARGO_PACKAGE: ${{ inputs.package }}
+      CARGO_BINARY: ${{ inputs.binary }}
+      CARGO_FEATURES: ${{ inputs.features }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Test native package
+        run: cargo +1.98.1 test --locked --package "$CARGO_PACKAGE" --features "$CARGO_FEATURES"
+      - name: Build executable
+        run: cargo +1.98.1 build --release --locked --package "$CARGO_PACKAGE" --bin "$CARGO_BINARY" --features "$CARGO_FEATURES"

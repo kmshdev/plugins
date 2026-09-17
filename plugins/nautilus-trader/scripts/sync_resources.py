@@ -15,6 +15,7 @@ ANCHORS = {
     "integrating-nautilus-data": ("V", "A", "D", "M", "B1", "B2", "AD", "Q", "CF", "CP", "T", "RP", "AX"),
     "backtesting-nautilus-strategies": ("V", "A", "D", "S", "E", "R", "B", "M", "L1", "L2", "Q", "CF", "CP", "T", "RP", "AX"),
     "running-nautilus-live": ("V", "A", "S3", "E", "R", "L", "B1", "B2", "M3", "AD", "AR", "SB", "CF", "CP", "T", "RP", "AX"),
+    "deploying-nautilus-runs": ("V", "DP", "RP"),
 }
 CONNECTIONS = {
     "building-nautilus-actors": ("C1", "C3"),
@@ -23,7 +24,7 @@ CONNECTIONS = {
     "backtesting-nautilus-strategies": ("C1", "C2", "C3", "C4", "C6", "C8"),
     "running-nautilus-live": ("C2", "C4", "C5", "C6", "C7"),
 }
-SOURCE = re.compile(r"`((?:crates/[^`:\s]+|Cargo\.toml)):\d[^`]*`")
+SOURCE = re.compile(r"`((?:crates/[^`:\s]+|schema/sql/[^`:\s]+|Cargo\.toml)):\d[^`]*`")
 EXAMPLE_FILES = ("Cargo.toml", "Cargo.lock", "src/lib.rs", "src/main.rs", "src/observer.rs")
 
 
@@ -45,14 +46,14 @@ def generated_files(root: Path) -> dict[Path, bytes]:
     shared_guides = ("configuration.md", "composition.md", "rust-testing.md", "event-replay.md", "adapter-development.md", "version-and-integration.md")
     for name, prefixes in ANCHORS.items():
         skill = root / "skills" / name
-        for guide in shared_guides:
+        guides = ("event-replay.md", "version-and-integration.md") if name == "deploying-nautilus-runs" else shared_guides
+        for guide in guides:
             generated[skill / "references" / guide] = (root / "references" / guide).read_bytes()
-        generated[skill / "references/foundation.md"] = (
-            root / "references/foundation.md"
-        ).read_bytes()
-        generated[skill / "references/connections.md"] = (
-            (introduction + "".join(sections[case] for case in CONNECTIONS[name])).rstrip() + "\n"
-        ).encode()
+        if name != "deploying-nautilus-runs":
+            generated[skill / "references/foundation.md"] = (root / "references/foundation.md").read_bytes()
+            generated[skill / "references/connections.md"] = (
+                (introduction + "".join(sections[case] for case in CONNECTIONS[name])).rstrip() + "\n"
+            ).encode()
         selected = [
             row for row in rows
             if re.match(r"\| [A-Z]+\d+ \|", row)
@@ -92,6 +93,22 @@ is `test-support`; enable it only when fixtures require it.
 | ID | Snapshot coordinates and connected symbols |
 | --- | --- |
 """
+        if name == "deploying-nautilus-runs":
+            sources = f"""# Deployment source evidence
+
+Qualified against Rust {manifest['framework_version']} at
+`{manifest['upstream_revision']}`, with Rust {manifest['rust_version']}.
+[Hashes](source-manifest.json) identify reviewed source files, not a requirement
+to open a hidden checkout or a proof of cloud execution.
+
+Official entry points: [Parquet/DataFusion backend](https://nautechsystems.github.io/nautilus_docs/rust-api-latest/nautilus_persistence/backend/index.html),
+[live node](https://nautechsystems.github.io/nautilus_docs/rust-api-latest/nautilus_live/index.html),
+[infrastructure](https://nautechsystems.github.io/nautilus_docs/rust-api-latest/nautilus_infrastructure/index.html).
+Moving documentation is qualified by these pinned declarations and callers.
+
+| ID | Snapshot coordinates and connected symbols |
+| --- | --- |
+"""
         generated[skill / "references/sources.md"] = (
             sources + "\n".join(selected) + """
 
@@ -108,7 +125,7 @@ profitability, production recovery or live protective-order behavior.
             generated[skill / "references/adapters.md"] = (
                 root / "references" / adapter
             ).read_bytes()
-        if name != "running-nautilus-live":
+        if name not in {"running-nautilus-live", "deploying-nautilus-runs"}:
             for filename in EXAMPLE_FILES:
                 if name == "building-nautilus-actors" and filename == "src/observer.rs":
                     continue
@@ -171,7 +188,7 @@ custom signal. Native BacktestEngine owns registration, clock, Cache and dispatc
 The JSON test is not an Arrow/catalog round trip or live-provider qualification.
 """
             generated[skill / "assets/quickstart/README.md"] = readme.encode()
-        if name not in {"building-nautilus-actors", "running-nautilus-live"}:
+        if name not in {"building-nautilus-actors", "running-nautilus-live", "deploying-nautilus-runs"}:
             example = root / "examples/quickstart"
             for source in example.rglob("*"):
                 if source.is_file() and not {"target", "__pycache__"}.intersection(source.relative_to(example).parts):
@@ -184,6 +201,13 @@ The JSON test is not an Arrow/catalog round trip or live-provider qualification.
             for source in example.rglob("*"):
                 if source.is_file() and "target" not in source.relative_to(example).parts:
                     generated[skill / "assets/live-composition" / source.relative_to(example)] = source.read_bytes()
+        if name == "deploying-nautilus-runs":
+            for filename in ("icon.svg", "icon.png"):
+                generated[skill / "assets" / filename] = (root / "assets" / filename).read_bytes()
+            example = root / "examples/run-storage"
+            for source in example.rglob("*"):
+                if source.is_file() and "target" not in source.relative_to(example).parts:
+                    generated[skill / "assets/storage-smoke" / source.relative_to(example)] = source.read_bytes()
         for group, filename in (("working", "evals.json"), ("acceptance", "acceptance.json")):
             dataset = {"skill_name": name, "evals": []}
             for case in cases[name][group]:

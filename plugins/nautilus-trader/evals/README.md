@@ -2,7 +2,7 @@
 
 ## Current collection routing
 
-[routing.json](routing.json) is a small collection-level smoke set for the five
+[routing.json](routing.json) is a small collection-level smoke set for the six
 installed workflow descriptions, including non-trading negative cases and an
 upgrade boundary. Give the evaluator the requests and actual discovered inventory,
 not `expected_skill`. Compare selected workflows with those expectations only
@@ -16,7 +16,7 @@ prompts are preserved in [workflows-0.63.json](history/workflows-0.63.json) and
 the current 0.64 baseline. New smoke cases are regression evidence, not a fresh
 independent model benchmark after they have influenced a revision.
 
-## Five-workflow evaluation
+## Workflow evaluation
 
 [workflows.json](workflows.json) adapts the original specification to 0.64.0:
 three working cases and one separate acceptance case per skill. These reused
@@ -24,8 +24,9 @@ acceptance prompts are regression cases, not fresh holdouts. The resource
 generator materializes evaluator-compatible local `evals/evals.json` and
 `evals/acceptance.json`. Each case has `expected_output`, assertions,
 `expected_skill` (null for negative scope cases), and explicit `files: []`.
-The fifteen working cases precede five held-out acceptance cases. Do not use
-held-out grades to tune the same candidate and still call them fresh.
+The original fifteen working cases and five acceptance cases remain regression
+evidence. The deployment workflow adds three working cases and a separately
+phrased acceptance case. Do not reuse evaluated cases as fresh holdouts.
 
 Once evaluated acceptance cases inform a later revision, they are historical
 regression evidence, not a fresh holdout for that revision. Preserve their

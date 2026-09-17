@@ -18,6 +18,7 @@ subsystem. Adapter-specific coverage is restricted to IBKR and Databento.
 | Databento factories/data/history and symbology | Integrating data / live | [Adapter data](references/adapter-data.md) |
 | IBKR contract resolution, execution and reports | Live / integrating data | [Adapter runtime](references/adapter-runtime.md) |
 | Cache persistence, event replay and shutdown | Live | [Live guide](skills/running-nautilus-live/references/guide.md) |
+| Run isolation, CI/container delivery, PostgreSQL schema, Redis cache, Feather/Parquet and cloud storage | Run delivery | [Deployment guide](skills/deploying-nautilus-runs/references/guide.md), [storage](skills/deploying-nautilus-runs/references/storage.md) |
 
 ## Connection acceptance scenarios
 

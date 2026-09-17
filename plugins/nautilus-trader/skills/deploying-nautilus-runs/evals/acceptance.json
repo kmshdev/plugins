@@ -1,0 +1,19 @@
+{
+  "skill_name": "deploying-nautilus-runs",
+  "evals": [
+    {
+      "id": "azure-schema-recovery",
+      "prompt": "Prepare, but do not deploy, an Azure job for my existing Nautilus 0.64 runner. It reads an HTTP catalog and writes Azure Blob artifacts. I installed nautilus-cli but database init cannot find the SQL files. A live retry must recover pending orders rather than silently start clean.",
+      "expected_output": "A reviewable plan that separates read/write backends, stages pinned SQL explicitly, preserves recovery identity/exclusive ownership and lists approval/verification requirements.",
+      "assertions": [
+        "Allows HTTP inputs but requires qualified writable Azure storage; never embeds SAS tokens or keys in artifacts.",
+        "Explains the executable is nautilus and schema/sql files must be staged explicitly for --schema; treats initialization/ownership changes as an authorized administrative migration.",
+        "Distinguishes new run identity from Cache recovery and retains reconciliation; PostgreSQL Cache ignores UUID namespacing and needs a separate database per independent namespace.",
+        "Does not prescribe az output for backtest kernel streaming without account options; uses qualified ABFS or explicit publication instead.",
+        "Keeps infrastructure/job/broker actions unexecuted and states scaffold/compile checks do not establish cloud durability."
+      ],
+      "expected_skill": "deploying-nautilus-runs",
+      "files": []
+    }
+  ]
+}

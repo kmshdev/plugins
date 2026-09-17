@@ -1,6 +1,6 @@
 # Nautilus Trader for Codex
 
-Five self-contained skills for **NautilusTrader 0.64.0 in Rust**, with original
+Six self-contained skills for **NautilusTrader 0.64.0 in Rust**, with original
 icons, implementation guides and executable examples. Start small, compile,
 run a native scenario, then add evidence for the boundary you change.
 
@@ -11,6 +11,7 @@ run a native scenario, then add evidence for the boundary you change.
 | [Data](skills/integrating-nautilus-data/SKILL.md) | Identity, requests/subscriptions, codecs, catalogs and adapter extensions |
 | [Backtesting](skills/backtesting-nautilus-strategies/SKILL.md) | Native replay, repeatable experiments and economic comparisons |
 | [Live nodes](skills/running-nautilus-live/SKILL.md) | Rust composition, routing, reconciliation, recovery and shutdown |
+| [Run delivery](skills/deploying-nautilus-runs/SKILL.md) | Reusable CI/container scaffolds, isolated runs and PostgreSQL/Redis/cloud storage |
 
 Strategy APIs are instrument/venue generic. Provider recipes cover only
 **Databento and Interactive Brokers**. Instrument metadata, adapter capabilities
@@ -19,9 +20,9 @@ content needs no hidden source checkout, sibling skill or Python trading runtime
 
 ## Install
 
-Released installs use the stable `main` ref. While this 0.64 update is still
-unmerged, replace `--ref main` below with `--ref codex/nautilus-rust-workflows`
-to test the candidate. After merge, use `main` rather than the temporary branch:
+Released installs use the stable `main` ref. To test the new run-delivery skill
+before its merge, replace `--ref main` with `--ref codex/nautilus-rust-workflows`.
+The existing five 0.64 workflows are already released on `main`:
 
 ```sh
 codex plugin marketplace add kmshdev/plugins --ref main
@@ -37,7 +38,7 @@ authentication; installation does not supply an account or provider keys.
 
 The Codex manifest is
 [.codex-plugin/plugin.json](.codex-plugin/plugin.json); it discovers exactly the
-five child directories. There is no sixth root skill or compatibility alias.
+six child directories. There is no root router or compatibility alias.
 You can also copy any child directory into a skill-capable host independently.
 
 For a repository-only activation, install the plugin into Codex's cache, keep
@@ -68,6 +69,10 @@ The first build may fetch dependencies; cached builds can use `--offline`.
   native registration and dispatch with zero orders/positions.
 - [Live composition](examples/live-composition/README.md): constructs/disposes
   Databento plus IB clients without starting them or reading credentials.
+- [Run storage](examples/run-storage/README.md): an explicit native writer on
+  one sandbox node captures a synthetic quote to Feather, converts it to Parquet
+  and verifies DataFusion readback. Rust 0.64 rejects automatic live streaming
+  config; database/cloud features compile without connecting their services.
 
 These are local executable checks. They do not claim provider delivery,
 profitable trading, full durable-log acceptance, network soaks or benchmark results.
@@ -86,6 +91,7 @@ profitable trading, full durable-log acceptance, network soaks or benchmark resu
 | [Connection recipes](references/connections.md) | Eight coupled runtime paths |
 | [Source ledger](references/sources.md) and [hash inventory](source-manifest.json) | Official docs first, version-qualified source evidence |
 | [Version and integration](references/version-and-integration.md) | Upgrade dependencies or qualify a native alternative before a framework workaround |
+| [Persistent run architecture](skills/deploying-nautilus-runs/references/guide.md) | Per-run ownership, storage roles, native features and delivery gates |
 
 Read only the guide relevant to the work. Each child carries its own referenced
 resources. The evidence targets upstream Rust 0.64.0 at commit
@@ -112,7 +118,7 @@ to use the skills, run the Rust examples or check offline portability. Evaluatio
 services/toolchains have separate prerequisites documented in [evals](evals/README.md).
 Historical model grades are not results for this revision.
 
-The five `agents/openai.yaml` files configure skill discovery and appearance;
+The six `agents/openai.yaml` files configure skill discovery and appearance;
 they are not custom subagents. Implicit invocation permits selection, not a
 mandatory runtime hook. Choose the workflow for the affected owner and reuse
 sufficient inherited guidance across delegated work. No root router, subagent
