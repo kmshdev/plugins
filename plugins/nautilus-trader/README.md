@@ -19,8 +19,20 @@ content needs no hidden source checkout, sibling skill or Python trading runtime
 
 ## Install
 
-Install `nautilus-trader@kmshdev` from the
-[kmshdev marketplace](https://github.com/kmshdev/plugins). The Codex manifest is
+Use the installed Codex CLI to add the published 0.64 beta explicitly:
+
+```sh
+codex plugin marketplace add kmshdev/plugins --ref codex/nautilus-rust-workflows
+codex plugin add nautilus-trader@kmshdev --json
+```
+
+The `main` marketplace currently contains 0.63. Check that the install response
+reports `0.64.0+codex.` and use its `installedPath` to find this guide and the
+examples. The ref applies to the `kmshdev` marketplace, but only this plugin is
+installed. Start a new Codex thread after installing. Codex sign-in is required
+for agent execution; installation does not supply an account or provider keys.
+
+The Codex manifest is
 [.codex-plugin/plugin.json](.codex-plugin/plugin.json); it discovers exactly the
 five child directories. There is no sixth root skill or compatibility alias.
 You can also copy any child directory into a skill-capable host independently.
