@@ -3,7 +3,7 @@ name: backtesting-nautilus-strategies
 description: Run or diagnose reproducible Nautilus Rust backtests, replay ordering, catalog chunking, fill assumptions, and result comparisons. Not live account operations.
 metadata:
   author: kmshdev
-  version: "0.63.0"
+  version: "0.64.0"
 ---
 
 # Backtest a Nautilus strategy
@@ -12,7 +12,7 @@ metadata:
 experiment question. **Output:** a reproducible native run and results labeled
 with the simulation assumptions and evidence limitations.
 
-For compilation, use Rust 1.98.0+ and locked `=0.63.0` crates. Require admitted
+For compilation, use Rust 1.98.1+ and locked `=0.64.0` crates. Require admitted
 input and instrument definitions, not a provider credential for synthetic replay.
 
 ## Instructions
@@ -31,7 +31,7 @@ Start from the [offline Rust example](assets/quickstart/README.md) when no harne
 exists. Consult [runtime contracts](references/foundation.md) and
 [connection recipes](references/connections.md) for coupled replay paths, and
 [source evidence](references/sources.md) only when the boundary requires them.
-The package targets **NautilusTrader 0.63.0**, without Python.
+The package targets **NautilusTrader 0.64.0**, without Python.
 
 Use [typed run configuration](references/configuration.md),
 [component composition](references/composition.md), and the

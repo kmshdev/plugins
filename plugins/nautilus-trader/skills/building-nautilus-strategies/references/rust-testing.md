@@ -34,7 +34,7 @@ reordering/drop patterns. Do not invent a second execution reducer in a test.
 
 ## Upstream source tests: optional, version-qualified
 
-These commands require an upstream 0.63.0 checkout with its dependencies and are
+These commands require an upstream 0.64.0 checkout with its dependencies and are
 not bundled-example acceptance commands. Select the package/test affected by a
 change. The official testing guide uses nextest for process isolation; doctests
 are separate. Do not copy Python-enabled full-workspace flags into a Rust-only app.
@@ -42,7 +42,7 @@ are separate. Do not copy Python-enabled full-workspace flags into a Rust-only a
 ```sh
 cargo nextest run --locked -p nautilus-execution reconciliation
 cargo test --locked -p nautilus-common --doc
-cargo test --locked -p nautilus-network --features turmoil --test turmoil_websocket test_turmoil_real_websocket_basic_connect
+cargo test --locked -p nautilus-network --features turmoil --test integration turmoil_websocket::test_turmoil_real_websocket_basic_connect
 ```
 
 The network helper accepts `NAUTILUS_TURMOIL_SOAK_START` and

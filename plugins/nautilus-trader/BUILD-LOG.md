@@ -126,3 +126,34 @@ The final receipt-only cache revision is `.2`; executable guidance and examples
 are unchanged. No provider connection was made. The application review passed
 make check and schema gates; its image gate was blocked by the unavailable local
 Dory daemon. Application details are recorded in that repository's evidence doc.
+
+## 2026-09-17 — Rust 0.64.0 executable baseline
+
+The examples now resolve registry Nautilus 0.64.0 with Rust 1.98.1. The release
+source is pinned to upstream `1b0a49d2792a9432a3aca3fcb617ce7a630d905e`;
+all 103 cited files were rehashed, and moved integration-test coordinates were
+updated. Source verification rejects a different revision or edited cited bytes.
+Registry lockfiles identify the separately packaged artifacts.
+
+The native runtime check caught private `Price.raw` and `Quantity.raw` fields;
+the configurable example now uses their public `raw()` accessors without changing
+its exact financial/grid checks. Model fixtures use `test-support`, and the
+optional upstream network command selects the current `integration` test target.
+
+Executed locally with the installed Rust 1.98.1 toolchain:
+
+- Combined quickstart: four tests passed; the executable produced
+  `inputs=5 quotes=4 signals=1 orders=1 positions=1` and quantity 1000.
+- Independent actor: one test passed; the executable produced
+  `inputs=5 quotes=4 signals=1 orders=0 positions=0`.
+- Databento/IB node: built and disposed successfully; no clients started.
+- Maintenance: 54 tests passed; source hashes, resource closure, plugin/skill
+  validators, rustfmt check and `git diff --check` passed.
+- `codex review --uncommitted` in a read-only session reported no actionable
+  regressions. It independently checked source/bundle consistency; the author
+  ran the executable checks above.
+
+Evidence is in ignored `.agent/codex-nautilus-rust-workflows/` at the repository
+root. This checkpoint qualifies the executable baseline, not every source recipe,
+automatic workflow selection, provider delivery, broker fills or profitability.
+Historical 0.63 evaluation prompts and receipts retain their original version.

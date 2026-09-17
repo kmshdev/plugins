@@ -67,14 +67,14 @@ def generated_files(root: Path) -> dict[Path, bytes]:
             "files": [item for item in manifest["files"] if item["path"] in source_paths],
         }
         generated[skill / "references/source-manifest.json"] = json_bytes(local_manifest)
-        sources = """# Source-qualified Rust 0.63.0 evidence
+        sources = f"""# Source-qualified Rust {manifest['framework_version']} evidence
 
-Research date: 2026-09-11. These original summaries use official documentation
-first, then connected declarations, callers, reducers and tests in a 0.63.0
-source snapshot. Source coordinates are optional audit evidence, not paths the
+Research date: {manifest['research_date']}. These original summaries connect
+official documentation with declarations, callers, reducers and tests at upstream
+revision `{manifest['upstream_revision']}`. Source coordinates are audit evidence, not paths the
 skill must open. No source checkout is required to use this skill.
 
-The snapshot declares Rust 1.98.0, edition 2024. Its upstream commit is unknown;
+The release declares Rust {manifest['rust_version']}, edition 2024;
 the [local hash manifest](source-manifest.json) identifies cited files, not a
 whole release or proof of byte identity with published crates.
 
@@ -85,9 +85,9 @@ Read [Rust concepts](https://nautilustrader.io/docs/latest/concepts/rust/),
 [data](https://nautilustrader.io/docs/latest/concepts/data/),
 [backtesting](https://nautilustrader.io/docs/latest/concepts/backtesting/), and
 [Rust live](https://nautilustrader.io/docs/latest/how_to/run_rust_live_trading/)
-only as relevant. Moving docs can show 0.62 or Python signatures: prefer the
-compiler-visible 0.63.0 declaration. The snapshot's fixture feature is `stubs`,
-not the moving docs' `test-support`.
+only as relevant. Moving docs can differ from the application: its locked
+compiler-visible declarations govern APIs. The published model fixture feature
+is `test-support`; enable it only when fixtures require it.
 
 | ID | Snapshot coordinates and connected symbols |
 | --- | --- |
@@ -117,7 +117,7 @@ profitability, production recovery or live protective-order behavior.
                 ).read_bytes()
             readme = """# Offline native quickstart
 
-Independent Rust 2024 package pinned to Nautilus 0.63.0; requires Rust 1.98.0.
+Independent Rust 2024 package pinned to Nautilus 0.64.0; requires Rust 1.98.1.
 From this directory run `cargo test --locked`, then `cargo run --locked`.
 With cached dependencies use `--offline`. First resolution/build may download
 crates, but the application uses only synthetic input and makes no provider calls.
@@ -155,7 +155,7 @@ it does not inject a prebuilt custom input.
                 ).read_bytes()
                 readme = """# Order-free actor quickstart
 
-Independent Rust 2024 package pinned to Nautilus 0.63.0; requires Rust 1.98.0.
+Independent Rust 2024 package pinned to Nautilus 0.64.0; requires Rust 1.98.1.
 From this directory run `cargo test --locked`, then `cargo run --locked`.
 With cached dependencies use `--offline`; an initial build may download crates.
 The program is entirely synthetic and makes no provider calls.

@@ -3,7 +3,7 @@ name: building-nautilus-strategies
 description: Implement or repair Nautilus Rust trading rules, sizing, brackets, order and position callbacks, and execution races. Not data ingestion or node operations.
 metadata:
   author: kmshdev
-  version: "0.63.0"
+  version: "0.64.0"
 ---
 
 # Build a Nautilus strategy
@@ -12,7 +12,7 @@ metadata:
 existing strategy code when present. **Output:** a native strategy whose order
 intent and lifecycle match those rules, with focused execution evidence.
 
-For compilation, use Rust 1.98.0+ and locked `=0.63.0` crates.
+For compilation, use Rust 1.98.1+ and locked `=0.64.0` crates.
 
 ## Instructions
 
@@ -29,7 +29,7 @@ For compilation, use Rust 1.98.0+ and locked `=0.63.0` crates.
 Use [runtime contracts](references/foundation.md) for Cache/Portfolio staging,
 [connection recipes](references/connections.md) for signal, fill and cancel paths,
 [the bounded example](assets/quickstart/README.md) for native composition, and
-[source evidence](references/sources.md) for **0.63.0** API discrepancies.
+[source evidence](references/sources.md) for **0.64.0** API discrepancies.
 
 Use [typed run configuration](references/configuration.md),
 [component composition](references/composition.md), and the

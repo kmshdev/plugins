@@ -3,7 +3,7 @@ name: building-nautilus-actors
 description: Build or fix order-free Nautilus Rust actors, subscriptions, timers, indicator warm-up, and custom-data publication. Not order execution or node deployment.
 metadata:
   author: kmshdev
-  version: "0.63.0"
+  version: "0.64.0"
 ---
 
 # Build a Nautilus actor
@@ -14,7 +14,7 @@ from the target project; do not invent trading rules.
 **Output:** a native order-free component with the requested delivery/state
 behavior and evidence at the affected callback or runtime boundary.
 
-For compilation, use Rust 1.98.0+ and locked `=0.63.0` crates.
+For compilation, use Rust 1.98.1+ and locked `=0.64.0` crates.
 
 ## Instructions
 

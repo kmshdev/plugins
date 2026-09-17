@@ -1,6 +1,6 @@
 # Construction-only live composition
 
-This independent Rust package verifies that NautilusTrader `0.63.0` can build
+This independent Rust package verifies that NautilusTrader `0.64.0` can build
 and dispose a `LiveNode` using a Databento data factory and an Interactive
 Brokers execution factory. It uses fixed placeholder values and a minimal,
 public Databento publisher fixture. It does not read environment variables,

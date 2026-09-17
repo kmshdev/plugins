@@ -68,7 +68,7 @@ class BundleContractTests(unittest.TestCase):
     def test_unpinned_nautilus_dependency(self) -> None:
         path = self.root / "examples/quickstart/Cargo.toml"
         path.write_text(
-            path.read_text(encoding="utf-8").replace('version = "=0.63.0"', 'version = "0.63"'),
+            path.read_text(encoding="utf-8").replace('version = "=0.64.0"', 'version = "0.63"'),
             encoding="utf-8",
         )
         self.assertTrue(any("Unpinned framework" in error for error in check.check_bundle()))
@@ -76,7 +76,7 @@ class BundleContractTests(unittest.TestCase):
     def test_every_canonical_example_is_checked(self) -> None:
         path = self.root / "examples/live-composition/Cargo.toml"
         path.write_text(
-            path.read_text(encoding="utf-8").replace('version = "=0.63.0"', 'version = "0.63"'),
+            path.read_text(encoding="utf-8").replace('version = "=0.64.0"', 'version = "0.63"'),
             encoding="utf-8",
         )
         self.assertTrue(any("live-composition/Cargo.toml" in error for error in check.check_bundle()))
@@ -165,7 +165,7 @@ class BundleContractTests(unittest.TestCase):
     def test_plugin_version_is_exact_release_identity(self) -> None:
         path = self.root / ".codex-plugin/plugin.json"
         data = json.loads(path.read_text(encoding="utf-8"))
-        data["version"] = "0.63.0"
+        data["version"] = "0.64.0"
         path.write_text(json.dumps(data), encoding="utf-8")
         self.assertTrue(any("plugin identity/version" in error for error in check.check_bundle()))
 
@@ -178,9 +178,27 @@ class BundleContractTests(unittest.TestCase):
         self.assertTrue(any("icon declaration" in error for error in check.check_bundle()))
 
     def test_duplicate_source_ranges_preserved(self) -> None:
+        (self.root / "references/sources.md").write_text(
+            "`crates/common/src/actor/data_actor.rs:1-2`\n"
+            "`crates/common/src/actor/data_actor.rs:5-6`\n"
+        )
         coordinates = check.source_coordinates()
-        self.assertIn("119-280", coordinates["crates/common/src/actor/data_actor.rs"])
-        self.assertIn("1762-1778", coordinates["crates/common/src/actor/data_actor.rs"])
+        self.assertEqual(coordinates["crates/common/src/actor/data_actor.rs"], "1-2,5-6")
+
+    def test_cachebuster_does_not_require_checker_changes(self) -> None:
+        path = self.root / ".codex-plugin/plugin.json"
+        data = json.loads(path.read_text())
+        data["version"] = "0.64.0+codex.another-build"
+        path.write_text(json.dumps(data))
+        self.assertEqual(check.check_bundle(), [])
+
+    def test_independent_source_revision_is_qualified(self) -> None:
+        skill = self.root / "skills/building-nautilus-actors"
+        path = skill / "references/source-manifest.json"
+        data = json.loads(path.read_text())
+        data["upstream_revision"] = None
+        path.write_text(json.dumps(data))
+        self.assertTrue(any("source toolchain or revision" in error for error in check.check_skill(skill)))
 
     def test_actor_asset_has_no_order_authority(self) -> None:
         source = self.root / "skills/building-nautilus-actors/assets/quickstart/src/main.rs"

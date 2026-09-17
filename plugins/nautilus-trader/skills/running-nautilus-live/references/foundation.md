@@ -1,8 +1,8 @@
-# Native runtime contract: 0.63.0
+# Native runtime contract: 0.64.0
 
 Use this reference when a task crosses components, not before every edit.
-The source snapshot declares 0.63.0, Rust 1.98.0 and edition 2024. Use exact
-`=0.63.0` crate requirements and the executable's lockfile. A version label is
+The source snapshot declares 0.64.0, Rust 1.98.1 and edition 2024. Use exact
+`=0.64.0` crate requirements and the executable's lockfile. A version label is
 not proof of artifact equality: consult the bundled source evidence when the
 compiler or moving documentation disagrees. No Python runtime is needed.
 

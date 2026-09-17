@@ -1,6 +1,6 @@
 # Architecture and workflow coverage
 
-Scope: compose and use NautilusTrader 0.63.0 Rust, not implement every framework
+Scope: compose and use NautilusTrader 0.64.0 Rust, not implement every framework
 subsystem. Adapter-specific coverage is restricted to IBKR and Databento.
 
 | Component or contract | Workflow owner | Bundled reference |

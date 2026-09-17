@@ -1,4 +1,4 @@
-# Databento data with IBKR execution: native 0.63.0
+# Databento data with IBKR execution: native 0.64.0
 
 This is construction and lifecycle guidance, not permission to connect or trade.
 Read the official [Rust live how-to](https://nautilustrader.io/docs/latest/how_to/run_rust_live_trading/),
@@ -9,7 +9,7 @@ the native paths below; moving Python examples are not Rust declarations.
 
 ## Construction boundary
 
-Use exact `=0.63.0` dependencies with defaults disabled:
+Use exact `=0.64.0` dependencies with defaults disabled:
 `nautilus-live` feature `node`, `nautilus-databento` features
 `live, high-precision`, `nautilus-interactive-brokers` feature `execution`,
 and matching `nautilus-common`/`nautilus-model` (`high-precision`).

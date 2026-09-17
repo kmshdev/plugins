@@ -1,4 +1,4 @@
-# Cross-component recipes: Rust 0.63.0
+# Cross-component recipes: Rust 0.64.0
 
 Select the path that explains the task; do not load every recipe before editing.
 These recipes connect the workflow guides, not new engines or new skills.

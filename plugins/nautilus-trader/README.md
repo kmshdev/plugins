@@ -1,6 +1,6 @@
 # Nautilus Trader for Codex
 
-Five self-contained skills for **NautilusTrader 0.63.0 in Rust**, with original
+Five self-contained skills for **NautilusTrader 0.64.0 in Rust**, with original
 icons, implementation guides and executable examples. Start small, compile,
 run a native scenario, then add evidence for the boundary you change.
 
@@ -42,7 +42,7 @@ apply. Installation/cache scope and enabled scope are distinct. See
 
 ## Run the examples
 
-Use Rust 1.98.0+ and the included lockfiles. Crates are pinned to `=0.63.0`.
+Use Rust 1.98.1+ and the included lockfiles. Crates are pinned to `=0.64.0`.
 The first build may fetch dependencies; cached builds can use `--offline`.
 
 - [Configurable backtest](examples/quickstart/README.md): the same binary runs
@@ -72,10 +72,10 @@ profitable trading, full durable-log acceptance, network soaks or benchmark resu
 | [Source ledger](references/sources.md) and [hash inventory](source-manifest.json) | Official docs first, version-qualified source evidence |
 
 Read only the guide relevant to the work. Each child carries its own referenced
-resources. The inspected snapshot declares 0.63.0, while moving official snippets
-still show 0.62 in places; source/compiler differences are recorded explicitly.
-The source revision is unknown: hashes identify cited files, not an entire
-upstream release. Original summaries are not a vendored upstream distribution.
+resources. The evidence targets upstream Rust 0.64.0 at commit
+`1b0a49d2792a9432a3aca3fcb617ce7a630d905e`; source/compiler differences remain
+explicit. Hashes identify cited files, while the examples' lockfiles identify
+registry artifacts. Original summaries are not a vendored upstream distribution.
 Upstream crates retain their own licensing obligations; this bundle assigns no
 new license to them.
 

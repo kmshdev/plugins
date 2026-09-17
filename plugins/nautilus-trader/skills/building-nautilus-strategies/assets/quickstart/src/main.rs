@@ -125,7 +125,7 @@ impl InstrumentConfig {
                 let bid = parse_price(bid, *price_precision, price_increment, "bid")?;
                 let ask = parse_price(ask, *price_precision, price_increment, "ask")?;
                 anyhow::ensure!(
-                    ask.raw >= bid.raw,
+                    ask.raw() >= bid.raw(),
                     "ask must be greater than or equal to bid"
                 );
                 let quote_quantity = parse_quantity(
@@ -175,7 +175,7 @@ impl InstrumentConfig {
                 let bid = parse_price(bid, *price_precision, price_increment, "bid")?;
                 let ask = parse_price(ask, *price_precision, price_increment, "ask")?;
                 anyhow::ensure!(
-                    ask.raw >= bid.raw,
+                    ask.raw() >= bid.raw(),
                     "ask must be greater than or equal to bid"
                 );
                 let quote_quantity = parse_quantity(
@@ -395,7 +395,7 @@ fn parse_price(value: &str, precision: u8, increment: Price, field: &str) -> any
         price.precision
     );
     anyhow::ensure!(
-        price.raw % increment.raw == 0,
+        price.raw() % increment.raw() == 0,
         "{field} must be on the price grid"
     );
     Ok(price)
@@ -404,7 +404,7 @@ fn parse_price(value: &str, precision: u8, increment: Price, field: &str) -> any
 fn parse_positive_price(value: &str, field: &str) -> anyhow::Result<Price> {
     let price =
         Price::from_str(value).map_err(|error| anyhow::anyhow!("Invalid {field}: {error}"))?;
-    anyhow::ensure!(price.raw > 0, "{field} must be positive");
+    anyhow::ensure!(price.raw() > 0, "{field} must be positive");
     Ok(price)
 }
 
@@ -431,7 +431,7 @@ fn parse_quantity(
         quantity.precision
     );
     anyhow::ensure!(
-        quantity.raw % increment.raw == 0,
+        quantity.raw() % increment.raw() == 0,
         "{field} must be on the quantity grid"
     );
     Ok(quantity)

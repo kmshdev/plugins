@@ -1,7 +1,7 @@
 # Capture, reconstruct, and rerun
 
 Choose the replay question first. A durable event-store reconstruction and a
-strategy experiment use different entry points in Rust 0.63.0.
+strategy experiment use different entry points in Rust 0.64.0.
 
 | Question | Native path | Result |
 | --- | --- | --- |
