@@ -31,13 +31,13 @@ betting payoff is not interchangeable with a spot currency pair.
 ```toml
 [dependencies]
 anyhow = "1"
-nautilus-common = { version = "=0.63.0", default-features = false }
-nautilus-model = { version = "=0.63.0", default-features = false }
-nautilus-trading = { version = "=0.63.0", default-features = false }
-nautilus-backtest = { version = "=0.63.0", default-features = false }
+nautilus-common = { version = "=0.64.0", default-features = false }
+nautilus-model = { version = "=0.64.0", default-features = false }
+nautilus-trading = { version = "=0.64.0", default-features = false }
+nautilus-backtest = { version = "=0.64.0", default-features = false }
 ```
 
-Use Rust 1.98.0 or newer with edition 2024. Resolve and retain `Cargo.lock` for
+These standalone examples need Rust 1.98.1 or newer with edition 2024. Resolve and retain `Cargo.lock` for
 executables; use `cargo check --locked` / `cargo test --locked` after initial
 resolution. Keep all Nautilus crates on one version and source. If using source,
 pin a verified full upstream revision consistently; do not use a moving branch
@@ -45,7 +45,7 @@ or pretend the hosting repository's commit identifies Nautilus.
 
 | Optional need | Crate/feature in the inspected snapshot |
 | --- | --- |
-| Model fixtures | `nautilus-model/stubs` |
+| Model fixtures | `nautilus-model/test-support` |
 | Built-in strategies | `nautilus-trading/examples` |
 | Registered indicator integration | `nautilus-common/indicators` and `nautilus-indicators` |
 | Catalog node | `nautilus-backtest/streaming` |

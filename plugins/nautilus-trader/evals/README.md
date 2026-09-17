@@ -1,9 +1,26 @@
 # Evaluation contract
 
+## Current collection routing
+
+[routing.json](routing.json) is a small collection-level smoke set for the five
+installed workflow descriptions, including non-trading negative cases and an
+upgrade boundary. Give the evaluator the requests and actual discovered inventory,
+not `expected_skill`. Compare selected workflows with those expectations only
+after the response. Reuse the same model/settings and requests for a baseline.
+
+A selection/plan response is not an implemented task or proof of automatic
+selection on every future request. Check live host discovery separately, then
+run the native examples for executable qualification. Historical isolated-skill
+prompts are preserved in [workflows-0.63.json](history/workflows-0.63.json) and
+[evals-0.63.json](history/evals-0.63.json); their recorded grades do not qualify
+the current 0.64 baseline. New smoke cases are regression evidence, not a fresh
+independent model benchmark after they have influenced a revision.
+
 ## Five-workflow evaluation
 
-[workflows.json](workflows.json) is the canonical frozen specification:
-three working cases and one fresh acceptance case per skill. The resource
+[workflows.json](workflows.json) adapts the original specification to 0.64.0:
+three working cases and one separate acceptance case per skill. These reused
+acceptance prompts are regression cases, not fresh holdouts. The resource
 generator materializes evaluator-compatible local `evals/evals.json` and
 `evals/acceptance.json`. Each case has `expected_output`, assertions,
 `expected_skill` (null for negative scope cases), and explicit `files: []`.

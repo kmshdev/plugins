@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+from datetime import UTC, datetime
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -18,7 +20,9 @@ ROOT = Path(__file__).resolve().parent.parent
 LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 SOURCE = re.compile(r"`((?:crates/[^`:\s]+|Cargo\.toml)):(\d[^`]*)`")
 EXCLUDED = {"target", "__pycache__", "results"}
-PLUGIN_VERSION = "0.63.0+codex.20260911.2"
+FRAMEWORK_VERSION = "0.64.0"
+RUST_VERSION = "1.98.1"
+SOURCE_REVISION = "1b0a49d2792a9432a3aca3fcb617ce7a630d905e"
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
 
@@ -61,7 +65,7 @@ def check_skill(root: Path) -> list[str]:
                 errors.append(f"Actor example contains order authority: {source.relative_to(root)}")
     if len(entry.split()) > 400:
         errors.append(f"Workflow router exceeds 400-word budget: {name}")
-    if 'version: "0.63.0"' not in entry:
+    if f'version: "{FRAMEWORK_VERSION}"' not in entry:
         errors.append(f"Wrong workflow version: {name}")
     ids: set[str] = set()
     prompts: set[str] = set()
@@ -87,8 +91,10 @@ def check_skill(root: Path) -> list[str]:
             if case.get("files") != []:
                 errors.append(f"Unexpected evaluator staging: {name}/{case.get('id')}")
     evidence = json.loads((root / "references/source-manifest.json").read_text())
-    if evidence.get("framework_version") != "0.63.0" or not evidence.get("files"):
+    if evidence.get("framework_version") != FRAMEWORK_VERSION or not evidence.get("files"):
         errors.append(f"Missing workflow source evidence: {name}")
+    if evidence.get("rust_version") != RUST_VERSION or evidence.get("upstream_revision") != SOURCE_REVISION:
+        errors.append(f"Wrong workflow source toolchain or revision: {name}")
     source_text = (root / "references/sources.md").read_text()
     paths = {item["path"] for item in evidence.get("files", [])}
     if len(paths) != len(evidence.get("files", [])):
@@ -111,11 +117,16 @@ def source_coordinates() -> dict[str, str]:
 
 def source_records(source_root: Path) -> list[dict[str, str]]:
     base = source_root.resolve(strict=True)
+    revision = subprocess.check_output(
+        ["git", "-C", str(base), "rev-parse", "HEAD"], text=True,
+    ).strip()
+    if revision != SOURCE_REVISION:
+        raise ValueError(f"Expected upstream revision {SOURCE_REVISION}, found {revision}")
     workspace = tomllib.loads((base / "Cargo.toml").read_text(encoding="utf-8"))
     package = workspace["workspace"]["package"]
-    if package["version"] != "0.63.0":
-        raise ValueError(f"Expected source 0.63.0, found {package['version']}")
-    if package["rust-version"] != "1.98.0" or package["edition"] != "2024":
+    if package["version"] != FRAMEWORK_VERSION:
+        raise ValueError(f"Expected source {FRAMEWORK_VERSION}, found {package['version']}")
+    if package["rust-version"] != RUST_VERSION or package["edition"] != "2024":
         raise ValueError("Source toolchain contract differs from this bundle")
     records = []
     errors = []
@@ -124,6 +135,9 @@ def source_records(source_root: Path) -> list[dict[str, str]]:
         if not path.is_relative_to(base):
             raise ValueError(f"Source escapes supplied root: {name}")
         contents = path.read_bytes()
+        committed = subprocess.check_output(["git", "-C", str(base), "show", f"HEAD:{name}"])
+        if contents != committed:
+            errors.append(f"Source differs from its pinned commit: {name}")
         last_line = max(int(number) for number in re.findall(r"\d+", ranges))
         if last_line > len(contents.splitlines()):
             errors.append(f"Source citation exceeds file length: {name}:{ranges}")
@@ -166,8 +180,10 @@ def check_bundle() -> list[str]:
     if (ROOT / "plugin.json").exists():
         errors.append("Legacy root plugin.json must not be shipped")
     manifest = json.loads((ROOT / "source-manifest.json").read_text(encoding="utf-8"))
-    if manifest["framework_version"] != "0.63.0":
+    if manifest["framework_version"] != FRAMEWORK_VERSION:
         errors.append("Wrong manifest framework pin")
+    if manifest.get("rust_version") != RUST_VERSION or manifest.get("upstream_revision") != SOURCE_REVISION:
+        errors.append("Wrong source toolchain or upstream revision")
     records = manifest["files"]
     paths = [record["path"] for record in records]
     if len(set(paths)) != len(paths) or set(paths) != set(source_coordinates()):
@@ -181,10 +197,12 @@ def check_bundle() -> list[str]:
     for cargo_path in examples:
         relative = cargo_path.relative_to(ROOT)
         cargo = tomllib.loads(cargo_path.read_text(encoding="utf-8"))
+        if cargo["package"].get("rust-version") != RUST_VERSION:
+            errors.append(f"Wrong example Rust version: {relative}")
         for name, dependency in cargo.get("dependencies", {}).items():
             if not name.startswith("nautilus-"):
                 continue
-            if not isinstance(dependency, dict) or dependency.get("version") != "=0.63.0":
+            if not isinstance(dependency, dict) or dependency.get("version") != f"={FRAMEWORK_VERSION}":
                 errors.append(f"Unpinned framework dependency: {relative}: {name}")
                 continue
             if any(key in dependency for key in ("path", "git", "branch")):
@@ -212,7 +230,9 @@ def check_bundle() -> list[str]:
         plugin = {}
     else:
         plugin = json.loads(plugin_path.read_text(encoding="utf-8"))
-    if plugin.get("name") != "nautilus-trader" or plugin.get("version") != PLUGIN_VERSION:
+    if plugin.get("name") != "nautilus-trader" or not re.fullmatch(
+        rf"{re.escape(FRAMEWORK_VERSION)}\+codex\.[A-Za-z0-9.-]+", plugin.get("version", ""),
+    ):
         errors.append("Wrong plugin identity/version")
     interface = plugin.get("interface")
     if not isinstance(interface, dict):
@@ -282,12 +302,12 @@ def main() -> int:
     if args.record_source:
         manifest = {
             "schema_version": 1,
-            "framework_version": "0.63.0",
-            "rust_version": "1.98.0",
+            "framework_version": FRAMEWORK_VERSION,
+            "rust_version": RUST_VERSION,
             "edition": "2024",
-            "research_date": "2026-09-09",
-            "source_identity": "unversioned-source-snapshot",
-            "upstream_revision": None,
+            "research_date": datetime.now(UTC).date().isoformat(),
+            "source_identity": "pinned-upstream-commit",
+            "upstream_revision": SOURCE_REVISION,
             "scope": "Hashes identify cited files, not an entire release or registry artifact.",
             "files": source_records(args.record_source),
         }

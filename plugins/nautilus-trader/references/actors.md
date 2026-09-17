@@ -84,7 +84,7 @@ Inside an existing `DataActor` implementation:
 fn on_start(&mut self) -> anyhow::Result<()> {
     let name = format!("{}.heartbeat", self.actor_id());
     self.clock().set_timer_ns(
-        &name, 1_000_000_000, None, None, None, Some(false), Some(false),
+        &name, nautilus_core::DurationNanos::from_secs(1), None, None, None, Some(false), Some(false),
     )?;
     Ok(())
 }

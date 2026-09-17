@@ -8,7 +8,6 @@ Public Codex plugins maintained by [kmshdev](https://github.com/kmshdev).
 codex plugin marketplace add kmshdev/plugins --ref main
 codex plugin add docdev@kmshdev
 codex plugin add css-tokenography@kmshdev
-codex plugin add nautilus-trader@kmshdev
 ```
 
 Restart Codex if the newly installed plugin does not appear immediately.
@@ -39,10 +38,23 @@ The plugin source is under [`plugins/css-tokenography`](./plugins/css-tokenograp
 ### nautilus-trader
 
 `nautilus-trader` provides five independently usable skills for NautilusTrader
-0.63.0 Rust: actors, strategies, data integration, backtesting and live nodes.
+0.64.0 Rust: actors, strategies, data integration, backtesting and live nodes.
 It includes configuration-driven FX/equity examples, construction-only Databento
 plus Interactive Brokers wiring, advanced order/composition guidance, replay,
 Rust test/simulation/benchmark recipes and original icons.
+
+Released installs use `main`. While this 0.64 update is still unmerged, replace
+`--ref main` below with `--ref codex/nautilus-rust-workflows` to test the candidate:
+
+```sh
+codex plugin marketplace add kmshdev/plugins --ref main
+codex plugin add nautilus-trader@kmshdev --json
+```
+
+Check that the returned version begins with `0.64.0+codex.`. The response's
+`installedPath` contains the plugin guide and examples. After merge, use `main`
+rather than retaining the temporary candidate ref. The selected ref applies to
+the `kmshdev` marketplace; this command does not install or update unrelated plugins.
 
 See [the plugin guide](plugins/nautilus-trader/README.md) for installation,
 repository-only activation and runnable examples, and

@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": "deterministic-replay",
-      "prompt": "Design a small deterministic offline Nautilus Rust 0.63.0 backtest for an actor signal and Strategy order. Specify native composition, input ordering, timer boundaries and stable outputs to compare. No real provider data or connections.",
+      "prompt": "Design a small deterministic offline Nautilus Rust 0.64.0 backtest for an actor signal and Strategy order. Specify native composition, input ordering, timer boundaries and stable outputs to compare. No real provider data or connections.",
       "expected_output": "Native synthetic engine replay with registered actor/strategy, instrument/venue configuration and canonical economic output comparisons.",
       "assertions": [
         "Uses BacktestEngine or BacktestNode rather than an application-owned simulation engine.",
@@ -16,7 +16,7 @@
     },
     {
       "id": "chunk-memory",
-      "prompt": "A Nautilus Rust BacktestNode uses several data configs and chunk_size=1000. I assume RAM is bounded to 1000 records and can add several run configs to sweep parameters in one node. Review this against 0.63.0.",
+      "prompt": "A Nautilus Rust BacktestNode uses several data configs and chunk_size=1000. I assume RAM is bounded to 1000 records and can add several run configs to sweep parameters in one node. Review this against 0.64.0.",
       "expected_output": "Correct one-run and materialization assumptions; use separate runs and measured memory behavior.",
       "assertions": [
         "BacktestNode supports exactly one run config in the inspected implementation.",

@@ -1,6 +1,6 @@
 # Nautilus Trader for Codex
 
-Five self-contained skills for **NautilusTrader 0.63.0 in Rust**, with original
+Five self-contained skills for **NautilusTrader 0.64.0 in Rust**, with original
 icons, implementation guides and executable examples. Start small, compile,
 run a native scenario, then add evidence for the boundary you change.
 
@@ -19,8 +19,23 @@ content needs no hidden source checkout, sibling skill or Python trading runtime
 
 ## Install
 
-Install `nautilus-trader@kmshdev` from the
-[kmshdev marketplace](https://github.com/kmshdev/plugins). The Codex manifest is
+Released installs use the stable `main` ref. While this 0.64 update is still
+unmerged, replace `--ref main` below with `--ref codex/nautilus-rust-workflows`
+to test the candidate. After merge, use `main` rather than the temporary branch:
+
+```sh
+codex plugin marketplace add kmshdev/plugins --ref main
+codex plugin add nautilus-trader@kmshdev --json
+```
+
+Check that the install response reports `0.64.0+codex.` and use its `installedPath`
+to find this guide and the examples. The ref applies to the `kmshdev` marketplace,
+but only this plugin is installed. Permanent plugin homepage links use `main`,
+independently of a candidate installation ref. Start a new Codex thread after
+installing. Agent execution requires Codex sign-in or configured model-provider
+authentication; installation does not supply an account or provider keys.
+
+The Codex manifest is
 [.codex-plugin/plugin.json](.codex-plugin/plugin.json); it discovers exactly the
 five child directories. There is no sixth root skill or compatibility alias.
 You can also copy any child directory into a skill-capable host independently.
@@ -42,7 +57,7 @@ apply. Installation/cache scope and enabled scope are distinct. See
 
 ## Run the examples
 
-Use Rust 1.98.0+ and the included lockfiles. Crates are pinned to `=0.63.0`.
+Use Rust 1.98.1+ and the included lockfiles. Crates are pinned to `=0.64.0`.
 The first build may fetch dependencies; cached builds can use `--offline`.
 
 - [Configurable backtest](examples/quickstart/README.md): the same binary runs
@@ -70,12 +85,13 @@ profitable trading, full durable-log acceptance, network soaks or benchmark resu
 | [Event replay](references/event-replay.md) | Durable capture, state reconstruction and strategy reruns |
 | [Connection recipes](references/connections.md) | Eight coupled runtime paths |
 | [Source ledger](references/sources.md) and [hash inventory](source-manifest.json) | Official docs first, version-qualified source evidence |
+| [Version and integration](references/version-and-integration.md) | Upgrade dependencies or qualify a native alternative before a framework workaround |
 
 Read only the guide relevant to the work. Each child carries its own referenced
-resources. The inspected snapshot declares 0.63.0, while moving official snippets
-still show 0.62 in places; source/compiler differences are recorded explicitly.
-The source revision is unknown: hashes identify cited files, not an entire
-upstream release. Original summaries are not a vendored upstream distribution.
+resources. The evidence targets upstream Rust 0.64.0 at commit
+`1b0a49d2792a9432a3aca3fcb617ce7a630d905e`; source/compiler differences remain
+explicit. Hashes identify cited files, while the examples' lockfiles identify
+registry artifacts. Original summaries are not a vendored upstream distribution.
 Upstream crates retain their own licensing obligations; this bundle assigns no
 new license to them.
 
@@ -95,6 +111,12 @@ SkillEvaluator wrapper uses POSIX locking and is Unix-only; it is not required
 to use the skills, run the Rust examples or check offline portability. Evaluation
 services/toolchains have separate prerequisites documented in [evals](evals/README.md).
 Historical model grades are not results for this revision.
+
+The five `agents/openai.yaml` files configure skill discovery and appearance;
+they are not custom subagents. Implicit invocation permits selection, not a
+mandatory runtime hook. Choose the workflow for the affected owner and reuse
+sufficient inherited guidance across delegated work. No root router, subagent
+pipeline or all-reference reading requirement is needed.
 
 After changing canonical guides/examples/evals, regenerate resources and check
 for drift with `python3 scripts/sync_resources.py --check`. Individual routers and

@@ -1,13 +1,13 @@
 {
   "skill_name": "nautilus-trader",
-  "version": "0.63.0",
+  "version": "0.64.0",
   "evals": [
     {
       "id": "beginner-offline",
       "prompt": "I am new to Nautilus Rust. Build a minimal offline strategy example with no Python, external data or live connection. Show that callbacks and one order really occurred.",
       "references": ["references/getting-started.md", "examples/quickstart/README.md"],
       "assertions": [
-        "Uses exact 0.63.0 dependencies and an independent Rust package, not host source or fixtures.",
+        "Uses exact 0.64.0 dependencies and an independent Rust package, not host source or fixtures.",
         "Uses native BacktestEngine with explicit venue/instrument/synthetic data.",
         "Prevents submission on every quote and observes dispatch plus simulated order/position evidence.",
         "Does not present this as profitable or production-qualified."
@@ -35,7 +35,7 @@
     },
     {
       "id": "bracket-protection",
-      "prompt": "Build a 0.63 Rust limit-entry bracket and explain whether manage_contingent_orders=true guarantees proportional live child protection after partial fills.",
+      "prompt": "Build a 0.64 Rust limit-entry bracket and explain whether manage_contingent_orders=true guarantees proportional live child protection after partial fills.",
       "references": ["references/strategies.md", "references/execution.md"],
       "assertions": [
         "Finishes order().bracket() with call() returning Vec<OrderAny>; submits via submit_order_list.",
@@ -105,10 +105,10 @@
     },
     {
       "id": "version-drift",
-      "prompt": "The latest guide says 0.62 and test-support, but my supplied source declares 0.63.0 and stubs. Which source should this skill trust?",
+      "prompt": "This plugin's examples target 0.64.0, but my application's Cargo.lock resolves 0.63.0 and I requested no dependency change. Which APIs should govern a small actor fix, and may the skill repin my application?",
       "references": ["references/pitfalls.md", "references/sources.md"],
       "assertions": [
-        "Uses 0.63.0 source-qualified claims and reports the documented discrepancy without silently changing the pin.",
+        "Uses the application's locked 0.63.0 declarations and reports the plugin baseline difference without silently changing dependencies.",
         "Does not claim a source version label or parent Git SHA proves registry/upstream artifact identity.",
         "Uses compiler-visible declarations for the target build."
       ]

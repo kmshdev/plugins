@@ -34,7 +34,7 @@ reordering/drop patterns. Do not invent a second execution reducer in a test.
 
 ## Upstream source tests: optional, version-qualified
 
-These commands require an upstream 0.63.0 checkout with its dependencies and are
+These commands require an upstream 0.64.0 checkout with its dependencies and are
 not bundled-example acceptance commands. Select the package/test affected by a
 change. The official testing guide uses nextest for process isolation; doctests
 are separate. Do not copy Python-enabled full-workspace flags into a Rust-only app.
@@ -42,7 +42,7 @@ are separate. Do not copy Python-enabled full-workspace flags into a Rust-only a
 ```sh
 cargo nextest run --locked -p nautilus-execution reconciliation
 cargo test --locked -p nautilus-common --doc
-cargo test --locked -p nautilus-network --features turmoil --test turmoil_websocket test_turmoil_real_websocket_basic_connect
+cargo test --locked -p nautilus-network --features turmoil --test integration turmoil_websocket::test_turmoil_real_websocket_basic_connect
 ```
 
 The network helper accepts `NAUTILUS_TURMOIL_SOAK_START` and
@@ -51,8 +51,8 @@ mean an unbounded loop in the inspected helper. Preserve failing seed and fault
 schedule. A transport must actually be injected through turmoil for its network
 faults to matter; enabling a feature does not intercept all sockets.
 
-Runtime DST requires both the package's `simulation` feature and
-`RUSTFLAGS="--cfg madsim"`. The common runtime facade substitutes time, task,
+Runtime DST requires the package's `simulation` feature and prepending the cfg
+to existing flags: `RUSTFLAGS="--cfg madsim ${RUSTFLAGS:-}"`. The common runtime facade substitutes time, task,
 runtime and signal pieces. Some sync/I/O/network operations remain Tokio and
 transitive clients are not automatically virtualized. Build the selected test
 under those flags, record the selected harness seed, and

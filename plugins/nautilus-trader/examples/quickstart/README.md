@@ -5,7 +5,7 @@ quote and custom-data dispatch, one simulated market order, and JSON decoding.
 It defines its own synthetic instrument and data; no fixture feature, external
 checkout, credentials, Python runtime, catalog or live adapter is required.
 
-From this directory, with Rust 1.98.0 or newer:
+From this directory, with Rust 1.98.1 or newer:
 
 ```sh
 cargo test --locked
@@ -15,7 +15,7 @@ cargo run --locked -- configs/equity.json
 ```
 
 The bundled `Cargo.lock` retains the qualified dependency resolution.
-All direct Nautilus dependencies require exactly `0.63.0`; do not refresh the
+All direct Nautilus dependencies require exactly `0.64.0`; do not refresh the
 lockfile merely to work around an API mismatch.
 See [qualification](../../evals/qualification.md) before treating the package as
 compiler-qualified against a particular distribution.

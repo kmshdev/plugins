@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": "gtd-error-grid",
-      "prompt": "In Rust Nautilus 0.63.0, a GTD submission returned Err. My retry code assumes no command was sent. Prices have the correct decimal precision but may miss the tick increment. Can I retry now and rely on RiskEngine for account readiness?",
+      "prompt": "In Rust Nautilus 0.64.0, a GTD submission returned Err. My retry code assumes no command was sent. Prices have the correct decimal precision but may miss the tick increment. Can I retry now and rely on RiskEngine for account readiness?",
       "expected_output": "Treat the submit as ambiguous, reconcile before retry, validate tick grids and independently gate account readiness.",
       "assertions": [
         "A GTD timer setup failure can occur after routing; preserve possible-send state and reconcile before retry.",

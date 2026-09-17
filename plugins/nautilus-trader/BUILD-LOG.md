@@ -126,3 +126,83 @@ The final receipt-only cache revision is `.2`; executable guidance and examples
 are unchanged. No provider connection was made. The application review passed
 make check and schema gates; its image gate was blocked by the unavailable local
 Dory daemon. Application details are recorded in that repository's evidence doc.
+
+## 2026-09-17 — Rust 0.64.0 executable baseline
+
+The examples now resolve registry Nautilus 0.64.0 with Rust 1.98.1. The release
+source is pinned to upstream `1b0a49d2792a9432a3aca3fcb617ce7a630d905e`;
+all 103 cited files were rehashed, and moved integration-test coordinates were
+updated. Source verification rejects a different revision or edited cited bytes.
+Registry lockfiles identify the separately packaged artifacts.
+
+The native runtime check caught private `Price.raw` and `Quantity.raw` fields;
+the configurable example now uses their public `raw()` accessors without changing
+its exact financial/grid checks. Model fixtures use `test-support`, and the
+optional upstream network command selects the current `integration` test target.
+
+Executed locally with the installed Rust 1.98.1 toolchain:
+
+- Combined quickstart: four tests passed; the executable produced
+  `inputs=5 quotes=4 signals=1 orders=1 positions=1` and quantity 1000.
+- Independent actor: one test passed; the executable produced
+  `inputs=5 quotes=4 signals=1 orders=0 positions=0`.
+- Databento/IB node: built and disposed successfully; no clients started.
+- Maintenance: 54 tests passed; source hashes, resource closure, plugin/skill
+  validators, rustfmt check and `git diff --check` passed.
+- `codex review --uncommitted` in a read-only session reported no actionable
+  regressions. It independently checked source/bundle consistency; the author
+  ran the executable checks above.
+
+Evidence is in ignored `.agent/codex-nautilus-rust-workflows/` at the repository
+root. This checkpoint qualifies the executable baseline, not every source recipe,
+automatic workflow selection, provider delivery, broker fills or profitability.
+Historical 0.63 evaluation prompts and receipts retain their original version.
+
+## 2026-09-17 — Workflow boundaries and independent qualification
+
+The five workflows now distinguish bundled example pins from application-owned
+lockfiles, features and source overrides. A portable, on-demand version/integration
+reference covers dependency upgrades and checking native alternatives before
+framework workarounds. Descriptions include review work and provider-independent
+node persistence. No root router, automatic hook or custom subagent pipeline was
+introduced. Project routing and delegated handoff guidance were updated separately
+on the strategy repository's existing branch.
+
+The independent source review covered all five workflow guides plus adapter,
+execution, event-replay and Rust-testing references against the pinned release.
+It identified the timer's required `DurationNanos` argument, the Event Store
+`halt_threshold` field name and preservation of inherited `RUSTFLAGS` for DST.
+All three were corrected. The canonical actor timer recipe was corrected too.
+A native registered-actor regression proves typed timer scheduling, no callback
+on clock advancement alone, and dispatch after releasing the clock borrow.
+
+Runtime and packaging evidence on Rust 1.98.1:
+
+- Combined example: five tests passed, including the new timer regression and
+  existing native observation delivery and economic assertions.
+- Independently built actor: two tests passed, then zero orders/positions in the
+  executable. Its build target was isolated from the same-named combined package;
+  an earlier shared-target filter selected zero tests and was not accepted as evidence.
+- Live composition again built/disposed Databento and IB clients without starting
+  them. These checks do not establish provider delivery or broker behavior.
+- Maintenance: 54 tests passed; source verification, generated closure, the
+  official plugin/skill validators, rustfmt and diff checks passed.
+- `codex review --uncommitted` reported no actionable regressions for this pass.
+  Its read-only process did not run Rust tests; the author ran those above.
+
+Fresh Codex 0.154.0 app-server discovery found five enabled candidate skills in
+an isolated repository fixture and no loading errors. Installed-scope checks
+found five skills in the trusted strategy project and zero in a neutral directory;
+that installed cache was still the previous 0.63 release at this checkpoint.
+
+The same nine collection-routing requests were run in separate read-only Codex
+sessions with `gpt-6-astra`, low reasoning effort, and the real discovered baseline
+or candidate inventory, without expected selections in the prompt. Both matched
+9/9 expectations, including three non-trading negatives. This is selection/plan
+smoke evidence, not measured routing improvement or complete task qualification.
+Current regression datasets target 0.64; original 0.63 prompts are preserved in
+`evals/history/` and no historical model grade is reassigned to this revision.
+
+Receipts remain under ignored `.agent/codex-nautilus-rust-workflows/` at the
+repository root. Publication and installed-cache refresh are separate from these
+local commits and checks; a new thread must load the refreshed plugin afterwards.

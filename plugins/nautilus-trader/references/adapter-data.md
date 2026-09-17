@@ -1,4 +1,4 @@
-# IBKR and Databento data: native 0.63.0
+# IBKR and Databento data: native 0.64.0
 
 Read the official [IBKR integration](https://nautilustrader.io/docs/latest/integrations/interactive_brokers/)
 and [Databento integration](https://nautilustrader.io/docs/latest/integrations/databento/)

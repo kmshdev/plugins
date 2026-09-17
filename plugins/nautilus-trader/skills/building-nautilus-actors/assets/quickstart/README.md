@@ -1,6 +1,6 @@
 # Order-free actor quickstart
 
-Independent Rust 2024 package pinned to Nautilus 0.63.0; requires Rust 1.98.0.
+Independent Rust 2024 package pinned to Nautilus 0.64.0; requires Rust 1.98.1.
 From this directory run `cargo test --locked`, then `cargo run --locked`.
 With cached dependencies use `--offline`; an initial build may download crates.
 The program is entirely synthetic and makes no provider calls.

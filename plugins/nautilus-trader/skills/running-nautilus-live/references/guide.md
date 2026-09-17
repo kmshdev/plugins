@@ -51,7 +51,7 @@ or `Rc<RefCell<_>>` safe to send across threads.
 ## Built-in sandbox composition
 
 Sandbox is native simulated execution, not another external provider adapter.
-Add `nautilus-sandbox = { version = "=0.63.0", default-features = false,
+Add `nautilus-sandbox = { version = "=0.64.0", default-features = false,
 features = ["high-precision"] }` when this path is requested.
 Its factory implements `SimulatedExecutionClientFactory`, not the live
 execution-factory trait. Register it with `add_simulated_exec_client`.
