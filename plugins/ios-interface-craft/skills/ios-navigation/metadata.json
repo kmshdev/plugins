@@ -1,0 +1,20 @@
+{
+  "version": "1.0.8",
+  "organization": "Airbnb Engineering",
+  "technology": "iOS Navigation (SwiftUI, iOS 26 / Swift 6.2)",
+  "date": "February 2026",
+  "abstract": "Design or refactor navigation in SwiftUI apps that use coordinator-owned routes and modal state.",
+  "references": [
+    "https://airbnb.tech/uncategorized/understanding-and-improving-swiftui-performance/",
+    "https://developer.apple.com/videos/play/wwdc2022/10054/",
+    "https://developer.apple.com/videos/play/wwdc2024/10145/",
+    "https://developer.apple.com/design/human-interface-guidelines/navigation-and-search",
+    "https://developer.apple.com/documentation/swiftui/navigationstack",
+    "https://developer.apple.com/documentation/swiftui/navigationsplitview",
+    "https://developer.apple.com/documentation/swiftui/navigationpath",
+    "https://www.kodeco.com/books/advanced-ios-app-architecture",
+    "https://frankrausch.com/ios-navigation/",
+    "https://swiftwithmajid.com/2022/06/21/mastering-navigationstack-in-swiftui-deep-linking/",
+    "https://peterfriese.dev/blog/2024/hero-animation/"
+  ]
+}

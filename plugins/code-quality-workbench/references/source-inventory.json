@@ -1,0 +1,30 @@
+{
+  "source_repository": "dot-skills",
+  "skills": [
+    {
+      "skill": "adversarial-ddd",
+      "source": ".agents/skills/adversarial-ddd/SKILL.md",
+      "source_sha256": "e50034196e5c27a12cb51fea978ca32a9f434b78059ef3c34e449c52a6c47f14"
+    },
+    {
+      "skill": "clean-architecture",
+      "source": ".agents/skills/clean-architecture/SKILL.md",
+      "source_sha256": "64227a69e17ad68df02185e3edc6fd34f20517d5849c56d102bba5c352d4150f"
+    },
+    {
+      "skill": "clean-code",
+      "source": ".agents/skills/clean-code/SKILL.md",
+      "source_sha256": "a6c24ae717696e16f0605882347be634afd8e34f8f44ed5d3e5655cfdb0bea2b"
+    },
+    {
+      "skill": "code-simplifier",
+      "source": ".agents/skills/code-simplifier/SKILL.md",
+      "source_sha256": "49406c7015c59f1ebc4a8605662211d9129cfdf9ab401a6434876da3d6bb094d"
+    },
+    {
+      "skill": "refactor",
+      "source": ".agents/skills/refactor/SKILL.md",
+      "source_sha256": "d134a3b13ef91df53619387070418d65792eae4cca5df93d44442d2c7bf2c1e7"
+    }
+  ]
+}

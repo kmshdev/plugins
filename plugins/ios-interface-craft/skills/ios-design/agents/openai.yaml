@@ -1,0 +1,7 @@
+interface:
+  display_name: iOS Screen Design
+  short_description: Build a new SwiftUI screen when its layout, interaction, and
+    vis
+  default_prompt: Use $ios-design to work on the relevant part of this task.
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,7 @@
+interface:
+  display_name: iOS Design Gate
+  short_description: Run a pass/fail iOS design gate when the user requests a formal
+  default_prompt: Use $adversarial-ios-design to work on the relevant part of this
+    task.
+policy:
+  allow_implicit_invocation: false

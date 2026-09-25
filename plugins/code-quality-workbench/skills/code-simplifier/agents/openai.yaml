@@ -1,0 +1,10 @@
+interface:
+  display_name: "Code Simplifier"
+  short_description: "Simplify code without behavior changes"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#B45544"
+  default_prompt: "Use $code-simplifier to simplify code without behavior changes."
+
+policy:
+  allow_implicit_invocation: false

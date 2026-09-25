@@ -1,0 +1,6 @@
+interface:
+  display_name: "iOS Review and Refactor"
+  short_description: "Run selected iOS gates and repair scoped findings"
+  default_prompt: "Use $ios-review-and-refactor to review this completed iOS change and fix in-scope failures."
+policy:
+  allow_implicit_invocation: false

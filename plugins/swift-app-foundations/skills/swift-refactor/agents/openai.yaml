@@ -1,0 +1,7 @@
+interface:
+  display_name: Swift Refactor
+  short_description: Refactor existing SwiftUI code toward an established modular
+    MVV
+  default_prompt: Use $swift-refactor to work on the relevant part of this task.
+policy:
+  allow_implicit_invocation: false

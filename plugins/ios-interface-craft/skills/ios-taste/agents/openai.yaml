@@ -1,0 +1,6 @@
+interface:
+  display_name: iOS Taste
+  short_description: Design or critique a user-facing SwiftUI screen when its visual
+  default_prompt: Use $ios-taste to work on the relevant part of this task.
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,30 @@
+{
+  "name": "code-quality-workbench",
+  "version": "0.1.0",
+  "description": "Select a maintainability, architecture, simplification, refactoring, or DDD review for a completed coding milestone.",
+  "author": {
+    "name": "kmshdev"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Code Quality Workbench",
+    "shortDescription": "Focused code review and refactoring methods.",
+    "longDescription": "Select a maintainability, architecture, simplification, refactoring, or DDD review for a completed coding milestone.",
+    "developerName": "kmshdev",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Refactoring"
+    ],
+    "brandColor": "#6A6BA7",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "defaultPrompt": "Use $code-quality-review to select a focused review for this completed change."
+  },
+  "repository": "https://github.com/kmshdev/plugins",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "code-review"
+  ]
+}

@@ -1,0 +1,10 @@
+interface:
+  display_name: "Refactor"
+  short_description: "Refactor the structure of existing code"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#B45544"
+  default_prompt: "Use $refactor to refactor existing code."
+
+policy:
+  allow_implicit_invocation: false

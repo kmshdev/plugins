@@ -1,0 +1,30 @@
+{
+  "name": "adversial-ios-review-and-refactor",
+  "version": "0.1.0",
+  "description": "Review a completed iOS change with selected formal gates, apply scoped fixes, and verify the result.",
+  "author": {
+    "name": "kmshdev"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "iOS Review and Refactor",
+    "shortDescription": "Evidence-backed iOS, SwiftUI, and Swift review gates.",
+    "longDescription": "Review a completed iOS change with selected formal gates, apply scoped fixes, and verify the result.",
+    "developerName": "kmshdev",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "brandColor": "#B64F54",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "defaultPrompt": "Use $ios-review-and-refactor to review this completed iOS change and fix in-scope failures."
+  },
+  "repository": "https://github.com/kmshdev/plugins",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "ios"
+  ]
+}

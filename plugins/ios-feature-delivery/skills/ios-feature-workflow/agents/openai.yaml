@@ -1,0 +1,6 @@
+interface:
+  display_name: "iOS Feature Workflow"
+  short_description: "Build, run, verify, and review an iOS feature"
+  default_prompt: "Use $ios-feature-workflow to implement [feature] in [app] so [user] can [outcome]. Build, run, verify, and review the completed change."
+policy:
+  allow_implicit_invocation: false

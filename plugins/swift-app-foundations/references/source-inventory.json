@@ -1,0 +1,25 @@
+{
+  "source_repository": "dot-skills",
+  "skills": [
+    {
+      "skill": "swift-data",
+      "source": "skills/swift-data/SKILL.md",
+      "source_sha256": "3b2a00df931e597cec09f5c6eb7b7e200e62e7ba872d3938906be2c1a6e1b449"
+    },
+    {
+      "skill": "swift-optimise",
+      "source": "skills/swift-optimise/SKILL.md",
+      "source_sha256": "c579fb58298f51d883386e8da063adcd5e42ee3ecdc400cd983a99689e596fad"
+    },
+    {
+      "skill": "swift-refactor",
+      "source": "skills/swift-refactor/SKILL.md",
+      "source_sha256": "21e893a0578a5bf2bb0224c137322bd6e2bb4a68cf6fe881898023eefd3f4c4b"
+    },
+    {
+      "skill": "swift-ui-architect",
+      "source": "skills/swift-ui-architect/SKILL.md",
+      "source_sha256": "0a57a7a52f8591284c86fe006b6608778445d5791c5f42359ba56c51b7c0c7e4"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+interface:
+  display_name: "Adversarial DDD"
+  short_description: "Audit domain language and boundaries"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#B45544"
+  default_prompt: "Use $adversarial-ddd to audit domain language and boundaries."
+
+policy:
+  allow_implicit_invocation: false

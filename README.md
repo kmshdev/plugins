@@ -62,6 +62,16 @@ See [the plugin guide](plugins/nautilus-trader/README.md) for installation,
 repository-only activation and runnable examples, and
 [the build log](plugins/nautilus-trader/BUILD-LOG.md) for verified scope.
 
+### iOS and Swift workflow suite
+
+- [`adversial-ios-review-and-refactor`](./plugins/adversial-ios-review-and-refactor) packages formal rendered iOS, SwiftUI, and Swift gates. `$ios-review-and-refactor` coordinates scoped fixes after their verdicts. The identifier retains its requested spelling; the display name is **iOS Review and Refactor**.
+- [`ios-interface-craft`](./plugins/ios-interface-craft) routes screen design, visual critique, platform conventions, navigation, motion, and design-system work. It keeps `ios-taste` advisory and separate from the formal gates.
+- [`swift-app-foundations`](./plugins/swift-app-foundations) covers SwiftData, measured performance, and modular MVVM-C architecture when that architecture belongs to the app.
+- [`code-quality-workbench`](./plugins/code-quality-workbench) selects a general maintainability, architecture, simplification, refactoring, or DDD pass on request. It does not run at every session end.
+- [`ios-feature-delivery`](./plugins/ios-feature-delivery) provides `$ios-feature-workflow` and a [copyable trigger prompt](./plugins/ios-feature-delivery/skills/ios-feature-workflow/references/trigger-prompt.md) for implementing, running, verifying, and reviewing one app feature. It uses Build iOS Apps when installed and falls back to the project's native build tools.
+
+The packaged specialist skills are self-contained snapshots of the individually downloadable skills in `dot-skills`. Each package records its source skill paths and hashes in `references/source-inventory.json`.
+
 ## Validate locally
 
 From a checkout of this repository:

@@ -1,0 +1,15 @@
+{
+  "version": "1.0.8",
+  "organization": "Apple",
+  "technology": "Swift 6.2 / SwiftUI (iOS 26)",
+  "date": "2026-02",
+  "abstract": "Profile or optimize Swift and SwiftUI code when performance is the stated concern.",
+  "references": [
+    "https://developer.apple.com/documentation/Xcode/understanding-and-improving-swiftui-performance",
+    "https://developer.apple.com/videos/play/wwdc2023/10149/",
+    "https://developer.apple.com/videos/play/wwdc2023/10158/",
+    "https://www.swift.org/migration/documentation/swift-6-concurrency-migration-guide/commonproblems/",
+    "https://developer.apple.com/documentation/swift/asyncsequence",
+    "https://developer.apple.com/documentation/swiftui/canvas"
+  ]
+}

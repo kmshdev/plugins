@@ -1,0 +1,30 @@
+{
+  "name": "ios-feature-delivery",
+  "version": "0.1.0",
+  "description": "A repeatable feature workflow that coordinates Build iOS Apps with design, Swift, and review specialists when installed.",
+  "author": {
+    "name": "kmshdev"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "iOS Feature Delivery",
+    "shortDescription": "Implement, run, verify, and review an iOS feature.",
+    "longDescription": "A repeatable feature workflow that coordinates Build iOS Apps with design, Swift, and review specialists when installed.",
+    "developerName": "kmshdev",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "brandColor": "#3A826D",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "defaultPrompt": "Use $ios-feature-workflow to implement [feature] in [app] so [user] can [outcome]. Build, run, verify, and review the completed change."
+  },
+  "repository": "https://github.com/kmshdev/plugins",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "ios"
+  ]
+}

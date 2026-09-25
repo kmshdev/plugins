@@ -1,0 +1,40 @@
+{
+  "source_repository": "dot-skills",
+  "skills": [
+    {
+      "skill": "ios-animations",
+      "source": "skills/ios-animations/SKILL.md",
+      "source_sha256": "684886847edddf19ba608f00a8cb87e77ead2073223e446970eb8e3f1f7e4f1a"
+    },
+    {
+      "skill": "ios-design",
+      "source": "skills/ios-design/SKILL.md",
+      "source_sha256": "ac550f2bb9af067242ac942136c051c1cc983ee4c78386f21de389d2b38ca0ca"
+    },
+    {
+      "skill": "ios-design-system",
+      "source": "skills/ios-design-system/SKILL.md",
+      "source_sha256": "fe14aa0087004983acb70cca75141f8cd629796037df45f2b82affd6bdb3c06a"
+    },
+    {
+      "skill": "ios-hig",
+      "source": "skills/ios-hig/SKILL.md",
+      "source_sha256": "4811d476dfeece67ebed6950bbd53ab70e21d3175caea8bf8c3598d8010bef72"
+    },
+    {
+      "skill": "ios-navigation",
+      "source": "skills/ios-navigation/SKILL.md",
+      "source_sha256": "32eacb9a6faba1bd17c1188d561cc82d531b3aa68ffb5d17e168cc710c675514"
+    },
+    {
+      "skill": "ios-taste",
+      "source": "skills/ios-taste/SKILL.md",
+      "source_sha256": "15eb825ec3f432be82842bfb8dcff3659306fde23873b121b407a11cd3dde349"
+    },
+    {
+      "skill": "ios-ui-refactor",
+      "source": "skills/ios-ui-refactor/SKILL.md",
+      "source_sha256": "ac0d00ad3f6b88d59b19cfef26605b6747420cc40c5bb6e672e83271a27d1207"
+    }
+  ]
+}

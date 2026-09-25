@@ -1,0 +1,23 @@
+{
+  "version": "0.3.0",
+  "organization": "community",
+  "technology": "SwiftUI / iOS design",
+  "discipline": "adversarial",
+  "type": "adversarial-review",
+  "date": "July 2026",
+  "abstract": "Run a pass/fail iOS design gate when the user requests a formal review of a rendered SwiftUI interface.",
+  "references": [
+    "https://developer.apple.com/design/human-interface-guidelines",
+    "https://developer.apple.com/design/human-interface-guidelines/tab-bars",
+    "https://developer.apple.com/design/human-interface-guidelines/modality",
+    "https://developer.apple.com/design/human-interface-guidelines/color",
+    "https://developer.apple.com/design/human-interface-guidelines/typography",
+    "https://developer.apple.com/design/human-interface-guidelines/materials",
+    "https://developer.apple.com/design/human-interface-guidelines/motion",
+    "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
+    "https://developer.apple.com/design/human-interface-guidelines/loading",
+    "https://developer.apple.com/videos/play/wwdc2025/219/",
+    "https://developer.apple.com/videos/play/wwdc2025/356/",
+    "https://developer.apple.com/videos/play/wwdc2023/10158/"
+  ]
+}

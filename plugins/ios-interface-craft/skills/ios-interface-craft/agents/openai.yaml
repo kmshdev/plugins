@@ -1,0 +1,4 @@
+interface:
+  display_name: "iOS Interface Craft"
+  short_description: "Route SwiftUI interface design and critique"
+  default_prompt: "Use $ios-interface-craft to design or improve this SwiftUI screen."

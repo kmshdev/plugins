@@ -1,0 +1,6 @@
+interface:
+  display_name: iOS Navigation
+  short_description: Design or refactor navigation in SwiftUI apps that use coordinat
+  default_prompt: Use $ios-navigation to work on the relevant part of this task.
+policy:
+  allow_implicit_invocation: false

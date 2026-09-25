@@ -1,0 +1,16 @@
+{
+  "version": "1.0.6",
+  "organization": "Airbnb Engineering / OLX / Apple",
+  "technology": "SwiftUI (iOS 26 / Swift 6.2)",
+  "date": "February 2026",
+  "abstract": "Design or review state and module boundaries in SwiftUI apps using modular MVVM-C.",
+  "references": [
+    "https://airbnb.tech/uncategorized/understanding-and-improving-swiftui-performance/",
+    "https://medium.com/airbnb-engineering/unlocking-swiftui-at-airbnb-ea58f50cde49",
+    "https://developer.apple.com/videos/play/wwdc2023/10160/",
+    "https://developer.apple.com/documentation/Xcode/understanding-and-improving-swiftui-performance",
+    "https://nalexn.github.io/clean-architecture-swiftui/",
+    "https://www.amazon.com/Advanced-iOS-App-Architecture-Fourth/dp/195032561X",
+    "https://github.com/airbnb/swift"
+  ]
+}

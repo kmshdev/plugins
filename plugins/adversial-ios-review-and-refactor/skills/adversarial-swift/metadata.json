@@ -1,0 +1,15 @@
+{
+  "version": "1.2.0",
+  "organization": "community",
+  "technology": "Swift",
+  "discipline": "adversarial",
+  "type": "adversarial-review",
+  "date": "July 2026",
+  "abstract": "Run a pass/fail Swift language gate when the user requests a formal code review.",
+  "references": [
+    "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/",
+    "https://developer.apple.com/documentation/swift/checkedcontinuation",
+    "https://developer.apple.com/documentation/swift/dictionary/subscript(_:default:)",
+    "https://developer.apple.com/documentation/swift/caseiterable"
+  ]
+}

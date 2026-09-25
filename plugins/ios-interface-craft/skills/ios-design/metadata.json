@@ -1,0 +1,25 @@
+{
+  "version": "1.0.8",
+  "organization": "Apple HIG + Kocienda · Edson",
+  "technology": "SwiftUI iOS 26 / Swift 6.2",
+  "date": "February 2026",
+  "abstract": "Build a new SwiftUI screen when its layout, interaction, and visual hierarchy need design guidance.",
+  "references": [
+    "Creative Selection: Inside Apple's Design Process During the Golden Age of Steve Jobs — Ken Kocienda (St. Martin's Press, 2018)",
+    "Design Like Apple: Seven Principles For Creating Insanely Great Products, Services, and Experiences — John Edson (Wiley, 2012)",
+    "https://developer.apple.com/design/human-interface-guidelines/",
+    "https://developer.apple.com/design/human-interface-guidelines/color",
+    "https://developer.apple.com/design/human-interface-guidelines/typography",
+    "https://developer.apple.com/design/human-interface-guidelines/motion",
+    "https://developer.apple.com/design/human-interface-guidelines/materials",
+    "https://developer.apple.com/design/human-interface-guidelines/layout",
+    "https://developer.apple.com/design/human-interface-guidelines/accessibility",
+    "https://developer.apple.com/documentation/swiftui/animation",
+    "https://developer.apple.com/documentation/swiftui/view-fundamentals",
+    "https://developer.apple.com/videos/play/wwdc2023/10156/",
+    "https://developer.apple.com/videos/play/wwdc2023/10257/",
+    "https://developer.apple.com/videos/play/wwdc2024/10151/",
+    "https://developer.apple.com/videos/play/wwdc2024/10145/",
+    "https://developer.apple.com/design/awards/"
+  ]
+}

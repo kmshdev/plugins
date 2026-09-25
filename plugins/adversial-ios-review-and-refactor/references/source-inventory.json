@@ -1,0 +1,20 @@
+{
+  "source_repository": "dot-skills",
+  "skills": [
+    {
+      "skill": "adversarial-ios-design",
+      "source": "skills/adversarial-ios-design/SKILL.md",
+      "source_sha256": "4aa387f1f2d678b885c81de4d1c2a44c952916cb7974bcbe72fc591877dd088d"
+    },
+    {
+      "skill": "adversarial-swift",
+      "source": "skills/adversarial-swift/SKILL.md",
+      "source_sha256": "a1f733c921d621b12e59bafa8eb39a15407c1a9bec5e878ea0d758105db821d1"
+    },
+    {
+      "skill": "adversarial-swift-ui",
+      "source": "skills/adversarial-swift-ui/SKILL.md",
+      "source_sha256": "cffe4bfe8b294aa8e9bf332a2eea1bdf3a7d48f7e80b829165fa37d4d73a1ee6"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "version": "1.0.7",
+  "organization": "Airbnb Engineering / Apple HIG",
+  "technology": "iOS Design System (SwiftUI, iOS 26 / Swift 6.2)",
+  "date": "February 2026",
+  "abstract": "Build or revise reusable SwiftUI tokens, component styles, or design system assets.",
+  "references": [
+    "https://medium.com/airbnb-engineering/unlocking-swiftui-at-airbnb-ea58f50cde49",
+    "https://airbnb.tech/uncategorized/understanding-and-improving-swiftui-performance/",
+    "https://github.com/airbnb/swift",
+    "https://developer.apple.com/design/human-interface-guidelines/",
+    "https://developer.apple.com/design/human-interface-guidelines/color",
+    "https://developer.apple.com/design/human-interface-guidelines/typography",
+    "https://developer.apple.com/videos/play/wwdc2024/10150/",
+    "https://developer.apple.com/videos/play/wwdc2023/10115/",
+    "https://movingparts.io/styling-components-in-swiftui",
+    "https://fatbobman.com/en/posts/custom-button-style-in-swiftui/",
+    "https://www.magnuskahr.dk/posts/2025/06/swiftui-design-system-considerations-semantic-colors/"
+  ]
+}
