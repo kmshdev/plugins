@@ -1,0 +1,10 @@
+interface:
+  display_name: "Code Distill"
+  short_description: "Extract a pattern from a repository"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#5A6DA9"
+  default_prompt: "Use $code-distill to extract a pattern from a repository."
+
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,33 @@
+{
+  "name": "engineering-research-and-planning",
+  "version": "0.1.0",
+  "description": "Focused engineering research, specifications, RFCs, implementation plans, and metric validation.",
+  "author": {
+    "name": "kmshdev"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Engineering Research and Planning",
+    "shortDescription": "Focused research, specs, RFCs, and implementation plans.",
+    "longDescription": "Route a defined engineering question or deliverable to focused research and planning skills, including codebase analysis, RFCs, feature specifications, app plans, ExecPlans, and metric design or validation.",
+    "developerName": "kmshdev",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "brandColor": "#5A679D",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "defaultPrompt": "Use $engineering-research-and-planning to research this engineering question or create the requested plan."
+  },
+  "repository": "https://github.com/kmshdev/plugins",
+  "license": "MIT",
+  "keywords": [
+    "research",
+    "planning",
+    "engineering",
+    "rfc",
+    "metrics"
+  ]
+}

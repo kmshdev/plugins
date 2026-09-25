@@ -72,6 +72,10 @@ repository-only activation and runnable examples, and
 
 The packaged specialist skills are self-contained snapshots of the individually downloadable skills in `dot-skills`. Each package records its source skill paths and hashes in `references/source-inventory.json`.
 
+### engineering-research-and-planning
+
+[`engineering-research-and-planning`](./plugins/engineering-research-and-planning) provides an explicit router for nine focused methods: app and feature plans, technical RFCs, living ExecPlans, external code pattern research, codebase and Swift domain analysis, and deterministic metric design and validation. It selects the method that matches the requested deliverable without making planning a prerequisite for routine coding work.
+
 ## Validate locally
 
 From a checkout of this repository:

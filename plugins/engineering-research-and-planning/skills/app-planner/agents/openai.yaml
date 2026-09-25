@@ -1,0 +1,10 @@
+interface:
+  display_name: "App Planner"
+  short_description: "Plan an iOS app from its workflows"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#7A5BC4"
+  default_prompt: "Use $app-planner to plan an iOS app from its workflows."
+
+policy:
+  allow_implicit_invocation: false

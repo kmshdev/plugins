@@ -1,0 +1,10 @@
+interface:
+  display_name: "Metric Validation"
+  short_description: "Test a candidate software metric"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#5A6DA9"
+  default_prompt: "Use $metric-validation-harness to test a candidate software metric."
+
+policy:
+  allow_implicit_invocation: false

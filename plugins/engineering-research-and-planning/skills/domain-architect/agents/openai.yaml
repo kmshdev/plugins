@@ -1,0 +1,10 @@
+interface:
+  display_name: "Swift Domain Architect"
+  short_description: "Map Swift business domains"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#5A6DA9"
+  default_prompt: "Use $domain-architect to map Swift business domains."
+
+policy:
+  allow_implicit_invocation: false

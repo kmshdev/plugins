@@ -1,0 +1,7 @@
+interface:
+  display_name: "Feature Specification"
+  short_description: "Specify a software feature"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#7A5BC4"
+  default_prompt: "Use $feature-spec to specify a software feature."

@@ -1,0 +1,10 @@
+interface:
+  display_name: "Metric Design"
+  short_description: "Design a measurable software metric"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#5A6DA9"
+  default_prompt: "Use $deterministic-metric-design to design a measurable software metric."
+
+policy:
+  allow_implicit_invocation: false
