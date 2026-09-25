@@ -1,0 +1,6 @@
+interface:
+  display_name: "Engineering Research and Planning"
+  short_description: "Choose a focused engineering research or planning method"
+  default_prompt: "Use $engineering-research-and-planning to research this engineering question or create the requested plan."
+policy:
+  allow_implicit_invocation: false

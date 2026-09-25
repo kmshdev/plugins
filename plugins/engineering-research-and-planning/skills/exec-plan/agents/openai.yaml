@@ -1,0 +1,10 @@
+interface:
+  display_name: "ExecPlan"
+  short_description: "Create a living implementation plan"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#7A5BC4"
+  default_prompt: "Use $exec-plan to create a living implementation plan."
+
+policy:
+  allow_implicit_invocation: false

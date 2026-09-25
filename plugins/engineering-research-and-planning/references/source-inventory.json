@@ -1,0 +1,59 @@
+{
+  "source_repository": "dot-skills",
+  "skills": [
+    {
+      "skill": "app-planner",
+      "source": ".agents/skills/app-planner/SKILL.md",
+      "source_sha256": "05e6847e0c2d1484475934742f9566647b5efd037f455ef6a51b5ed7813806da",
+      "packaged_sha256": "05e6847e0c2d1484475934742f9566647b5efd037f455ef6a51b5ed7813806da"
+    },
+    {
+      "skill": "code-distill",
+      "source": ".agents/skills/code-distill/SKILL.md",
+      "source_sha256": "66fd428c228e403a5b7025d31bcd4b86fb75b7ca459b6b469cf03125473fbbea",
+      "packaged_sha256": "66fd428c228e403a5b7025d31bcd4b86fb75b7ca459b6b469cf03125473fbbea"
+    },
+    {
+      "skill": "codebase-comprehension-algorithms",
+      "source": ".agents/skills/codebase-comprehension-algorithms/SKILL.md",
+      "source_sha256": "210992f2d1214b85824368bb091004bc59af135f06d21217cab3ca0ad58c3111",
+      "packaged_sha256": "210992f2d1214b85824368bb091004bc59af135f06d21217cab3ca0ad58c3111"
+    },
+    {
+      "skill": "deterministic-metric-design",
+      "source": ".agents/skills/deterministic-metric-design/SKILL.md",
+      "source_sha256": "7dd8d8ff68aca0fe8b6c887fd87d65112f8655dcc72400f46685a18ff5a19227",
+      "packaged_sha256": "7dd8d8ff68aca0fe8b6c887fd87d65112f8655dcc72400f46685a18ff5a19227"
+    },
+    {
+      "skill": "dev-rfc",
+      "source": ".agents/skills/dev-rfc/SKILL.md",
+      "source_sha256": "e00cae2051094366532d4307dda1ee5fd7fcfb3ea9560536ece6f8149c83b535",
+      "packaged_sha256": "e00cae2051094366532d4307dda1ee5fd7fcfb3ea9560536ece6f8149c83b535"
+    },
+    {
+      "skill": "domain-architect",
+      "source": ".agents/skills/domain-architect/SKILL.md",
+      "source_sha256": "6a00cbb3ecbee6791624d64f959e0c88d06b7435bf87cba710860be8bc2a71ac",
+      "packaged_sha256": "6a00cbb3ecbee6791624d64f959e0c88d06b7435bf87cba710860be8bc2a71ac"
+    },
+    {
+      "skill": "exec-plan",
+      "source": ".agents/skills/exec-plan/SKILL.md",
+      "source_sha256": "00f15472725f61eaf7c960738ee51e7f4f14e49e687b70e760bcd704b7d401a4",
+      "packaged_sha256": "00f15472725f61eaf7c960738ee51e7f4f14e49e687b70e760bcd704b7d401a4"
+    },
+    {
+      "skill": "feature-spec",
+      "source": ".agents/skills/feature-spec/SKILL.md",
+      "source_sha256": "2de8e7a5df9d3e28f2d175bf5b692e8f856aa49ea09eaabfc47eab9a0f8f4874",
+      "packaged_sha256": "899623cbbc159b2af35789d9f37d97633d7dbd07c3016bc593c0ca69d6c84b82"
+    },
+    {
+      "skill": "metric-validation-harness",
+      "source": ".agents/skills/metric-validation-harness/SKILL.md",
+      "source_sha256": "e2a206e7d2e43fbebaceb6098e636e6e933733e6f3780aaa0c41784aa74fe77c",
+      "packaged_sha256": "e2a206e7d2e43fbebaceb6098e636e6e933733e6f3780aaa0c41784aa74fe77c"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+interface:
+  display_name: "Codebase Mapping Algorithms"
+  short_description: "Analyze codebase structure with algorithms"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#5A6DA9"
+  default_prompt: "Use $codebase-comprehension-algorithms to analyze codebase structure with algorithms."
+
+policy:
+  allow_implicit_invocation: false

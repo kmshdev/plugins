@@ -1,0 +1,10 @@
+interface:
+  display_name: "Technical RFC"
+  short_description: "Draft a technical decision proposal"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#7A5BC4"
+  default_prompt: "Use $dev-rfc to draft a technical decision proposal."
+
+policy:
+  allow_implicit_invocation: false
