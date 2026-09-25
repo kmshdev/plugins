@@ -1,0 +1,6 @@
+interface:
+  display_name: iOS UI Refactor
+  short_description: Review or improve the visual design of an existing SwiftUI scree
+  default_prompt: Use $ios-ui-refactor to work on the relevant part of this task.
+policy:
+  allow_implicit_invocation: false

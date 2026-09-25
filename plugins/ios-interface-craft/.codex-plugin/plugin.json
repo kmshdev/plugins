@@ -1,0 +1,30 @@
+{
+  "name": "ios-interface-craft",
+  "version": "0.1.0",
+  "description": "Shape new and existing iOS screens through focused design, HIG, navigation, animation, and design-system guidance.",
+  "author": {
+    "name": "kmshdev"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "iOS Interface Craft",
+    "shortDescription": "Design and improve native SwiftUI interfaces.",
+    "longDescription": "Shape new and existing iOS screens through focused design, HIG, navigation, animation, and design-system guidance.",
+    "developerName": "kmshdev",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "brandColor": "#A65F9E",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "defaultPrompt": "Use $ios-interface-craft to design or improve this SwiftUI screen."
+  },
+  "repository": "https://github.com/kmshdev/plugins",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "ios"
+  ]
+}

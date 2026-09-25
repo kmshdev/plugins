@@ -1,0 +1,10 @@
+interface:
+  display_name: "Clean Code"
+  short_description: "Review code maintainability"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#B45544"
+  default_prompt: "Use $clean-code to review code maintainability."
+
+policy:
+  allow_implicit_invocation: false

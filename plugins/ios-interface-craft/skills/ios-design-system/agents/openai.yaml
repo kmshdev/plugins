@@ -1,0 +1,7 @@
+interface:
+  display_name: iOS Design System
+  short_description: Build or revise reusable SwiftUI tokens, component styles, or
+    de
+  default_prompt: Use $ios-design-system to work on the relevant part of this task.
+policy:
+  allow_implicit_invocation: false

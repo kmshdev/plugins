@@ -1,0 +1,7 @@
+interface:
+  display_name: SwiftUI Architecture
+  short_description: Design or review state and module boundaries in SwiftUI apps
+    usi
+  default_prompt: Use $swift-ui-architect to work on the relevant part of this task.
+policy:
+  allow_implicit_invocation: false

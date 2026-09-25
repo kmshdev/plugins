@@ -1,0 +1,31 @@
+{
+  "version": "1.0.12",
+  "organization": "Apple Developer + Airbnb/OLX Modular MVVM-C",
+  "technology": "SwiftData (iOS 26 / Swift 6.2)",
+  "date": "February 2026",
+  "abstract": "Design or change SwiftData models, queries, persistence, or schema migration.",
+  "references": [
+    "https://developer.apple.com/tutorials/develop-in-swift/welcome-to-data-modeling",
+    "https://developer.apple.com/tutorials/develop-in-swift/model-data-with-custom-types",
+    "https://developer.apple.com/tutorials/develop-in-swift/model-data-with-custom-types-conclusion",
+    "https://developer.apple.com/tutorials/develop-in-swift/save-data",
+    "https://developer.apple.com/tutorials/develop-in-swift/models-and-persistence-conclusion",
+    "https://developer.apple.com/tutorials/develop-in-swift/navigate-sample-data",
+    "https://developer.apple.com/tutorials/develop-in-swift/navigate-sample-data-conclusion",
+    "https://developer.apple.com/tutorials/develop-in-swift/create-update-and-delete-data",
+    "https://developer.apple.com/tutorials/develop-in-swift/create-update-and-delete-data-conclusion",
+    "https://developer.apple.com/tutorials/develop-in-swift/work-with-relationships",
+    "https://developer.apple.com/tutorials/develop-in-swift/navigation-editing-and-relationships-conclusion",
+    "https://developer.apple.com/documentation/swiftdata/preserving-your-apps-model-data-across-launches",
+    "https://developer.apple.com/videos/play/wwdc2023/10195/",
+    "https://developer.apple.com/videos/play/wwdc2023/10196/",
+    "https://developer.apple.com/videos/play/wwdc2024/10137/",
+    "https://developer.apple.com/documentation/swiftdata/fetchdescriptor/fetchoffset",
+    "https://developer.apple.com/forums/thread/761118",
+    "https://azamsharp.com/2025/03/28/swiftdata-architecture-patterns-and-practices.html",
+    "https://www.hackingwithswift.com/quick-start/swiftdata/common-swiftdata-errors-and-their-solutions",
+    "https://fatbobman.com/en/posts/key-considerations-before-using-swiftdata/",
+    "https://matteomanferdini.com/swiftdata-mvvm/",
+    "https://www.hackingwithswift.com/quick-start/swiftdata/how-to-use-mvvm-to-separate-swiftdata-from-your-views"
+  ]
+}

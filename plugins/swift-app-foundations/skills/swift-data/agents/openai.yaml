@@ -1,0 +1,4 @@
+interface:
+  display_name: SwiftData
+  short_description: Design or change SwiftData models, queries, persistence, or sche
+  default_prompt: Use $swift-data to work on the relevant part of this task.

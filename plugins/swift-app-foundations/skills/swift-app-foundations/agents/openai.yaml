@@ -1,0 +1,6 @@
+interface:
+  display_name: "Swift App Foundations"
+  short_description: "Route persistence, performance, and architecture"
+  default_prompt: "Use $swift-app-foundations to route this Swift app architecture or persistence task."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: SwiftUI Gate
+  short_description: Run a pass/fail SwiftUI implementation gate when the user reques
+  default_prompt: Use $adversarial-swift-ui to work on the relevant part of this task.
+policy:
+  allow_implicit_invocation: false

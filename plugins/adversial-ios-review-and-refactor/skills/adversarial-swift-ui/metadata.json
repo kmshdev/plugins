@@ -1,0 +1,15 @@
+{
+  "version": "0.3.0",
+  "organization": "community",
+  "technology": "SwiftUI",
+  "discipline": "adversarial",
+  "type": "adversarial-review",
+  "date": "July 2026",
+  "abstract": "Run a pass/fail SwiftUI implementation gate when the user requests a formal code review.",
+  "references": [
+    "https://developer.apple.com/documentation/observation",
+    "https://developer.apple.com/documentation/swiftui/view/task(id:priority:_:)",
+    "https://developer.apple.com/documentation/swiftui/view/ongeometrychange(for:of:action:)",
+    "https://developer.apple.com/documentation/swiftui/view/visualeffect(_:)"
+  ]
+}

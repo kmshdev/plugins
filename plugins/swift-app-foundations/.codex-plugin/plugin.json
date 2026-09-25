@@ -1,0 +1,30 @@
+{
+  "name": "swift-app-foundations",
+  "version": "0.1.0",
+  "description": "Work on persistence, measured performance, and architecture-specific SwiftUI changes without imposing a new architecture.",
+  "author": {
+    "name": "kmshdev"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Swift App Foundations",
+    "shortDescription": "SwiftData, performance, and app architecture guides.",
+    "longDescription": "Work on persistence, measured performance, and architecture-specific SwiftUI changes without imposing a new architecture.",
+    "developerName": "kmshdev",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "brandColor": "#3C7D91",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "defaultPrompt": "Use $swift-app-foundations to route this Swift app architecture or persistence task."
+  },
+  "repository": "https://github.com/kmshdev/plugins",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "swift"
+  ]
+}

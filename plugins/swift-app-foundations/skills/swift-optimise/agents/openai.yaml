@@ -1,0 +1,5 @@
+interface:
+  display_name: Swift Performance
+  short_description: Profile or optimize Swift and SwiftUI code when performance is
+    t
+  default_prompt: Use $swift-optimise to work on the relevant part of this task.
