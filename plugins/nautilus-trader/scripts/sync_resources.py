@@ -29,10 +29,12 @@ EXAMPLE_FILES = ("Cargo.toml", "Cargo.lock", "src/lib.rs", "src/main.rs", "src/o
 
 
 def json_bytes(value: object) -> bytes:
+    """Serialize a value to pretty-printed JSON bytes with trailing newline."""
     return (json.dumps(value, indent=2) + "\n").encode()
 
 
 def generated_files(root: Path) -> dict[Path, bytes]:
+    """Generate all derived workflow resource files from package-owned sources."""
     manifest = json.loads((root / "source-manifest.json").read_text())
     rows = (root / "references/sources.md").read_text().splitlines()
     cases = json.loads((root / "evals/workflows.json").read_text())
@@ -226,6 +228,7 @@ The JSON test is not an Arrow/catalog round trip or live-provider qualification.
 
 
 def drift(root: Path) -> list[str]:
+    """Return relative paths of generated files that differ from expected content."""
     return [
         str(path.relative_to(root))
         for path, expected in generated_files(root).items()
@@ -234,6 +237,7 @@ def drift(root: Path) -> list[str]:
 
 
 def main() -> int:
+    """Synchronize or verify generated workflow resources."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="Report drift without writing")
     args = parser.parse_args()
